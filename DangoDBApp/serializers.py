@@ -1,17 +1,8 @@
 from rest_framework import serializers
-from .models import TblCourse, TblAddStdntInfo, TblAddTeacherInfo
+from .models import TblRoomInfo
 
-class TblCourseSerializer(serializers.ModelSerializer):
+class TblRoomInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TblCourse
+        model = TblRoomInfo
         fields = '__all__'
 
-class TblAddStdntInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TblAddStdntInfo
-        fields = '__all__'
-
-class TblAddTeacherInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TblAddTeacherInfo
-        fields = '__all__'
