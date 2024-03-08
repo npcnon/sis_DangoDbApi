@@ -31,5 +31,3 @@ $RECYCLE.BIN/
 .history/
 *.code-workspace
 
-# Pydotplus
-pydotplus/
