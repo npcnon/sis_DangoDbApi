@@ -22,6 +22,11 @@ def create_api_view(model, serializer):
             return Response(serializer_data.data)
 
         def post(self, request):
+            # Check if the data already exists
+            existing_data = model.objects.filter(**request.data).first()
+            if existing_data:
+                return Response("Data already exists", status=status.HTTP_400_BAD_REQUEST)
+
             serializer_data = serializer(data=request.data)
             if serializer_data.is_valid():
                 serializer_data.save()
@@ -29,6 +34,7 @@ def create_api_view(model, serializer):
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
+
 
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
 CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
