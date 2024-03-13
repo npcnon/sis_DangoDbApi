@@ -14,26 +14,53 @@ from .serializers import (
 )
 from rest_framework import status
 
+
+
+
+def check_for_duplicates(model, validated_data):
+    # Construct a filter query based on the validated data
+    filter_kwargs = {field: validated_data[field] for field in validated_data.keys()}
+    # Check if any record with the same data already exists
+    if model.objects.filter(**filter_kwargs).exists():
+        raise Exception("Duplicate data not allowed")
+    
+
+
 def create_api_view(model, serializer):
     class ViewSet(APIView):
         def get(self, request):
-            queryset = model.objects.all()
+            queryset = model.objects.filter(active=True)  # Filter records where active is True
+        
             serializer_data = serializer(queryset, many=True)
             return Response(serializer_data.data)
-
         def post(self, request):
-            # Check if the data already exists
-            existing_data = model.objects.filter(**request.data).first()
-            if existing_data:
-                return Response("Data already exists", status=status.HTTP_400_BAD_REQUEST)
-
             serializer_data = serializer(data=request.data)
             if serializer_data.is_valid():
+                validated_data = serializer_data.validated_data
+                try:
+                    check_for_duplicates(model, validated_data)
+                except Exception as e:
+                    return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
                 serializer_data.save()
                 return Response(serializer_data.data, status=status.HTTP_201_CREATED)
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
+
+def modify_active_field(model_class):
+    class ModifyActiveField(APIView):
+        def put(self, request, id):
+            try:
+                instance = model_class.objects.get(pk=id)
+            except model_class.DoesNotExist:
+                return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            instance.active = False
+            instance.save()
+
+            return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
+
+    return ModifyActiveField
 
 
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
@@ -48,3 +75,5 @@ ScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StdntSchoolDetailsAPIView = create_api_view(TblStdntSchoolDetails, TblStdntSchoolDetailsSerializer)
 StdntSubjAPIView = create_api_view(TblStdntSubj, TblStdntSubjSerializer)
 UsersAPIView = create_api_view(TblUsers, TblUsersSerializer)
+
+CourseModifyActiveField = modify_active_field(TblCourse)
