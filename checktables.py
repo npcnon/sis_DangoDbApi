@@ -9,10 +9,10 @@ django.setup()
 
 from DangoDBApp import models
 
-fields = models.TblCourse.objects.all()
+fields = models.TblDepartment.objects.all()
 
 for field in fields:
-    print(f"id: {field.id} department: {field.department_Id} active: {field.active} course: {field.course}")
+    print(f"id: {field.id} department: {field.department} active: {field.active} ")
 
 
 '''# Iterate through each course and update the active field
