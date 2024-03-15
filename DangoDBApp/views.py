@@ -14,13 +14,6 @@ from .serializers import (
 )
 from rest_framework import status
 
-def check_for_duplicates(model, validated_data):
-    # Construct a filter query based on the validated data
-    filter_kwargs = {field: validated_data[field] for field in validated_data.keys()}
-    # Check if any record with the same data already exists
-    if model.objects.filter(**filter_kwargs).exists():
-        raise Exception("Duplicate data not allowed")
-
 def create_api_view(model, serializer):
     class ViewSet(APIView):
         def get(self, request):
@@ -33,11 +26,24 @@ def create_api_view(model, serializer):
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
                 try:
-                    check_for_duplicates(model, validated_data)
+                    existing_instance = model.objects.filter(**validated_data, active=True).first()
+                    if existing_instance:
+                        # If a duplicate with active=True exists, return it without creating a new one
+                        raise Exception("Duplicate is not allowed")
+                    else:
+                        # Check if there is a duplicate with active=False
+                        existing_inactive_instance = model.objects.filter(**validated_data, active=False).first()
+                        if existing_inactive_instance:
+                            # If a duplicate with active=False exists, set it back to active=True
+                            existing_inactive_instance.active = True
+                            existing_inactive_instance.save()
+                            return Response(serializer(existing_inactive_instance).data, status=status.HTTP_200_OK)
+                        else:
+                            #
+                            serializer_data.save()
+                            return Response(serializer_data.data, status=status.HTTP_201_CREATED)
                 except Exception as e:
                     return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-                serializer_data.save()
-                return Response(serializer_data.data, status=status.HTTP_201_CREATED)
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
         
         def put(self, request, id, deactivate):
