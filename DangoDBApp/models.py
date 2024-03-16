@@ -4,11 +4,17 @@ class TblDepartment(models.Model):
     department = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
 
+class TblCourse(models.Model):
+    course = models.CharField(max_length=255)
+    department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+
 class TblSubjInfo(models.Model):
     offercode = models.CharField(max_length=255, primary_key=True)
     Description = models.TextField()
     subject_code = models.CharField(max_length=255)
     unit = models.IntegerField()
+    course_id = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
 class TblRoomInfo(models.Model):
@@ -36,10 +42,6 @@ class TblTeacherInfo(models.Model):
     department = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
 
-class TblCourse(models.Model):
-    course = models.CharField(max_length=255)
-    department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
 
 class TblAddStdntInfo(models.Model):
     stdnt_id = models.ForeignKey(TblStdntInfo, on_delete=models.CASCADE)

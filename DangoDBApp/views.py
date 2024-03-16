@@ -23,8 +23,10 @@ def create_api_view(model, serializer):
         
         def post(self, request):
             serializer_data = serializer(data=request.data)
+            print("Posted Data (POST):", request.data)  # Print the posted data
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
+                active_value = validated_data.pop('active', None)  # Remove 'active' field from validated_data
                 try:
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
                     if existing_instance:
@@ -39,14 +41,15 @@ def create_api_view(model, serializer):
                             existing_inactive_instance.save()
                             return Response(serializer(existing_inactive_instance).data, status=status.HTTP_200_OK)
                         else:
-                            #
                             serializer_data.save()
                             return Response(serializer_data.data, status=status.HTTP_201_CREATED)
                 except Exception as e:
                     return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
         def put(self, request, id, deactivate):
+            print("Posted Data (PUT):", request.data)  # Print the posted data
             if deactivate.lower() == "true":
                 try:
                     instance = model.objects.get(pk=id)
@@ -70,6 +73,7 @@ def create_api_view(model, serializer):
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
+
 
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
 CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
