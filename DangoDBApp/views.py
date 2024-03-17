@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.db import models
 from .models import (
     TblRoomInfo, TblCourse, TblDepartment, TblSubjInfo,
     TblStdntInfo, TblTeacherInfo, TblAddStdntInfo,
@@ -17,9 +18,18 @@ from rest_framework import status
 def create_api_view(model, serializer):
     class ViewSet(APIView):
         def get(self, request):
-            queryset = model.objects.filter(active=True)  # Filter records where active is True
+            # Construct a filter condition for the model and its related objects
+            filter_condition = {'active': True}
+            for field in model._meta.fields:
+                if isinstance(field, models.ForeignKey):  # Change model.ForeignKey to models.ForeignKey
+                    related_model = field.remote_field.model
+                    related_field_name = field.name + '__active'
+                    filter_condition[related_field_name] = True
+
+            queryset = model.objects.filter(**filter_condition)
             serializer_data = serializer(queryset, many=True)
             return Response(serializer_data.data)
+
         
         def post(self, request):
             serializer_data = serializer(data=request.data)
@@ -48,11 +58,16 @@ def create_api_view(model, serializer):
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         
-        def put(self, request, id, deactivate):
+        def put(self, request, id_or_offercode, deactivate):
             print("Posted Data (PUT):", request.data)  # Print the posted data
             if deactivate.lower() == "true":
                 try:
-                    instance = model.objects.get(pk=id)
+                    if id_or_offercode.isdigit():
+                        print("Posted Data (PUT): id is detected")
+                        instance = model.objects.get(pk=id_or_offercode)
+                    else:
+                        print("Posted Data (PUT): offercode is detected")
+                        instance = model.objects.get(offercode=id_or_offercode)
                 except model.DoesNotExist:
                     return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -62,7 +77,12 @@ def create_api_view(model, serializer):
                 return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
             else:
                 try:
-                    instance = model.objects.get(pk=id)
+                    if id_or_offercode.isdigit():
+                        print("Posted Data (PUT): id is detected")
+                        instance = model.objects.get(pk=id_or_offercode)
+                    else:
+                        print("Posted Data (PUT): offercode is detected")
+                        instance = model.objects.get(offercode=id_or_offercode)
                 except model.DoesNotExist:
                     return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -70,6 +90,7 @@ def create_api_view(model, serializer):
                 if serializer_data.is_valid():
                     serializer_data.save()
                     return Response(serializer_data.data, status=status.HTTP_200_OK)
+                print("Posted Data (PUT): Invalid Data")
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
