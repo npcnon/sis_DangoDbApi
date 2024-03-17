@@ -5,9 +5,9 @@ from .models import (
     TblDepartment,
     TblSubjInfo,
     TblStdntInfo,
-    TblTeacherInfo,
+    TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
     TblAddStdntInfo,
-    TblAddTeacherInfo,
+    TblAddStaffInfo,  # Changed from TblAddTeacherInfo to TblAddStaffInfo
     TblSchedule,
     TblStdntSchoolDetails,
     TblStdntSubj,
@@ -27,9 +27,9 @@ TblCourseSerializer = create_serializer(TblCourse)
 TblDepartmentSerializer = create_serializer(TblDepartment)
 TblSubjInfoSerializer = create_serializer(TblSubjInfo)
 TblStdntInfoSerializer = create_serializer(TblStdntInfo)
-TblTeacherInfoSerializer = create_serializer(TblTeacherInfo)
+TblStaffInfoSerializer = create_serializer(TblStaffInfo)  # Changed from TblTeacherInfo to TblStaffInfo
 TblAddStdntInfoSerializer = create_serializer(TblAddStdntInfo)
-TblAddTeacherInfoSerializer = create_serializer(TblAddTeacherInfo)
+TblAddStaffInfoSerializer = create_serializer(TblAddStaffInfo)  # Changed from TblAddTeacherInfo to TblAddStaffInfo
 TblScheduleSerializer = create_serializer(TblSchedule)
 TblStdntSchoolDetailsSerializer = create_serializer(TblStdntSchoolDetails)
 TblStdntSubjSerializer = create_serializer(TblStdntSubj)

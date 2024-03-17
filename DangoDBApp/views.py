@@ -3,50 +3,59 @@ from rest_framework.response import Response
 from django.db import models
 from .models import (
     TblRoomInfo, TblCourse, TblDepartment, TblSubjInfo,
-    TblStdntInfo, TblTeacherInfo, TblAddStdntInfo,
-    TblAddTeacherInfo, TblSchedule, TblStdntSchoolDetails,
+    TblStdntInfo, TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
+    TblAddStdntInfo, TblAddStaffInfo,  # Changed from TblAddTeacherInfo to TblAddStaffInfo
+    TblSchedule, TblStdntSchoolDetails,
     TblStdntSubj, TblUsers
 )
 from .serializers import (
     TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
     TblSubjInfoSerializer, TblStdntInfoSerializer, TblAddStdntInfoSerializer,
-    TblTeacherInfoSerializer, TblAddTeacherInfoSerializer, TblScheduleSerializer,
-    TblStdntSchoolDetailsSerializer, TblStdntSubjSerializer, TblUsersSerializer
+    TblStaffInfoSerializer, TblAddStaffInfoSerializer,  # Changed from TblTeacherInfo to TblStaffInfo
+    TblScheduleSerializer, TblStdntSchoolDetailsSerializer,
+    TblStdntSubjSerializer, TblUsersSerializer
 )
 from rest_framework import status
 
 def create_api_view(model, serializer):
     class ViewSet(APIView):
         def get(self, request):
-            # Construct a filter condition for the model and its related objects
             filter_condition = {'active': True}
             for field in model._meta.fields:
-                if isinstance(field, models.ForeignKey):  # Change model.ForeignKey to models.ForeignKey
+                if isinstance(field, models.ForeignKey):
                     related_model = field.remote_field.model
                     related_field_name = field.name + '__active'
                     filter_condition[related_field_name] = True
+            
+            # Extract the filter parameter from the request query parameters
+            filter_param = request.GET.get('filter', None)
+            print(f"filter_param : {filter_param}")
+            if filter_param:
+                print(f"filter running : {filter_param}")
+                # Modify the filter_condition based on the filter parameter
+                # Example: filter_param = 'department_id=1'
+                filter_parts = filter_param.split('=')
+                if len(filter_parts) == 2:
+                    filter_condition[filter_parts[0]] = filter_parts[1]
+
 
             queryset = model.objects.filter(**filter_condition)
             serializer_data = serializer(queryset, many=True)
             return Response(serializer_data.data)
 
-        
         def post(self, request):
             serializer_data = serializer(data=request.data)
-            print("Posted Data (POST):", request.data)  # Print the posted data
+            print("Posted Data (POST):", request.data)
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
-                active_value = validated_data.pop('active', None)  # Remove 'active' field from validated_data
+                active_value = validated_data.pop('active', None)
                 try:
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
                     if existing_instance:
-                        # If a duplicate with active=True exists, return it without creating a new one
                         raise Exception("Duplicate is not allowed")
                     else:
-                        # Check if there is a duplicate with active=False
                         existing_inactive_instance = model.objects.filter(**validated_data, active=False).first()
                         if existing_inactive_instance:
-                            # If a duplicate with active=False exists, set it back to active=True
                             existing_inactive_instance.active = True
                             existing_inactive_instance.save()
                             return Response(serializer(existing_inactive_instance).data, status=status.HTTP_200_OK)
@@ -57,9 +66,8 @@ def create_api_view(model, serializer):
                     return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        
         def put(self, request, id_or_offercode, deactivate):
-            print("Posted Data (PUT):", request.data)  # Print the posted data
+            print("Posted Data (PUT):", request.data)
             if deactivate.lower() == "true":
                 try:
                     if id_or_offercode.isdigit():
@@ -84,13 +92,15 @@ def create_api_view(model, serializer):
                         print("Posted Data (PUT): offercode is detected")
                         instance = model.objects.get(offercode=id_or_offercode)
                 except model.DoesNotExist:
+                    print("Posted Data (PUT): Object not found")
                     return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
 
                 serializer_data = serializer(instance, data=request.data, partial=True)
                 if serializer_data.is_valid():
+                    print(serializer_data)
                     serializer_data.save()
                     return Response(serializer_data.data, status=status.HTTP_200_OK)
-                print("Posted Data (PUT): Invalid Data")
+                print(f"Posted Data (PUT): Invalid Data, {serializer_data}")
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
@@ -102,8 +112,8 @@ DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 SubjInfoAPIView = create_api_view(TblSubjInfo, TblSubjInfoSerializer)
 StdntInfoAPIView = create_api_view(TblStdntInfo, TblStdntInfoSerializer)
 AddStdntInfoAPIView = create_api_view(TblAddStdntInfo, TblAddStdntInfoSerializer)
-TeacherInfoAPIView = create_api_view(TblTeacherInfo, TblTeacherInfoSerializer)
-AddTeacherInfoAPIView = create_api_view(TblAddTeacherInfo, TblAddTeacherInfoSerializer)
+StaffInfoAPIView = create_api_view(TblStaffInfo, TblStaffInfoSerializer)  # Changed from TblTeacherInfo to TblStaffInfo
+AddStaffInfoAPIView = create_api_view(TblAddStaffInfo, TblAddStaffInfoSerializer)  # Changed from TblAddTeacherInfo to TblAddStaffInfo
 ScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StdntSchoolDetailsAPIView = create_api_view(TblStdntSchoolDetails, TblStdntSchoolDetailsSerializer)
 StdntSubjAPIView = create_api_view(TblStdntSubj, TblStdntSubjSerializer)

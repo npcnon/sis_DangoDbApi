@@ -1,14 +1,17 @@
 from django.db import models
 
+#done
 class TblDepartment(models.Model):
     department = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
 
+#done
 class TblCourse(models.Model):
     course = models.CharField(max_length=255)
     department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
+#done
 class TblSubjInfo(models.Model):
     offercode = models.CharField(max_length=255, primary_key=True)
     Description = models.TextField()
@@ -17,11 +20,13 @@ class TblSubjInfo(models.Model):
     course_id = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
+#done
 class TblRoomInfo(models.Model):
     building = models.CharField(max_length=255)
     floor_lvl = models.CharField(max_length=255)
     room_no = models.IntegerField()
     active = models.BooleanField(default=True)
+
 
 class TblStdntInfo(models.Model):
     f_name = models.CharField(max_length=255)
@@ -35,35 +40,35 @@ class TblStdntInfo(models.Model):
     ImageData = models.BinaryField()
     active = models.BooleanField(default=True)
 
-class TblTeacherInfo(models.Model):
+#done
+class TblStaffInfo(models.Model):
     f_name = models.CharField(max_length=255)
     m_name = models.CharField(max_length=255)
     l_name = models.CharField(max_length=255)
-    department = models.CharField(max_length=255)
+    department_id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
+#done
+class TblAddStaffInfo(models.Model):
+    staff_id = models.ForeignKey(TblStaffInfo, on_delete=models.CASCADE)
+    staff_address = models.TextField()
+    contact_info = models.TextField()
+    email = models.EmailField()
+    active = models.BooleanField(default=True)
 
 class TblAddStdntInfo(models.Model):
     stdnt_id = models.ForeignKey(TblStdntInfo, on_delete=models.CASCADE)
     stdnt_address = models.TextField()
     contact_info = models.TextField()
     email = models.EmailField()
-    # Assuming TblStdntInfo is another table, you'll need to define its model as well
     active = models.BooleanField(default=True)
 
-class TblAddTeacherInfo(models.Model):
-    teacher_id = models.ForeignKey(TblTeacherInfo, on_delete=models.CASCADE)
-    teacher_address = models.TextField()
-    contact_info = models.TextField()
-    email = models.EmailField()
-    # Assuming TblTeacherInfo is another table, you'll need to define its model as well
-    active = models.BooleanField(default=True)
-
+#done
 class TblSchedule(models.Model):
     class_day = models.CharField(max_length=255)
     class_hour = models.CharField(max_length=255)
-    teacher = models.ForeignKey('TblTeacherInfo', on_delete=models.CASCADE)
-    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)  # Assuming TblSubjInfo is another table, you'll need to define its model as well
+    staff = models.ForeignKey('TblStaffInfo', on_delete=models.CASCADE)
+    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)
     room = models.ForeignKey('TblRoomInfo', on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
@@ -77,12 +82,12 @@ class TblStdntSchoolDetails(models.Model):
 
 class TblStdntSubj(models.Model):
     stdnt = models.ForeignKey('TblStdntInfo', on_delete=models.CASCADE)
-    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)  # Assuming TblSubjInfo is another table, you'll need to define its model as well
+    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
 class TblUsers(models.Model):
     username = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)  # Note: 'pass' is a reserved keyword, consider renaming this field
+    password = models.CharField(max_length=255)
     user_level = models.CharField(max_length=255)
     user_role = models.CharField(max_length=255)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)  
