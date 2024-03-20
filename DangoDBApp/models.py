@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime   
 
 #done
 class TblDepartment(models.Model):
@@ -32,13 +33,12 @@ class TblStdntInfo(models.Model):
     f_name = models.CharField(max_length=255)
     m_name = models.CharField(max_length=255)
     l_name = models.CharField(max_length=255)
-    birth_date = models.DateField()
+    birth_date = models.DateTimeField()
     gender = models.CharField(max_length=255)
     civil_stat = models.CharField(max_length=255)
-    citizenship = models.CharField(max_length=255)
-    religion = models.CharField(max_length=255)
     ImageData = models.BinaryField()
     active = models.BooleanField(default=True)
+   
 
 #done
 class TblStaffInfo(models.Model):

@@ -7,7 +7,7 @@ from .views import (
     StaffInfoAPIView, 
     AddStaffInfoAPIView,
     ScheduleAPIView,
-    
+    StdntInfoAPIView
     )
 
 urlpatterns = [
@@ -19,7 +19,7 @@ urlpatterns = [
     path('staff/',StaffInfoAPIView.as_view(), name='staff-list'),
     path('addstaffinfo/',AddStaffInfoAPIView.as_view(), name='addstaffinfo-list'),
     path('schedule/', ScheduleAPIView.as_view(), name = 'schedule-list'),
-
+    path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
 
     
 
@@ -30,6 +30,6 @@ urlpatterns = [
     path('deactivate_or_modify_staff/<str:id_or_offercode>/<str:deactivate>',StaffInfoAPIView.as_view(), name='deactivate_modify_staff'),
     path('deactivate_or_modify_addstaffinfo/<str:id_or_offercode>/<str:deactivate>',AddStaffInfoAPIView.as_view(), name='deactivate_modify_addstaffinfo'),
     path('deactivate_or_modify_schedule/<str:id_or_offercode>/<str:deactivate>', ScheduleAPIView.as_view(), name='deactivate_modify_schedule'),
-
-
+    path('deactivate_or_modify_student/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_student')
+    
 ]
