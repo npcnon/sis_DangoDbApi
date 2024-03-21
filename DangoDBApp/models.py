@@ -62,7 +62,7 @@ class TblAddStdntInfo(models.Model):
     contact_info = models.TextField()
     email = models.EmailField()
     active = models.BooleanField(default=True)
-
+ 
 #done
 class TblSchedule(models.Model):
     class_day = models.CharField(max_length=255)
@@ -74,8 +74,8 @@ class TblSchedule(models.Model):
 
 class TblStdntSchoolDetails(models.Model):
     stdnt_id = models.ForeignKey('TblStdntInfo', on_delete=models.CASCADE)
-    course = models.CharField(max_length=255)
-    department = models.CharField(max_length=255)
+    course = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
+    department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     yr_lvl = models.CharField(max_length=255)
     semester = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
