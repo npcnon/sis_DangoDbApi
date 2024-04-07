@@ -6,14 +6,24 @@ from .models import (
     TblStdntInfo, TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
     TblAddStdntInfo, TblAddStaffInfo,  # Changed from TblAddTeacherInfo to TblAddStaffInfo
     TblSchedule, TblStdntSchoolDetails,
-    TblStdntSubj, TblUsers
+    TblStdntSubj, TblUsers,
+    TblStudentPersonalData,
+    TblStudentFamilyBackground,
+    TblStudentAcademicBackground,
+    TblStudentAcademicHistory,
+    TblSomething,
 )
 from .serializers import (
     TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
     TblSubjInfoSerializer, TblStdntInfoSerializer, TblAddStdntInfoSerializer,
     TblStaffInfoSerializer, TblAddStaffInfoSerializer,  # Changed from TblTeacherInfo to TblStaffInfo
     TblScheduleSerializer, TblStdntSchoolDetailsSerializer,
-    TblStdntSubjSerializer, TblUsersSerializer
+    TblStdntSubjSerializer, TblUsersSerializer,
+    TblStudentPersonalDataSerializer,
+    TblStudentFamilyBackgroundSerializer,
+    TblStudentAcademicBackgroundSerializer,
+    TblStudentAcademicHistorySerializer,
+    TblSomethingSerializer,
 )
 from rest_framework import status
 
@@ -41,6 +51,7 @@ def create_api_view(model, serializer):
 
             queryset = model.objects.filter(**filter_condition)
             serializer_data = serializer(queryset, many=True)
+            print(serializer_data.data)
             return Response(serializer_data.data)
 
         def post(self, request):
@@ -118,3 +129,8 @@ ScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StdntSchoolDetailsAPIView = create_api_view(TblStdntSchoolDetails, TblStdntSchoolDetailsSerializer)
 StdntSubjAPIView = create_api_view(TblStdntSubj, TblStdntSubjSerializer)
 UsersAPIView = create_api_view(TblUsers, TblUsersSerializer)
+StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
+StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
+StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground,TblStudentAcademicBackgroundSerializer)
+StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
+SomethingAPIView = create_api_view(TblSomething, TblSomethingSerializer)

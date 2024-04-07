@@ -12,6 +12,11 @@ from .models import (
     TblStdntSchoolDetails,
     TblStdntSubj,
     TblUsers,
+    TblStudentPersonalData,
+    TblStudentFamilyBackground,
+    TblStudentAcademicBackground,
+    TblStudentAcademicHistory,
+    TblSomething,
 )
 
 def create_serializer(model_class):
@@ -34,3 +39,8 @@ TblScheduleSerializer = create_serializer(TblSchedule)
 TblStdntSchoolDetailsSerializer = create_serializer(TblStdntSchoolDetails)
 TblStdntSubjSerializer = create_serializer(TblStdntSubj)
 TblUsersSerializer = create_serializer(TblUsers)
+TblStudentPersonalDataSerializer = create_serializer(TblStudentPersonalData)
+TblStudentFamilyBackgroundSerializer = create_serializer(TblStudentFamilyBackground)
+TblStudentAcademicBackgroundSerializer = create_serializer(TblStudentAcademicBackground)
+TblStudentAcademicHistorySerializer = create_serializer(TblStudentAcademicHistory)
+TblSomethingSerializer = create_serializer(TblSomething)

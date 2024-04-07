@@ -9,8 +9,12 @@ from .views import (
     ScheduleAPIView,
     StdntInfoAPIView,
     AddStdntInfoAPIView,
-    StdntSchoolDetailsAPIView   
-    
+    StdntSchoolDetailsAPIView,
+    StudentPersonalDataAPIView,
+    StudentFamilyAPIView,
+    StudentAcademicBackgroundAPIView,
+    StudentAcademicHistoryAPIView,
+    SomethingAPIView,
     )
 
 urlpatterns = [
@@ -25,7 +29,12 @@ urlpatterns = [
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
     path('addstdntinfo/',AddStdntInfoAPIView.as_view(), name = 'addstdntinfo-list'),
     path('stdntschooldetails/',StdntSchoolDetailsAPIView.as_view(), name='stdntschooldetails-list'),
-    
+    path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
+    path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
+    path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
+    path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
+    path('something/',SomethingAPIView.as_view(), name='something-list'),
+
 
     path('deactivate_or_modify_course/<str:id_or_offercode>/<str:deactivate>', CourseAPIView.as_view(), name='deactivate_modify_course-active'),
     path('deactivate_or_modify_department/<str:id_or_offercode>/<str:deactivate>', DepartmentAPIView.as_view(), name = 'deactivate_modify_department-active'),

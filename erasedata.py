@@ -8,8 +8,25 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 # Import your models after configuring Django
-from DangoDBApp.models import TblDepartment, TblSubjInfo, TblRoomInfo, TblStdntInfo, TblStaffInfo, TblCourse, TblAddStdntInfo, TblAddStaffInfo, TblSchedule, TblStdntSchoolDetails, TblStdntSubj, TblUsers
-
+from DangoDBApp.models import (
+    TblDepartment, 
+    TblSubjInfo, 
+    TblRoomInfo, 
+    TblStdntInfo, 
+    TblStaffInfo, 
+    TblCourse, 
+    TblAddStdntInfo, 
+    TblAddStaffInfo, 
+    TblSchedule, 
+    TblStdntSchoolDetails, 
+    TblStdntSubj, 
+    TblUsers,
+    TblSomething,
+    TblStudentPersonalData,
+    TblStudentFamilyBackground,
+    TblStudentAcademicBackground,
+    TblStudentAcademicHistory,
+)
 # Rest of your script remains the same...
 
 # Delete all data from each table
@@ -25,6 +42,11 @@ TblSchedule.objects.all().delete()
 TblStdntSchoolDetails.objects.all().delete()
 TblStdntSubj.objects.all().delete()
 TblUsers.objects.all().delete()
+TblSomething.objects.all().delete()
+TblStudentPersonalData.objects.all().delete()
+TblStudentFamilyBackground.objects.all().delete()
+TblStudentAcademicBackground.objects.all().delete()
+TblStudentAcademicHistory.objects.all().delete()
 
 # Reset primary key identity to 1
 from django.db import connection
