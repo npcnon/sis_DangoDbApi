@@ -74,6 +74,7 @@ def create_api_view(model, serializer):
                             serializer_data.save()
                             return Response(serializer_data.data, status=status.HTTP_201_CREATED)
                 except Exception as e:
+                    print("exception occured")
                     return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
             return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
