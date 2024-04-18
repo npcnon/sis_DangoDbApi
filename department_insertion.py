@@ -1,4 +1,14 @@
 # Import the model
+import os
+import django
+
+# Set the DJANGO_SETTINGS_MODULE environment variable
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
+
+# Configure Django
+django.setup()
+
+
 from DangoDBApp.models import TblDepartment
 
 # Define the data to insert
@@ -21,3 +31,4 @@ try:
 
 except Exception as ex:
     print(ex)
+print("department insertion success")
