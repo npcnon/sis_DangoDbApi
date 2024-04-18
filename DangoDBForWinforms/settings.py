@@ -133,6 +133,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 CORS_ALLOWED_ORIGINS = [
+    
     'https://react-students-information-system.vercel.app',
     'http://localhost:3000',
     'https://react-students-information-system-em5vvhi0s-afknons-projects.vercel.app/' , 
