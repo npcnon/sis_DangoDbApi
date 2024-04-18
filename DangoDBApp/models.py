@@ -143,17 +143,19 @@ class TblStudentAcademicHistory(models.Model):
     elementary_school = models.TextField()
     elementary_address = models.TextField()
     elementary_honors = models.TextField()
-    elementary_graduate =models.DateTimeField(auto_now=False, auto_now_add=False)
-    Secondary_school = models.TextField()
-    Secondary_address = models.TextField()
-    Secondary_honors = models.TextField()
-    Secondary_graduate =models.DateTimeField(auto_now=False, auto_now_add=False)
+    elementary_graduate =models.DateField()
+    secondary_school = models.TextField()
+    secondary_address = models.TextField()
+    secondary_honors = models.TextField()
+    secondary_graduate =models.DateField()
     ncar = models.CharField(max_length=50)
     latest_college = models.TextField()
     college_address = models.TextField()
     college_honors = models.TextField()
     course = models.TextField()
     active = models.BooleanField(default=True)
+
+
 #done
 class TblSchedule(models.Model):
     class_day = models.CharField(max_length=255)
@@ -184,7 +186,4 @@ class TblUsers(models.Model):
     active = models.BooleanField(default=True)
 
 class TblSomething(models.Model):
-    f_name = models.CharField(max_length=100)
-    m_name = models.CharField(max_length=100)
-    l_name = models.CharField(max_length=100)
     active = models.BooleanField(default=True)
