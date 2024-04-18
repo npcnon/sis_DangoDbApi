@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Personal Data</h1>
+    {% if student_personal_data %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Birth Date</th>
+            <th>Birth Place</th>
+            <th>Marital Status</th>
+            <th>Religion</th>
+            <th>Country</th>
+            <th>ACR</th>
+            <th>Active</th>
+        </tr>
+        {% for student in student_personal_data %}
+        <tr>
+            <td>{{ student.f_name }} {{ student.m_name }} {{ student.l_name }}</td>
+            <td>{{ student.gender }}</td>
+            <td>{{ student.birth_date }}</td>
+            <td>{{ student.birth_place }}</td>
+            <td>{{ student.marital_status }}</td>
+            <td>{{ student.religion }}</td>
+            <td>{{ student.country }}</td>
+            <td>{{ student.acr }}</td>
+            <td>{{ student.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There is no student personal data available.</p>
+    {% endif %}
+
+    <h1>Student Additional Information</h1>
+    {% if student_add_info %}
+    <table>
+        <tr>
+            <th>City Address</th>
+            <th>Province Address</th>
+            <th>Contact Number</th>
+            <th>City Contact Number</th>
+            <th>Province Contact Number</th>
+            <th>Email</th>
+            <th>Citizenship</th>
+            <th>Active</th>
+        </tr>
+        {% for info in student_add_info %}
+        <tr>
+            <td>{{ info.city_address }}</td>
+            <td>{{ info.province_address }}</td>
+            <td>{{ info.contact_number }}</td>
+            <td>{{ info.city_contact_number }}</td>
+            <td>{{ info.province_contact_number }}</td>
+            <td>{{ info.email }}</td>
+            <td>{{ info.citizenship }}</td>
+            <td>{{ info.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There is no student additional information available.</p>
+    {% endif %}
+
+    <h1>Academic Histories</h1>
+    {% if academic_histories %}
+    <table>
+        <tr>
+            <th>Elementary School</th>
+            <th>Elementary Address</th>
+            <th>Elementary Honors</th>
+            <th>Elementary Graduate</th>
+            <th>Secondary School</th>
+            <th>Secondary Address</th>
+            <th>Secondary Honors</th>
+            <th>Secondary Graduate</th>
+            <th>NCAR</th>
+            <th>Latest College</th>
+            <th>College Address</th>
+            <th>College Honors</th>
+            <th>Course</th>
+            <th>Active</th>
+        </tr>
+        {% for history in academic_histories %}
+        <tr>
+            <td>{{ history.elementary_school }}</td>
+            <td>{{ history.elementary_address }}</td>
+            <td>{{ history.elementary_honors }}</td>
+            <td>{{ history.elementary_graduate }}</td>
+            <td>{{ history.secondary_school }}</td>
+            <td>{{ history.secondary_address }}</td>
+            <td>{{ history.secondary_honors }}</td>
+            <td>{{ history.secondary_graduate }}</td>
+            <td>{{ history.ncar }}</td>
+            <td>{{ history.latest_college }}</td>
+            <td>{{ history.college_address }}</td>
+            <td>{{ history.college_honors }}</td>
+            <td>{{ history.course }}</td>
+            <td>{{ history.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There are no academic histories available.</p>
+    {% endif %}
+
+    <h1>Academic Backgrounds</h1>
+    {% if academic_backgrounds %}
+    <table>
+        <tr>
+            <th>Department</th>
+            <th>Course</th>
+            <th>Major In</th>
+            <th>Student Type</th>
+            <th>Semester Entry</th>
+            <th>Year Entry</th>
+            <th>Year Graduate</th>
+            <th>Application Type</th>
+            <th>Active</th>
+        </tr>
+        {% for background in academic_backgrounds %}
+        <tr>
+            <td>{{ background.department }}</td>
+            <td>{{ background.course }}</td>
+            <td>{{ background.major_in }}</td>
+            <td>{{ background.student_type }}</td>
+            <td>{{ background.semester_entry }}</td>
+            <td>{{ background.year_entry }}</td>
+            <td>{{ background.year_graduate }}</td>
+            <td>{{ background.application_type }}</td>
+            <td>{{ background.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There are no academic backgrounds available.</p>
+    {% endif %}
+
+    <h1>Family Backgrounds</h1>
+    {% if family_backgrounds %}
+    <table>
+        <tr>
+            <th>Father's Name</th>
+            <th>Father's Contact Number</th>
+            <th>Father's Email</th>
+            <th>Father's Occupation</th>
+            <th>Father's Income</th>
+            <th>Father's Company</th>
+            <th>Mother's Name</th>
+            <th>Mother's Contact Number</th>
+            <th>Mother's Email</th>
+            <th>Mother's Occupation</th>
+            <th>Mother's Income</th>
+            <th>Mother's Company</th>
+            <th>Guardian's Name</th>
+            <th>Guardian's Relation</th>
+            <th>Guardian's Contact Number</th>
+            <th>Guardian's Email</th>
+            <th>Active</th>
+        </tr>
+        {% for family in family_backgrounds %}
+        <tr>
+            <td>{{ family.father_fname }} {{ family.father_mname }} {{ family.father_lname }}</td>
+            <td>{{ family.father_contact_number }}</td>
+            <td>{{ family.father_email }}</td>
+            <td>{{ family.father_occupation }}</td>
+            <td>{{ family.father_income }}</td>
+            <td>{{ family.father_company }}</td>
+            <td>{{ family.mother_fname }} {{ family.mother_mname }} {{ family.mother_lname }}</td>
+            <td>{{ family.mother_contact_number }}</td>
+            <td>{{ family.mother_email }}</td>
+            <td>{{ family.mother_occupation }}</td>
+            <td>{{ family.mother_income }}</td>
+            <td>{{ family.mother_company }}</td>
+            <td>{{ family.guardian_fname }} {{ family.guardian_mname }} {{ family.guardian_lname }}</td>
+            <td>{{ family.guardian_relation }}</td>
+            <td>{{ family.guardian_contact_number }}</td>
+            <td>{{ family.guardian_email }}</td>
+            <td>{{ family.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There are no family backgrounds available.</p>
+    {% endif %}
+</body>
+</html>
