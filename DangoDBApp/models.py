@@ -57,6 +57,7 @@ class TblStdntInfo(models.Model):
     civil_stat = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
 
+#used
 class TblStudentPersonalData(models.Model):
     student_id = models.CharField(max_length=15, primary_key=True)
     f_name = models.CharField(max_length=100)
@@ -87,6 +88,8 @@ class TblAddStaffInfo(models.Model):
     email = models.EmailField()
     active = models.BooleanField(default=True)
 
+
+#used
 class TblAddStdntInfo(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     city_address = models.TextField()
@@ -97,8 +100,9 @@ class TblAddStdntInfo(models.Model):
     email = models.EmailField()
     citizenship = models.CharField(max_length=70)
     active = models.BooleanField(default=True)
- 
 
+
+#used
 class TblStudentFamilyBackground(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     father_fname = models.CharField( max_length=50)
@@ -126,6 +130,7 @@ class TblStudentFamilyBackground(models.Model):
     active = models.BooleanField(default=True)
 
 
+#used
 class TblStudentAcademicBackground(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
@@ -138,6 +143,8 @@ class TblStudentAcademicBackground(models.Model):
     application_type = models.CharField(max_length=15)
     active = models.BooleanField(default=True)
 
+
+#used
 class TblStudentAcademicHistory(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     elementary_school = models.TextField()

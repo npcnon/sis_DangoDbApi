@@ -43,7 +43,7 @@ def create_api_view(model, serializer):
             if filter_param:
                 print(f"filter running : {filter_param}")
                 # Modify the filter_condition based on the filter parameter
-                # Example: filter_param = 'department_id=1'
+                # Example: filter_param = '?filter=department_id=1'
                 filter_parts = filter_param.split('=')
                 if len(filter_parts) == 2:
                     filter_condition[filter_parts[0]] = filter_parts[1]
