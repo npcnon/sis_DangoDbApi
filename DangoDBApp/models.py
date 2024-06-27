@@ -69,7 +69,7 @@ class TblStudentPersonalData(models.Model):
     marital_status = models.CharField(max_length=50)
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
-    acr = models.CharField(max_length = 100, null=True)
+    acr = models.CharField(max_length = 100, null=True) #to be removed
     active = models.BooleanField(default=True)
 
 #done
@@ -136,7 +136,7 @@ class TblStudentAcademicBackground(models.Model):
     department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     course = models.TextField()
     major_in = models.TextField(null = True)
-    student_type = models.CharField(max_length=30)
+    student_type = models.CharField(max_length=30) #is_undergraduate
     semester_entry = models.CharField(max_length=10)
     year_entry = models.IntegerField()
     year_graduate = models.IntegerField()
@@ -161,6 +161,8 @@ class TblStudentAcademicHistory(models.Model):
     college_honors = models.TextField()
     course = models.TextField()
     active = models.BooleanField(default=True)
+
+#ncae and senior high
 
 
 #done

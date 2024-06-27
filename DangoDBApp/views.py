@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import models
+from django.core.mail import send_mail
 from .models import (
     TblRoomInfo, TblCourse, TblDepartment, TblSubjInfo,
     TblStdntInfo, TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
@@ -56,11 +57,23 @@ def create_api_view(model, serializer):
 
         def post(self, request):
             serializer_data = serializer(data=request.data)
+            print("Serializer used:", model.__name__)
+            student_email = TblAddStdntInfo.objects.order_by('-id').first()
+            print("SENDING EMAIL TO -------",student_email.email)
             print("Posted Data (POST):", request.data)
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
                 active_value = validated_data.pop('active', None)
                 try:
+                    if model.__name__ == "TblStudentFamilyBackground" or model.__name__ == "TblStudentAcademicHistory":
+                        print("####SENDING THE EMAIL####")
+                        send_mail(
+                        "Enrollment Application",
+                        "Your Enrollment Application has been submitted, Please wait for further feedbacks.",
+                        "settings.EMAIL_HOST_USER",
+                        [student_email.email],
+                        fail_silently=False,
+                        )
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
                     if existing_instance:
                         raise Exception("Duplicate is not allowed")
@@ -73,6 +86,7 @@ def create_api_view(model, serializer):
                         else:
                             serializer_data.save()
                             return Response(serializer_data.data, status=status.HTTP_201_CREATED)
+                   
                 except Exception as e:
                     print("exception occured")
                     return Response(str(e), status=status.HTTP_400_BAD_REQUEST)

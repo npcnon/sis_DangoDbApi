@@ -28,6 +28,16 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', 'localhost']
 
 
+#Email Configuration
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'grayravenlast@gmail.com'
+EMAIL_HOST_PASSWORD = 'pzyw jkqi onzz gjqh'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
 # Application definition
 
 INSTALLED_APPS = [
