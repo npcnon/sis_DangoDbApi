@@ -168,7 +168,8 @@ class TblStudentAcademicHistory(models.Model):
 #done
 class TblSchedule(models.Model):
     class_day = models.CharField(max_length=255)
-    class_hour = models.CharField(max_length=255)
+    class_hour_start = models.CharField(max_length=255)
+    class_hour_end = models.CharField(max_length=255)
     staff = models.ForeignKey('TblStaffInfo', on_delete=models.CASCADE)
     offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)
     room = models.ForeignKey('TblRoomInfo', on_delete=models.CASCADE)

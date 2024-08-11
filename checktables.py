@@ -9,11 +9,11 @@ django.setup()
 
 from DangoDBApp import models
 
-fields = models.TblAddStdntInfo.objects.all()
+fields = models.TblCourse.objects.all()
 
 print("Course: ")
 for field in fields:
-    print(f"id: {field.id}, email: {field.email} ")
+    print(f"id: {field.id}, email: {field.course} ")
 
 
 
