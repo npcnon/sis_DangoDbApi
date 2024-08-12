@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+#DangoDBForWinforms.urls
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
@@ -22,6 +24,6 @@ from .views import display_student_data
 urlpatterns = [
     path('', display_student_data, name='student_data'),
     path('admin/', admin.site.urls),
-    # path('api/', include('DangoDBApp.urls'))
+    path('api/', include('DangoDBApp.urls')),
     path('api/', include('user_api.urls')),
 ]
