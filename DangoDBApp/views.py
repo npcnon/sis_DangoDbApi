@@ -39,22 +39,21 @@ def create_api_view(model, serializer):
                     related_model = field.remote_field.model
                     related_field_name = field.name + '__active'
                     filter_condition[related_field_name] = True
-            
+
             # Extract the filter parameter from the request query parameters
             filter_param = request.GET.get('filter', None)
-            print(f"filter_param : {filter_param}")
             if filter_param:
-                print(f"filter running : {filter_param}")
-                # Modify the filter_condition based on the filter parameter
-                # Example: filter_param = '?filter=department_id=1'
+                # Example filter_param = 'offercode=OFFER102'
                 filter_parts = filter_param.split('=')
                 if len(filter_parts) == 2:
-                    filter_condition[filter_parts[0]] = filter_parts[1]
-
+                    filter_field = filter_parts[0]
+                    filter_value = filter_parts[1]
+                    # Handle potential issues with special characters or spaces
+                    filter_value = filter_value.strip().replace("'", "")
+                    filter_condition[filter_field] = filter_value
 
             queryset = model.objects.filter(**filter_condition)
             serializer_data = serializer(queryset, many=True)
-            print(serializer_data.data)
             return Response(serializer_data.data)
 
         def post(self, request):

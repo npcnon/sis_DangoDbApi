@@ -1,3 +1,5 @@
+#DangoDBForWinforms.urls
+
 """
 URL configuration for DangoDBForWinforms project.
 
