@@ -10,13 +10,10 @@ from .views import (
     AddStaffInfoAPIView,
     ScheduleAPIView,
     StdntInfoAPIView,
-    AddStdntInfoAPIView,
-    StdntSchoolDetailsAPIView,
     StudentPersonalDataAPIView,
     StudentFamilyAPIView,
     StudentAcademicBackgroundAPIView,
     StudentAcademicHistoryAPIView,
-    SomethingAPIView,
     )
 
 urlpatterns = [
@@ -29,13 +26,10 @@ urlpatterns = [
     path('addstaffinfo/',AddStaffInfoAPIView.as_view(), name='addstaffinfo-list'),
     path('schedule/', ScheduleAPIView.as_view(), name = 'schedule-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
-    path('addstdntinfo/',AddStdntInfoAPIView.as_view(), name = 'addstdntinfo-list'),
-    path('stdntschooldetails/',StdntSchoolDetailsAPIView.as_view(), name='stdntschooldetails-list'),
     path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
-    path('something/',SomethingAPIView.as_view(), name='something-list'),
 
 
     path('deactivate_or_modify_course/<str:id_or_offercode>/<str:deactivate>', CourseAPIView.as_view(), name='deactivate_modify_course-active'),
@@ -46,14 +40,11 @@ urlpatterns = [
     path('deactivate_or_modify_addstaffinfo/<str:id_or_offercode>/<str:deactivate>',AddStaffInfoAPIView.as_view(), name='deactivate_modify_addstaffinfo'),
     path('deactivate_or_modify_schedule/<str:id_or_offercode>/<str:deactivate>', ScheduleAPIView.as_view(), name='deactivate_modify_schedule'),
     path('deactivate_or_modify_student/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_student'),
-    path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_addstdntinfo'),
-    path('deactivate_or_modify_stdntschooldetails/<str:id_or_offercode>/str:deactivate',StdntSchoolDetailsAPIView.as_view(), name='deactivate_modify_stdntschooldetails'),
-    
+    path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_addstdntinfo'),    
     
     path('deactivate_or_modify_stdntpersonal/<str:id_or_offercode>/str:deactivate',StudentPersonalDataAPIView.as_view(),name = 'dm-student-personal'),
     path('deactivate_or_modify_stdntfamily/<str:id_or_offercode>/str:deactivate',StudentFamilyAPIView.as_view(),name = 'dm-student-family'),
     path('deactivate_or_modify_stdntacademicbackground/<str:id_or_offercode>/str:deactivate',StudentAcademicBackgroundAPIView.as_view(),name = 'dm-student-academic-background'),
     path('deactivate_or_modify_stdntacademichistory/<str:id_or_offercode>/str:deactivate',StudentAcademicHistoryAPIView.as_view(),name = 'dm-student-academic-history'),
-    path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/str:deactivate',AddStdntInfoAPIView.as_view(),name = 'dm-addstdnt-info'),
 
 ]   

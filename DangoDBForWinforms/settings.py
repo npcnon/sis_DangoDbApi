@@ -95,6 +95,7 @@ DATABASES = {
 AUTH_USER_MODEL = 'user_api.AppUser'
 
 # REST Framework configuration
+
 #restrict access
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': (

@@ -6,32 +6,32 @@ from django.db import models
 from django.core.mail import send_mail
 from .models import (
     TblRoomInfo, TblCourse, TblDepartment, TblSubjInfo,
-    TblStdntInfo, TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
-    TblAddStdntInfo, TblAddStaffInfo,  # Changed from TblAddTeacherInfo to TblAddStaffInfo
-    TblSchedule, TblStdntSchoolDetails,
-    TblStdntSubj, TblUsers,
+    TblStaffInfo,  # Changed from TblTeacherInfo to TblStaffInfo
+    TblAddStaffInfo,  # Changed from TblAddTeacherInfo to TblAddStaffInfo
+    TblSchedule, TblUsers,
     TblStudentPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
-    TblSomething,
+    TblStdntSubjEnrolled,
 )
 from .serializers import (
     TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
-    TblSubjInfoSerializer, TblStdntInfoSerializer, TblAddStdntInfoSerializer,
+    TblSubjInfoSerializer, 
     TblStaffInfoSerializer, TblAddStaffInfoSerializer,  # Changed from TblTeacherInfo to TblStaffInfo
-    TblScheduleSerializer, TblStdntSchoolDetailsSerializer,
-    TblStdntSubjSerializer, TblUsersSerializer,
+    TblScheduleSerializer,
+    TblStdntSubjEnrolledSerializer, TblUsersSerializer,
     TblStudentPersonalDataSerializer,
     TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer,
     TblStudentAcademicHistorySerializer,
-    TblSomethingSerializer,
 )
 from rest_framework import status
 
 def create_api_view(model, serializer):
     class ViewSet(APIView):
+
+        # to use this: for ggeting specific data example https://localhost:8000/api/subjects/offercode/?filter=offercode='exa,pleoffercode'
         def get(self, request):
             filter_condition = {'active': True}
             for field in model._meta.fields:
@@ -43,12 +43,12 @@ def create_api_view(model, serializer):
             # Extract the filter parameter from the request query parameters
             filter_param = request.GET.get('filter', None)
             if filter_param:
-                # Example filter_param = 'offercode=OFFER102'
+                # Example filter_param = 'offercode=OFFER102' 
                 filter_parts = filter_param.split('=')
                 if len(filter_parts) == 2:
                     filter_field = filter_parts[0]
                     filter_value = filter_parts[1]
-                    # Handle potential issues with special characters or spaces
+                    # Handle potential issues with special characters or spaces jere
                     filter_value = filter_value.strip().replace("'", "")
                     filter_condition[filter_field] = filter_value
 
@@ -59,8 +59,7 @@ def create_api_view(model, serializer):
         def post(self, request):
             serializer_data = serializer(data=request.data)
             print("Serializer used:", model.__name__)
-            student_email = TblAddStdntInfo.objects.order_by('-id').first()
-            print("SENDING EMAIL TO -------",student_email.email)
+            # print("SENDING EMAIL TO -------",student_email.email)
             print("Posted Data (POST):", request.data)
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
@@ -72,7 +71,7 @@ def create_api_view(model, serializer):
                         "Enrollment Application",
                         "Your Enrollment Application has been submitted, Please wait for further feedbacks.",
                         "settings.EMAIL_HOST_USER",
-                        [student_email.email],
+                        # [student_email.email],
                         fail_silently=False,
                         )
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
@@ -137,16 +136,15 @@ RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
 CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 SubjInfoAPIView = create_api_view(TblSubjInfo, TblSubjInfoSerializer)
-StdntInfoAPIView = create_api_view(TblStdntInfo, TblStdntInfoSerializer)
-AddStdntInfoAPIView = create_api_view(TblAddStdntInfo, TblAddStdntInfoSerializer)
-StaffInfoAPIView = create_api_view(TblStaffInfo, TblStaffInfoSerializer)  # Changed from TblTeacherInfo to TblStaffInfo
-AddStaffInfoAPIView = create_api_view(TblAddStaffInfo, TblAddStaffInfoSerializer)  # Changed from TblAddTeacherInfo to TblAddStaffInfo
+StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
+# AddStdntInfoAPIView = create_api_view(TblAddStdntInfo, TblAddStdntInfoSerializer)
+StaffInfoAPIView = create_api_view(TblStaffInfo, TblStaffInfoSerializer)
+AddStaffInfoAPIView = create_api_view(TblAddStaffInfo, TblAddStaffInfoSerializer)  
 ScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
-StdntSchoolDetailsAPIView = create_api_view(TblStdntSchoolDetails, TblStdntSchoolDetailsSerializer)
-StdntSubjAPIView = create_api_view(TblStdntSubj, TblStdntSubjSerializer)
+# StdntSchoolDetailsAPIView = create_api_view(TblStdntSchoolDetails, TblStdntSchoolDetailsSerializer)
+StdntSubjAPIView = create_api_view(TblStdntSubjEnrolled, TblStdntSubjEnrolledSerializer)
 UsersAPIView = create_api_view(TblUsers, TblUsersSerializer)
 StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
 StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground,TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
-SomethingAPIView = create_api_view(TblSomething, TblSomethingSerializer)
