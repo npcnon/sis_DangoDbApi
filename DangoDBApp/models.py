@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-
+from django.utils import timezone
 
 
 ####Course related stuff
@@ -210,20 +210,26 @@ class TblStudentAcademicBackground(models.Model):
 
 class TblStudentAcademicHistory(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
-    elementary_school = models.TextField()
-    elementary_address = models.TextField()
-    elementary_honors = models.TextField()
-    elementary_graduate = models.DateField()
-    secondary_school = models.TextField()
-    secondary_address = models.TextField()
-    secondary_honors = models.TextField()
-    secondary_graduate = models.DateField()
-    ncar = models.CharField(max_length=50)
-    latest_college = models.TextField()
-    college_address = models.TextField()
-    college_honors = models.TextField()
-    course = models.TextField()
+    elementary_school = models.TextField(default='Not Provided')
+    elementary_address = models.TextField(default='Not Provided')
+    elementary_honors = models.TextField(default='None')
+    elementary_graduate = models.DateField(default=timezone.now)
+    junior_highschool = models.TextField(default='Not Provided')
+    junior_address = models.TextField(default='Not Provided')
+    junior_honors = models.TextField(default='None')
+    junior_graduate = models.DateField(default=timezone.now)
+    senior_highschool = models.TextField(default='Not Provided')
+    senior_address = models.TextField(default='Not Provided')
+    senior_honors = models.TextField(default='None')
+    senior_graduate = models.DateField(default=timezone.now)
+    ncae_grade = models.CharField(max_length=50, default='Unknown')
+    ncae_year_taken = models.DateField(default=timezone.now)
+    latest_college = models.TextField(default='Not Provided')
+    college_address = models.TextField(default='Not Provided')
+    college_honors = models.TextField(default='None')
+    course = models.TextField(default='Not Specified')
     active = models.BooleanField(default=True)
+
 
     def __str__(self):
         return (f"Student ID: {self.stdnt_id.student_id}, Elementary School: {self.elementary_school}, Address: {self.elementary_address}, "
@@ -270,9 +276,6 @@ class TblGrades(models.Model):
                 f"Subject Offer Code: {self.offercode.offercode}, Grade: {self.grade}, "
                 f"Grading Period: {self.grading_period}, Semester: {self.semester}, "
                 f"Academic Year: {self.academic_year}, Active: {self.active}")
-
-
-
 
 
 class TblUsers(models.Model):
