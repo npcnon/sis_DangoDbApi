@@ -2,6 +2,9 @@ from django.db import models
 from datetime import datetime
 from django.utils import timezone
 
+##notes##
+#remove _id from foreign field
+
 
 ####Course related stuff
 class TblDepartment(models.Model):
@@ -144,12 +147,25 @@ class TblStudentPersonalData(models.Model):
     marital_status = models.CharField(max_length=50)
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
-    acr = models.CharField(max_length=100, null=True)  # to be removed
+    acr = models.CharField(max_length=100, null=True, blank=True) 
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Student ID: {self.student_id}, Name: {self.f_name} {self.m_name} {self.l_name}, Gender: {self.gender}, Birth Date: {self.birth_date}, Birth Place: {self.birth_place}, Marital Status: {self.marital_status}, Religion: {self.religion}, Country: {self.country}, Active: {self.active}"
 
+class TblAddPersonalData(models.Model):
+    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+    city_address = models.TextField()
+    province_address = models.TextField()
+    contact_number = models.CharField(max_length=30)
+    city_contact_number = models.CharField(max_length=30)
+    province_contact_number = models.CharField(max_length=30)
+    email = models.EmailField()
+    citizenship = models.CharField(max_length=70)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Student ID: {self.stdnt_id.student_id}, City Address: {self.city_address}, Province Address: {self.province_address}, Contact Numbers: City - {self.city_contact_number}, Province - {self.province_contact_number}, Email: {self.email}, Citizenship: {self.citizenship}, Active: {self.active}"
 
 
 
@@ -194,7 +210,7 @@ class TblStudentAcademicBackground(models.Model):
     course = models.TextField()
     major_in = models.TextField(null=True)
     student_type = models.CharField(max_length=30)  # is_undergraduate
-    semester_entry = models.CharField(max_length=10)
+    semester_entry = models.CharField(max_length=20)
     year_entry = models.IntegerField()
     year_graduate = models.IntegerField()
     application_type = models.CharField(max_length=15)

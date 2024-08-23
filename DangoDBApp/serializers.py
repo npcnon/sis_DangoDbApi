@@ -23,7 +23,6 @@ def create_serializer(model_class):
         class Meta:
             model = model_class
             fields = '__all__'
-
     return ModelSerializer
 
 TblRoomInfoSerializer = create_serializer(TblRoomInfo)

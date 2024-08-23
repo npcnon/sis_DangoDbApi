@@ -15,10 +15,8 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', 'localhost']
 
-
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
-
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost',
@@ -84,12 +82,29 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+# Uncomment and configure the following settings for Microsoft SQL Server:
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': os.getenv('DB_NAME', 'your_database_name'),
+        'USER': os.getenv('DB_USER', 'your_database_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'your_database_password'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),  # Or the IP address of your SQL Server
+        'PORT': os.getenv('DB_PORT', '1433'),  # Default port for SQL Server
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',  # You may need to install this driver
+        },
     }
 }
+
+#  SQLite 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # User model
 AUTH_USER_MODEL = 'user_api.AppUser'
@@ -116,7 +131,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
