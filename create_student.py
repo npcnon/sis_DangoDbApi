@@ -10,7 +10,7 @@ from DangoDBApp.models import TblStudentPersonalData
 
 sample_data = [
     {
-        "student_id": "S555666777",
+        "student_id": "22050001",
         "f_name": "asdasd",
         "m_name": "shagaru",
         "l_name": "magala",

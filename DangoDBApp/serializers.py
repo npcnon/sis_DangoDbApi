@@ -15,6 +15,7 @@ from .models import (
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
+    TblAddPersonalData,
     
 )
 
@@ -38,3 +39,4 @@ TblStudentPersonalDataSerializer = create_serializer(TblStudentPersonalData)
 TblStudentFamilyBackgroundSerializer = create_serializer(TblStudentFamilyBackground)
 TblStudentAcademicBackgroundSerializer = create_serializer(TblStudentAcademicBackground)
 TblStudentAcademicHistorySerializer = create_serializer(TblStudentAcademicHistory)
+TblAddPersonalDataSerializer = create_serializer(TblAddPersonalData)

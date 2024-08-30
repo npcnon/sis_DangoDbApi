@@ -14,6 +14,7 @@ from .views import (
     StudentFamilyAPIView,
     StudentAcademicBackgroundAPIView,
     StudentAcademicHistoryAPIView,
+    AddPersonalDataAPIView
     )
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     path('schedule/', ScheduleAPIView.as_view(), name = 'schedule-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
     path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
+    path('addstdntpersonal/',AddPersonalDataAPIView.as_view(),name = 'student-addpersonal-list'),
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),

@@ -9,7 +9,7 @@ from .models import (
     TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory,
-    TblStdntSubjEnrolled,
+    TblStdntSubjEnrolled, TblAddPersonalData,
 )
 from .serializers import (
     TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
@@ -17,6 +17,7 @@ from .serializers import (
     TblScheduleSerializer, TblStdntSubjEnrolledSerializer, TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
+    TblAddPersonalDataSerializer,
 )
 import logging
 
@@ -39,17 +40,19 @@ def create_api_view(model, serializer):
          
             latest = request.GET.get('latest', 'false').lower() == 'true'
 
-            primary_key_field = model._meta.pk.name
+            
 
             queryset = model.objects.filter(**filter_condition)
             if latest:
-                queryset = queryset.order_by(f'-{primary_key_field}') 
-                latest_entry = queryset.first()  
+                queryset = queryset.order_by('-created_at')
+                latest_entry = queryset.first()
                 if latest_entry:
                     serializer_data = serializer(latest_entry)
+                    logger.info(f"Request Data: {latest_entry}")
                     return Response(serializer_data.data)
                 else:
-                    return Response({"message": "No data found"}, status=status.HTTP_404_NOT_FOUND)
+                    logger.info(f"Request Error: {latest_entry}")
+                    return Response([], status=status.HTTP_200_OK)
             else:
                 serializer_data = serializer(queryset, many=True)
                 return Response(serializer_data.data)
@@ -65,15 +68,15 @@ def create_api_view(model, serializer):
 
                 active_value = validated_data.pop('active', None)
                 try:
-                    if model.__name__ in ["TblStudentFamilyBackground", "TblStudentAcademicHistory"]:
-                        logger.info("Sending the email")
-                        send_mail(
-                            "Enrollment Application",
-                            "Your Enrollment Application has been submitted. Please wait for further feedback.",
-                            "settings.EMAIL_HOST_USER",
-                            ["recipient@example.com"],  
-                            fail_silently=False,
-                        )
+                    # if model.__name__ in ["TblStudentFamilyBackground", "TblStudentAcademicHistory"]:
+                    #     logger.info("Sending the email")
+                    #     send_mail(
+                    #         "Enrollment Application",
+                    #         "Your Enrollment Application has been submitted. Please wait for further feedback.",
+                    #         "settings.EMAIL_HOST_USER",
+                    #         ["recipient@example.com"],  
+                    #         fail_silently=False,
+                    #     )
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
                     if existing_instance:
                         logger.error("Duplicate entry detected")
@@ -139,4 +142,4 @@ StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentP
 StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
-    
+AddPersonalDataAPIView = create_api_view(TblAddPersonalData,TblAddPersonalDataSerializer)

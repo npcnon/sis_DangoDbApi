@@ -83,35 +83,34 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Uncomment and configure the following settings for Microsoft SQL Server:
-DATABASES = {
-    'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': os.getenv('DB_NAME', 'your_database_name'),
-        'USER': os.getenv('DB_USER', 'your_database_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'your_database_password'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),  # Or the IP address of your SQL Server
-        'PORT': os.getenv('DB_PORT', '1433'),  # Default port for SQL Server
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',  # You may need to install this driver
-        },
-    }
-}
-
-#  SQLite 
+#  Microsoft SQL Server
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'mssql',  
+#         'NAME': 'EnrollmentSystemDB', 
+#         'HOST': 'DESKTOP-GVSR043\\SQLEXPRESS',  
+#         'PORT': '',  
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'Encrypt': 'no',
+#         },
 #     }
 # }
 
-# User model
+# SQLite
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# User model    
 AUTH_USER_MODEL = 'user_api.AppUser'
 
 # REST Framework configuration
 
-#restrict access
+# Restrict access
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': (
 #         'rest_framework.permissions.IsAuthenticated',
@@ -121,8 +120,7 @@ AUTH_USER_MODEL = 'user_api.AppUser'
 #     ),
 # }
 
-
-#unrestricted access
+# Unrestricted access
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -152,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 USE_I18N = True
 USE_TZ = True
 
