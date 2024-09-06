@@ -205,5 +205,34 @@
     {% else %}
     <p>There are no family backgrounds available.</p>
     {% endif %}
+
+    <!-- New Section for Student Basic Info -->
+    <h1>Student Basic Information</h1>
+    {% if student_basic_info %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Gender</th>
+            <th>Date of Birth</th>
+            <th>Contact Number</th>
+            <th>Email</th>
+            <th>Active</th>
+        </tr>
+        {% for basic_info in student_basic_info %}
+        <tr>
+            <td>{{ basic_info.student_id }}</td>
+            <td>{{ basic_info.first_name }} {{ basic_info.last_name }}</td>
+            <td>{{ basic_info.sex }}</td>
+            <td>{{ basic_info.birth_date }}</td>
+            <td>{{ basic_info.contact_number }}</td>
+            <td>{{ basic_info.email }}</td>
+            <td>{{ basic_info.active }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>There is no student basic information available.</p>
+    {% endif %}
 </body>
 </html>

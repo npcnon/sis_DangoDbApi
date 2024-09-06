@@ -144,7 +144,7 @@ class TblStudentBasicInfo(models.Model):  # Simplified name
     sex = models.CharField(max_length=10)
     email = models.EmailField()
     accepted = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)  
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (ID: {self.student_id})"
