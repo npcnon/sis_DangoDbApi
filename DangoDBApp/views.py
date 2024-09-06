@@ -115,17 +115,19 @@ def create_api_view(model, serializer):
 
             try:
                 if deactivate.lower() == "true":
+                    logger.info("if is activated")
                     instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
                     instance.active = False
                     instance.save()
                     logger.info("Instance deactivated successfully")
                     return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
                 else:
+                    logger.info("else is activated")
                     instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
                     serializer_data = serializer(instance, data=request.data, partial=True)
                     if serializer_data.is_valid():
                         serializer_data.save()
-                        logger.info("Instance updated successfully")
+                        logger.info(f"Instance updated successfully{serializer_data}")
                         return Response(serializer_data.data, status=status.HTTP_200_OK)
                     logger.error(f"Serializer errors: {serializer_data.errors}")
                     return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)

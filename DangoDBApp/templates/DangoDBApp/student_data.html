@@ -217,6 +217,7 @@
             <th>Date of Birth</th>
             <th>Contact Number</th>
             <th>Email</th>
+            <th>Approved</th>
             <th>Active</th>
         </tr>
         {% for basic_info in student_basic_info %}
@@ -227,6 +228,7 @@
             <td>{{ basic_info.birth_date }}</td>
             <td>{{ basic_info.contact_number }}</td>
             <td>{{ basic_info.email }}</td>
+            <td>{{basic_info.accepted}}</td>
             <td>{{ basic_info.active }}</td>
         </tr>
         {% endfor %}
