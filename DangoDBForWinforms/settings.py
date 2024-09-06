@@ -28,8 +28,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Email Configuration
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'your-email@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your-email-password')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'afkmhafric@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'pqnc gcie kact pwrd')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 #     }
 # }
 
-# SQLite
+#SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -105,7 +105,7 @@ DATABASES = {
     }
 }
 
-# User model    
+# User model            
 AUTH_USER_MODEL = 'user_api.AppUser'
 
 # REST Framework configuration

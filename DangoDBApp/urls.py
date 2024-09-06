@@ -14,7 +14,8 @@ from .views import (
     StudentFamilyAPIView,
     StudentAcademicBackgroundAPIView,
     StudentAcademicHistoryAPIView,
-    AddPersonalDataAPIView
+    AddPersonalDataAPIView,
+    StudentBasicInfoAPIView
     )
 
 urlpatterns = [
@@ -32,8 +33,9 @@ urlpatterns = [
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
+    path('stdntbasicinfo/',StudentBasicInfoAPIView.as_view(),name = 'student-basic-info'),
 
-
+    path('stdntbasicinfomod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoAPIView.as_view(),name = 'student-basic-info-mod'),
     path('deactivate_or_modify_course/<str:id_or_offercode>/<str:deactivate>', CourseAPIView.as_view(), name='deactivate_modify_course-active'),
     path('deactivate_or_modify_department/<str:id_or_offercode>/<str:deactivate>', DepartmentAPIView.as_view(), name = 'deactivate_modify_department-active'),
     path('deactivate_or_modify_subject/<str:id_or_offercode>/<str:deactivate>',SubjInfoAPIView.as_view(), name="deactivate_modify_subject"),
@@ -48,5 +50,5 @@ urlpatterns = [
     path('deactivate_or_modify_stdntfamily/<str:id_or_offercode>/str:deactivate',StudentFamilyAPIView.as_view(),name = 'dm-student-family'),
     path('deactivate_or_modify_stdntacademicbackground/<str:id_or_offercode>/str:deactivate',StudentAcademicBackgroundAPIView.as_view(),name = 'dm-student-academic-background'),
     path('deactivate_or_modify_stdntacademichistory/<str:id_or_offercode>/str:deactivate',StudentAcademicHistoryAPIView.as_view(),name = 'dm-student-academic-history'),
-
+    
 ]   

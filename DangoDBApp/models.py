@@ -135,6 +135,22 @@ class TblStdntSchoolDetails(models.Model):
 
 '''
 
+class TblStudentBasicInfo(models.Model):  # Simplified name
+    student_id = models.CharField(max_length=8, primary_key=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    contact_number = models.CharField(max_length=11)
+    birth_date = models.DateField()
+    sex = models.CharField(max_length=10)
+    email = models.EmailField()
+    accepted = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} (ID: {self.student_id})"
+
+
+
 ####STUDENT INFORMATION(planning to modify tables and do Database normalization)
 class TblStudentPersonalData(models.Model):
     student_id = models.CharField(max_length=8, primary_key=True)
@@ -147,11 +163,12 @@ class TblStudentPersonalData(models.Model):
     marital_status = models.CharField(max_length=7)
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
+    email = models.EmailField() 
     acr = models.CharField(max_length=100, null=True, blank=True) 
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"Student ID: {self.student_id}, Name: {self.f_name} {self.m_name} {self.l_name}, Gender: {self.gender}, Birth Date: {self.birth_date}, Birth Place: {self.birth_place}, Marital Status: {self.marital_status}, Religion: {self.religion}, Country: {self.country}, Active: {self.active}"
+        return f"Student ID: {self.student_id}, Name: {self.f_name} {self.m_name} {self.l_name}, Sex: {self.sex}, Birth Date: {self.birth_date}, Birth Place: {self.birth_place}, Marital Status: {self.marital_status}, Religion: {self.religion}, Country: {self.country}, Active: {self.active}"
 
 class TblAddPersonalData(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
@@ -160,7 +177,6 @@ class TblAddPersonalData(models.Model):
     contact_number = models.CharField(max_length=30)
     city_contact_number = models.CharField(max_length=20,null=True, blank=True)
     province_contact_number = models.CharField(max_length=20,null=True, blank=True)
-    email = models.EmailField()
     citizenship = models.CharField(max_length=70)
     active = models.BooleanField(default=True)      
 
@@ -207,9 +223,9 @@ class TblStudentFamilyBackground(models.Model):
 class TblStudentAcademicBackground(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    course = models.TextField()
+    program = models.ForeignKey(TblCourse, on_delete=models.CASCADE) 
     major_in = models.TextField(null=True)
-    student_type = models.CharField(max_length=30)  # is_undergraduate
+    student_type = models.CharField(max_length=30)  
     semester_entry = models.CharField(max_length=20)
     year_entry = models.IntegerField()
     year_graduate = models.IntegerField()
@@ -225,27 +241,27 @@ class TblStudentAcademicBackground(models.Model):
 
 
 class TblStudentAcademicHistory(models.Model):
-    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+    stdnt_id = models.ForeignKey('TblStudentPersonalData', on_delete=models.CASCADE)
     elementary_school = models.TextField(default='Not Provided')
     elementary_address = models.TextField(default='Not Provided')
-    elementary_honors = models.TextField(default='None')
-    elementary_graduate = models.IntegerField()
+    elementary_honors = models.TextField(default='None', blank=True, null=True)  
+    elementary_graduate = models.IntegerField(null=True, blank=True) 
     junior_highschool = models.TextField(default='Not Provided')
     junior_address = models.TextField(default='Not Provided')
-    junior_honors = models.TextField(default='None')
-    junior_graduate = models.IntegerField()
+    junior_honors = models.TextField(default='None', blank=True, null=True)  
+    junior_graduate = models.IntegerField(null=True, blank=True)  
     senior_highschool = models.TextField(default='Not Provided')
     senior_address = models.TextField(default='Not Provided')
-    senior_honors = models.TextField(default='None')
-    senior_graduate = models.IntegerField()
-    ncae_grade = models.CharField(max_length=50, default='Unknown')
-    ncae_year_taken = models.IntegerField()
-    latest_college = models.TextField(default='Not Provided')
-    college_address = models.TextField(default='Not Provided')
-    college_honors = models.TextField(default='None')
-    course = models.TextField(default='Not Specified')
+    senior_honors = models.TextField(default='None', blank=True, null=True)  
+    senior_graduate = models.IntegerField(null=True, blank=True)  
+    ncae_grade = models.CharField(max_length=50, default='Unknown', blank=True, null=True) 
+    ncae_year_taken = models.IntegerField(null=True, blank=True)  
+    latest_college = models.TextField(default='Not Provided', blank=True, null=True)  
+    college_address = models.TextField(default='Not Provided', blank=True, null=True)  
+    college_honors = models.TextField(default='None', blank=True, null=True) 
+    course = models.TextField(default='Not Specified', blank=True, null=True)  
     active = models.BooleanField(default=True)
-
+    
 
     def __str__(self):
         return (f"Student ID: {self.stdnt_id.student_id}, Elementary School: {self.elementary_school}, Address: {self.elementary_address}, "
@@ -258,7 +274,7 @@ class TblStudentAcademicHistory(models.Model):
 
 class TblStdntSubjEnrolled(models.Model):
     stdnt = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
-    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE)
+    offercode = models.ForeignKey(TblSubjInfo, on_delete=models.CASCADE) #rename to subject code
     Schedule = models.ForeignKey(TblSchedule, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 

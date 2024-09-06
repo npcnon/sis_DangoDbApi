@@ -15,7 +15,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 		user_obj.username = clean_data['username']
 		user_obj.save()
 		return user_obj
-
+	
 class UserLoginSerializer(serializers.Serializer):
 	email = serializers.EmailField()
 	password = serializers.CharField()

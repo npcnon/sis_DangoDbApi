@@ -9,7 +9,7 @@ from .models import (
     TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory,
-    TblStdntSubjEnrolled, TblAddPersonalData,
+    TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo
 )
 from .serializers import (
     TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
@@ -17,7 +17,7 @@ from .serializers import (
     TblScheduleSerializer, TblStdntSubjEnrolledSerializer, TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
-    TblAddPersonalDataSerializer,
+    TblAddPersonalDataSerializer, TblStudentBasicInfoSerializer
 )
 import logging
 
@@ -68,15 +68,26 @@ def create_api_view(model, serializer):
 
                 active_value = validated_data.pop('active', None)
                 try:
-                    # if model.__name__ in ["TblStudentFamilyBackground", "TblStudentAcademicHistory"]:
-                    #     logger.info("Sending the email")
-                    #     send_mail(
-                    #         "Enrollment Application",
-                    #         "Your Enrollment Application has been submitted. Please wait for further feedback.",
-                    #         "settings.EMAIL_HOST_USER",
-                    #         ["recipient@example.com"],  
-                    #         fail_silently=False,
-                    #     )
+                    # Sending email for TblStudentAcademicHistory
+                    if model.__name__ in ["TblStudentAcademicHistory"]:
+                        student_id = validated_data.get("stdnt_id")
+                        try:
+                            add_personal_data = TblAddPersonalData.objects.get(stdnt_id=student_id)
+                            recipient_email = add_personal_data.email
+                            logger.info(f"Email found: {recipient_email}")
+                            send_mail(
+                                "Enrollment Application",
+                                "Your Enrollment Application has been submitted. Please wait for further feedback.",
+                                "settings.EMAIL_HOST_USER",
+                                [recipient_email],  
+                                fail_silently=False,
+                            )
+                            logger.info("Email sent successfully")
+                        except TblAddPersonalData.DoesNotExist:
+                            logger.error("No corresponding email found for the student.")
+                            return Response({"error": "No corresponding email found for the student."}, status=status.HTTP_400_BAD_REQUEST)
+
+                    # Check for duplicates
                     existing_instance = model.objects.filter(**validated_data, active=True).first()
                     if existing_instance:
                         logger.error("Duplicate entry detected")
@@ -104,13 +115,13 @@ def create_api_view(model, serializer):
 
             try:
                 if deactivate.lower() == "true":
-                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(offercode=id_or_offercode)
+                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
                     instance.active = False
                     instance.save()
                     logger.info("Instance deactivated successfully")
                     return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
                 else:
-                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(offercode=id_or_offercode)
+                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
                     serializer_data = serializer(instance, data=request.data, partial=True)
                     if serializer_data.is_valid():
                         serializer_data.save()
@@ -143,3 +154,4 @@ StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFam
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 AddPersonalDataAPIView = create_api_view(TblAddPersonalData,TblAddPersonalDataSerializer)
+StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)

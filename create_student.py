@@ -1,16 +1,16 @@
 import os
 import django
-from datetime import datetime
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 
 django.setup()
-
 from DangoDBApp.models import TblStudentPersonalData
+from datetime import datetime
+
 
 sample_data = [
     {
-        "student_id": "22050001",
+        "student_id": "22222222",
         "f_name": "asdasd",
         "m_name": "shagaru",
         "l_name": "magala",
@@ -31,7 +31,7 @@ for data in sample_data:
         f_name=data["f_name"],
         m_name=data["m_name"],
         l_name=data["l_name"],
-        gender=data["gender"],
+        sex=data["gender"],
         birth_date=datetime.strptime(data["birth_date"], "%Y-%m-%d").date(),
         birth_place=data["birth_place"],
         marital_status=data["marital_status"],
