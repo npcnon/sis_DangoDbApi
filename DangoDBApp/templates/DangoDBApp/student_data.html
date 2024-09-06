@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-    <h1>Student Personal Data</h1>
+    {% comment %} <h1>Student Personal Data</h1>
     {% if student_personal_data %}
     <table>
         <tr>
@@ -39,7 +39,7 @@
         {% for student in student_personal_data %}
         <tr>
             <td>{{ student.f_name }} {{ student.m_name }} {{ student.l_name }}</td>
-            <td>{{ student.gender }}</td>
+            <td>{{ student.sex }}</td>
             <td>{{ student.birth_date }}</td>
             <td>{{ student.birth_place }}</td>
             <td>{{ student.marital_status }}</td>
@@ -204,7 +204,7 @@
     </table>
     {% else %}
     <p>There are no family backgrounds available.</p>
-    {% endif %}
+    {% endif %} {% endcomment %}
 
     <!-- New Section for Student Basic Info -->
     <h1>Student Basic Information</h1>
