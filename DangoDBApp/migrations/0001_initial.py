@@ -82,10 +82,10 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='TblCourse',
+            name='TblProgram',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('course', models.CharField(max_length=255)),
+                ('program', models.CharField(max_length=255)),
                 ('active', models.BooleanField(default=True)),
                 ('department_Id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tbldepartment')),
             ],
@@ -119,7 +119,7 @@ class Migration(migrations.Migration):
                 ('yr_lvl', models.CharField(max_length=255)),
                 ('semester', models.CharField(max_length=255)),
                 ('active', models.BooleanField(default=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tblcourse')),
+                ('program', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.TblProgram')),
                 ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tbldepartment')),
                 ('stdnt_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tblstdntinfo')),
             ],
@@ -170,7 +170,7 @@ class Migration(migrations.Migration):
                 ('latest_college', models.TextField()),
                 ('college_address', models.TextField()),
                 ('college_honors', models.TextField()),
-                ('course', models.TextField()),
+                ('program', models.TextField()),
                 ('active', models.BooleanField(default=True)),
                 ('stdnt_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tblstudentpersonaldata')),
             ],
@@ -179,7 +179,7 @@ class Migration(migrations.Migration):
             name='TblStudentAcademicBackground',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('course', models.TextField()),
+                ('program', models.TextField()),
                 ('major_in', models.TextField(null=True)),
                 ('student_type', models.CharField(max_length=30)),
                 ('semester_entry', models.CharField(max_length=10)),
@@ -214,7 +214,7 @@ class Migration(migrations.Migration):
                 ('subject_code', models.CharField(max_length=255)),
                 ('unit', models.IntegerField()),
                 ('active', models.BooleanField(default=True)),
-                ('course_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tblcourse')),
+                ('program_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.TblProgram')),
             ],
         ),
         migrations.CreateModel(

@@ -10,7 +10,6 @@ from DangoDBApp.models import TblStudentBasicInfo
 
 sample_data = [
     {
-        "student_id": 'defid1',
         "first_name": 'John',
         "last_name": 'Doe',
         "contact_number": '09123456789',
@@ -21,7 +20,6 @@ sample_data = [
         "active": True,
     },
     {
-        "student_id": 'defid2',
         "first_name": 'Jane',
         "last_name": 'Smith',
         "contact_number": '09198765432',
@@ -32,7 +30,6 @@ sample_data = [
         "active": True,
     },
     {
-        "student_id": 'defid3',
         "first_name": 'Mike',
         "last_name": 'Johnson',
         "contact_number": '09234567890',
@@ -46,7 +43,6 @@ sample_data = [
 
 for data in sample_data:
     TblStudentBasicInfo.objects.create(
-        student_id=data["student_id"],
         first_name=data["first_name"],
         last_name=data["last_name"],
         contact_number=data["contact_number"],

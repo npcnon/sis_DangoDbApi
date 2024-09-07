@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='tblstdntschooldetails',
-            name='course',
+            name='program',
         ),
         migrations.RemoveField(
             model_name='tblstdntschooldetails',

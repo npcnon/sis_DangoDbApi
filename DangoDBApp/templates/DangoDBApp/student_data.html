@@ -100,7 +100,7 @@
             <th>Latest College</th>
             <th>College Address</th>
             <th>College Honors</th>
-            <th>Course</th>
+            <th>Program</th>
             <th>Active</th>
         </tr>
         {% for history in academic_histories %}
@@ -117,7 +117,7 @@
             <td>{{ history.latest_college }}</td>
             <td>{{ history.college_address }}</td>
             <td>{{ history.college_honors }}</td>
-            <td>{{ history.course }}</td>
+            <td>{{ history.program }}</td>
             <td>{{ history.active }}</td>
         </tr>
         {% endfor %}
@@ -131,7 +131,7 @@
     <table>
         <tr>
             <th>Department</th>
-            <th>Course</th>
+            <th>Program</th>
             <th>Major In</th>
             <th>Student Type</th>
             <th>Semester Entry</th>
@@ -143,7 +143,7 @@
         {% for background in academic_backgrounds %}
         <tr>
             <td>{{ background.department }}</td>
-            <td>{{ background.course }}</td>
+            <td>{{ background.program }}</td>
             <td>{{ background.major_in }}</td>
             <td>{{ background.student_type }}</td>
             <td>{{ background.semester_entry }}</td>

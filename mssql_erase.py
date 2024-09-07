@@ -13,7 +13,7 @@ from DangoDBApp.models import (
     TblSubjInfo, 
     TblRoomInfo, 
     TblStaffInfo, 
-    TblCourse, 
+    TblProgram, 
     TblAddStaffInfo, 
     TblSchedule, 
     TblUsers,
@@ -29,7 +29,7 @@ TblDepartment.objects.all().delete()
 TblSubjInfo.objects.all().delete()
 TblRoomInfo.objects.all().delete()
 TblStaffInfo.objects.all().delete()
-TblCourse.objects.all().delete()
+TblProgram.objects.all().delete()
 TblAddStaffInfo.objects.all().delete()
 TblSchedule.objects.all().delete()
 TblUsers.objects.all().delete()

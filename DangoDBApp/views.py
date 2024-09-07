@@ -5,14 +5,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import send_mail
 from .models import (
-    TblRoomInfo, TblCourse, TblDepartment, TblSubjInfo,
+    TblRoomInfo, TblProgram, TblDepartment, TblSubjInfo,
     TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory,
     TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo
 )
 from .serializers import (
-    TblRoomInfoSerializer, TblCourseSerializer, TblDepartmentSerializer,
+    TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblSubjInfoSerializer, TblStaffInfoSerializer, TblAddStaffInfoSerializer,
     TblScheduleSerializer, TblStdntSubjEnrolledSerializer, TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
@@ -65,6 +65,9 @@ def create_api_view(model, serializer):
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
                 logger.info(f"Validated Data: {validated_data}")
+
+                if 'student_id' not in validated_data or not validated_data['student_id']:
+                    validated_data['auto_generated'] = True
 
                 active_value = validated_data.pop('active', None)
                 try:
@@ -142,7 +145,7 @@ def create_api_view(model, serializer):
 
 # Instantiate API views
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
-CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
+ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 SubjInfoAPIView = create_api_view(TblSubjInfo, TblSubjInfoSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)

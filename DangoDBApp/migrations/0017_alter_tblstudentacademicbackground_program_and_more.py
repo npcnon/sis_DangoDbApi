@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='tblstudentacademicbackground',
-            name='course',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.tblcourse'),
+            name='program',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='DangoDBApp.TblProgram'),
         ),
         migrations.AlterField(
             model_name='tblstudentacademichistory',
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='tblstudentacademichistory',
-            name='course',
+            name='program',
             field=models.TextField(blank=True, default='Not Specified', null=True),
         ),
         migrations.AlterField(

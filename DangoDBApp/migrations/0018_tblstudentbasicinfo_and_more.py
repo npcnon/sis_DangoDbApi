@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('DangoDBApp', '0017_alter_tblstudentacademicbackground_course_and_more'),
+        ('DangoDBApp', '0017_alter_tblstudentacademicbackground_program_and_more'),
     ]
 
     operations = [
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RenameField(
             model_name='tblstudentacademicbackground',
-            old_name='course',
+            old_name='program',
             new_name='program',
         ),
         migrations.RemoveField(

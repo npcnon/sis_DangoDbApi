@@ -1,12 +1,10 @@
 from django.db import models
-from datetime import datetime
-from django.utils import timezone
 
 ##notes##
 #remove _id from foreign field
 
 
-####Course related stuff
+####Program related stuff
 class TblDepartment(models.Model):
     department_id = models.CharField(max_length=255, primary_key=True)
     department = models.CharField(max_length=255)
@@ -15,24 +13,24 @@ class TblDepartment(models.Model):
     def __str__(self):
         return f"Department ID: {self.department_id}, Name: {self.department}, Active: {self.active}"
 
-class TblCourse(models.Model):
-    course = models.CharField(max_length=255)
+class TblProgram(models.Model):
+    program = models.CharField(max_length=255)
     department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"id: {self.id}, Course: {self.course}, Department: {self.department_Id.department}, Active: {self.active}"
+        return f"id: {self.id}, program: {self.program}, Department: {self.department_Id.department}, Active: {self.active}"
 
 class TblSubjInfo(models.Model):
     offercode = models.CharField(max_length=255, primary_key=True)
     Description = models.TextField()
     subject_code = models.CharField(max_length=255)
     unit = models.IntegerField()
-    course_id = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
+    program_id = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Offer Code: {self.offercode}, Description: {self.Description}, Subject Code: {self.subject_code}, Units: {self.unit}, Course: {self.course_id.course}, Active: {self.active}"
+        return f"Offer Code: {self.offercode}, Description: {self.Description}, Subject Code: {self.subject_code}, Units: {self.unit}, Program: {self.program_id.program}, Active: {self.active}"
 
 
 
@@ -90,68 +88,33 @@ class TblAddStaffInfo(models.Model):
 
 
 
-'''
-    Tables Currently Not used
 
-class TblStdntInfo(models.Model):
-    f_name = models.CharField(max_length=255)
-    m_name = models.CharField(max_length=255)
-    l_name = models.CharField(max_length=255)
-    birth_date = models.DateTimeField()
-    gender = models.CharField(max_length=255)
-    civil_stat = models.CharField(max_length=255)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"Name: {self.f_name} {self.m_name} {self.l_name}, Birth Date: {self.birth_date}, Gender: {self.gender}, Civil Status: {self.civil_stat}, Active: {self.active}"
-
-
-class TblAddStdntInfo(models.Model):
-    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
-    city_address = models.TextField()
-    province_address = models.TextField()
-    contact_number = models.CharField(max_length=30)
-    city_contact_number = models.CharField(max_length=30)
-    province_contact_number = models.CharField(max_length=30)
-    email = models.EmailField()
-    citizenship = models.CharField(max_length=70)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"Student ID: {self.stdnt_id.student_id}, City Address: {self.city_address}, Province Address: {self.province_address}, Contact Numbers: City - {self.city_contact_number}, Province - {self.province_contact_number}, Email: {self.email}, Citizenship: {self.citizenship}, Active: {self.active}"
-
-class TblStdntSchoolDetails(models.Model):
-    stdnt_id = models.ForeignKey('TblStdntInfo', on_delete=models.CASCADE)
-    course = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
-    department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    yr_lvl = models.CharField(max_length=255)
-    semester = models.CharField(max_length=255)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return (f"Student ID: {self.stdnt_id.f_name} {self.stdnt_id.m_name} {self.stdnt_id.l_name}, Course: {self.course.course}, "
-                f"Department: {self.department.department}, Year Level: {self.yr_lvl}, Semester: {self.semester}, Active: {self.active}")
-
-
-'''
-
-class TblStudentBasicInfo(models.Model):  # Simplified name
-    student_id = models.CharField(max_length=8, primary_key=True)
+        
+class TblStudentBasicInfo(models.Model):
+    student_id = models.CharField(max_length=12, primary_key=True, unique=True)
+    auto_generated = models.BooleanField(default=True)  # New field
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=11)
+    address = models.TextField()
+    campus = models.CharField(max_length=225)
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
     email = models.EmailField()
     accepted = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)  
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} (ID: {self.student_id})"
-
-
-
-####STUDENT INFORMATION(planning to modify tables and do Database normalization)
+    def save(self, *args, **kwargs):
+        if not self.student_id or self.auto_generated:
+            last_id = TblStudentBasicInfo.objects.order_by('-student_id').first()
+            if last_id:
+                new_id = str(int(last_id.student_id) + 1).zfill(12)
+            else:
+                new_id = '1'.zfill(12)
+            self.student_id = new_id
+            self.auto_generated = False
+        super().save(*args, **kwargs)    
 class TblStudentPersonalData(models.Model):
     student_id = models.CharField(max_length=8, primary_key=True)
     f_name = models.CharField(max_length=100)
@@ -223,7 +186,7 @@ class TblStudentFamilyBackground(models.Model):
 class TblStudentAcademicBackground(models.Model):
     stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
     department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    program = models.ForeignKey(TblCourse, on_delete=models.CASCADE) 
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE) 
     major_in = models.TextField(null=True)
     student_type = models.CharField(max_length=30)  
     semester_entry = models.CharField(max_length=20)
@@ -233,7 +196,7 @@ class TblStudentAcademicBackground(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return (f"Student ID: {self.stdnt_id.student_id}, Department: {self.department.department}, Course: {self.course}, "
+        return (f"Student ID: {self.stdnt_id.student_id}, Department: {self.department.department}, Program: {self.program}, "
                 f"Major In: {self.major_in}, Student Type: {self.student_type}, Semester Entry: {self.semester_entry}, "
                 f"Year Entry: {self.year_entry}, Year Graduate: {self.year_graduate}, Application Type: {self.application_type}, "
                 f"Active: {self.active}")
@@ -259,7 +222,7 @@ class TblStudentAcademicHistory(models.Model):
     latest_college = models.TextField(default='Not Provided', blank=True, null=True)  
     college_address = models.TextField(default='Not Provided', blank=True, null=True)  
     college_honors = models.TextField(default='None', blank=True, null=True) 
-    course = models.TextField(default='Not Specified', blank=True, null=True)  
+    program = models.TextField(default='Not Specified', blank=True, null=True)  
     active = models.BooleanField(default=True)
     
 
@@ -268,7 +231,7 @@ class TblStudentAcademicHistory(models.Model):
                 f"Honors: {self.elementary_honors}, Graduate Date: {self.elementary_graduate}, Secondary School: {self.secondary_school}, "
                 f"Address: {self.secondary_address}, Honors: {self.secondary_honors}, Graduate Date: {self.secondary_graduate}, "
                 f"NCAR: {self.ncar}, Latest College: {self.latest_college}, College Address: {self.college_address}, "
-                f"College Honors: {self.college_honors}, Course: {self.course}, Active: {self.active}")
+                f"College Honors: {self.college_honors}, Program: {self.program}, Active: {self.active}")
 
 
 

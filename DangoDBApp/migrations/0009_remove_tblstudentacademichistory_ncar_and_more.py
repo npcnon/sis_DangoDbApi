@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='tblstudentacademichistory',
-            name='course',
+            name='program',
             field=models.TextField(default='Not Specified'),
         ),
         migrations.AlterField(
