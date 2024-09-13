@@ -69,6 +69,7 @@ for data in sample_data:
         suffix=data["suffix"],
         is_transferee=data["is_transferee"],
         contact_number=data["contact_number"],
+        year_level=data["year_level"],
         address=data["address"],
         campus=data["campus"],
         program=data["program"],
