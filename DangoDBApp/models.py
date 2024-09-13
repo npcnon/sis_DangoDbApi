@@ -97,6 +97,7 @@ class BaseTblStudentBasicInfo(models.Model):
     last_name = models.CharField(max_length=100)
     suffix = models.CharField(max_length=100, null=True, blank=True)
     is_transferee = models.BooleanField()
+    year_level = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=11)
     address = models.TextField()
     campus = models.CharField(max_length=225)
