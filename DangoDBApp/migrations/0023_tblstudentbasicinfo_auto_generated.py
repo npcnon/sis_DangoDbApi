@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='tblstudentbasicinfo',
+            model_name='tblstudentbasicinfoapplications',
             name='auto_generated',
             field=models.BooleanField(default=True),
         ),

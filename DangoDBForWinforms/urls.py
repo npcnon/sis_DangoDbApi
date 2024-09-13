@@ -27,5 +27,5 @@ urlpatterns = [
     path('', display_student_data, name='student_data'),
     path('admin/', admin.site.urls),
     path('api/', include('DangoDBApp.urls')),
-    # path('api/', include('user_api.urls')),
+    path('api/', include('users.urls')),
 ]

@@ -89,15 +89,18 @@ class TblAddStaffInfo(models.Model):
 
 
 
-        
-class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=12, primary_key=True, unique=True)
-    auto_generated = models.BooleanField(default=True)  # New field
+####Student Basic info#####
+
+class BaseTblStudentBasicInfo(models.Model):
     first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
+    suffix = models.CharField(max_length=100, null=True, blank=True)
+    is_transfee = models.BooleanField()
     contact_number = models.CharField(max_length=11)
     address = models.TextField()
     campus = models.CharField(max_length=225)
+    program = models.CharField(max_length=225)
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
     email = models.EmailField()
@@ -105,20 +108,27 @@ class TblStudentBasicInfo(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if not self.student_id or self.auto_generated:
-            last_id = TblStudentBasicInfo.objects.order_by('-student_id').first()
-            if last_id:
-                new_id = str(int(last_id.student_id) + 1).zfill(12)
-            else:
-                new_id = '1'.zfill(12)
-            self.student_id = new_id
-            self.auto_generated = False
-        super().save(*args, **kwargs)    
-class TblStudentPersonalData(models.Model):
-    student_id = models.CharField(max_length=8, primary_key=True)
+    class Meta:
+        abstract = True
+
+class TblStudentBasicInfoApplications(BaseTblStudentBasicInfo):
+    applicant_id = models.AutoField(primary_key=True)
+
+class TblStudentBasicInfo(BaseTblStudentBasicInfo):
+    student_id = models.CharField(max_length=12, primary_key=True)
+
+
+
+
+
+
+####student detailed info's#####
+
+# student personal data
+class BaseTblStudentPersonalData(models.Model):
     f_name = models.CharField(max_length=100)
     m_name = models.CharField(max_length=100, null=True, blank=True)
+    suffix = models.CharField(max_length=100, null=True, blank=True)
     l_name = models.CharField(max_length=100)
     sex = models.CharField(max_length=100)
     birth_date = models.DateField()
@@ -130,11 +140,23 @@ class TblStudentPersonalData(models.Model):
     acr = models.CharField(max_length=100, null=True, blank=True) 
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return f"Student ID: {self.student_id}, Name: {self.f_name} {self.m_name} {self.l_name}, Sex: {self.sex}, Birth Date: {self.birth_date}, Birth Place: {self.birth_place}, Marital Status: {self.marital_status}, Religion: {self.religion}, Country: {self.country}, Active: {self.active}"
 
-class TblAddPersonalData(models.Model):
-    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+    class Meta:
+        abstract = True
+
+
+class TblStudentPersonalDataApplications(BaseTblStudentPersonalData):
+    applicant_id = models.AutoField(primary_key=True)
+
+class TblStudentPersonalData(BaseTblStudentPersonalData):
+    student_id = models.CharField(max_length=12, primary_key=True)
+
+
+
+
+
+#student additional data
+class BaseTblAddPersonalData(models.Model):
     city_address = models.TextField()
     province_address = models.TextField(null=True, blank=True)
     contact_number = models.CharField(max_length=30)
@@ -143,13 +165,23 @@ class TblAddPersonalData(models.Model):
     citizenship = models.CharField(max_length=70)
     active = models.BooleanField(default=True)      
 
-    def __str__(self):
-        return f"Student ID: {self.stdnt_id.student_id}, City Address: {self.city_address}, Province Address: {self.province_address}, Contact Numbers: City - {self.city_contact_number}, Province - {self.province_contact_number}, Email: {self.email}, Citizenship: {self.citizenship}, Active: {self.active}"
+    class Meta:
+        abstract = True
+
+
+class TblAddPersonalDataApplications(BaseTblAddPersonalData):
+    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+
+
+class TblAddPersonalData(BaseTblAddPersonalData):
+    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
 
 
 
-class TblStudentFamilyBackground(models.Model):
-    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+
+
+# student family background
+class BaseTblStudentFamilyBackground(models.Model):
     father_fname = models.CharField(max_length=100, null=True, blank=True)
     father_mname = models.CharField(max_length=100,null=True, blank=True)
     father_lname = models.CharField(max_length=100,null=True, blank=True)
@@ -174,17 +206,22 @@ class TblStudentFamilyBackground(models.Model):
     guardian_email = models.EmailField(null=True, blank=True)
     active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return (f"Student ID: {self.stdnt_id.student_id}, Father: {self.father_fname} {self.father_mname} {self.father_lname}, "
-                f"Contact: {self.father_contact_number}, Email: {self.father_email}, Occupation: {self.father_occupation}, "
-                f"Income: {self.father_income}, Company: {self.father_company}, Mother: {self.mother_fname} {self.mother_mname} "
-                f"{self.mother_lname}, Contact: {self.mother_contact_number}, Email: {self.mother_email}, Occupation: {self.mother_occupation}, "
-                f"Income: {self.mother_income}, Company: {self.mother_company}, Guardian: {self.guardian_fname} {self.guardian_mname} "
-                f"{self.guardian_lname}, Relation: {self.guardian_relation}, Contact: {self.guardian_contact_number}, Email: {self.guardian_email}, "
-                f"Active: {self.active}")
+    class Meta:
+        abstract = True
 
-class TblStudentAcademicBackground(models.Model):
-    stdnt_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+
+class TblStudentFamilyBackgroundApplications(BaseTblStudentFamilyBackground):
+    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+class TblStudentFamilyBackground(BaseTblStudentFamilyBackground):
+    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+
+
+
+
+
+
+#Student academic background
+class BaseTblStudentAcademicBackground(models.Model):
     department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
     program = models.ForeignKey(TblProgram, on_delete=models.CASCADE) 
     major_in = models.TextField(null=True)
@@ -195,16 +232,21 @@ class TblStudentAcademicBackground(models.Model):
     application_type = models.CharField(max_length=15)
     active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return (f"Student ID: {self.stdnt_id.student_id}, Department: {self.department.department}, Program: {self.program}, "
-                f"Major In: {self.major_in}, Student Type: {self.student_type}, Semester Entry: {self.semester_entry}, "
-                f"Year Entry: {self.year_entry}, Year Graduate: {self.year_graduate}, Application Type: {self.application_type}, "
-                f"Active: {self.active}")
+    class Meta:
+        abstract = True
+
+
+class TblStudentAcademicBackgroundApplications(BaseTblStudentAcademicBackground):
+    applicant_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+
+class TblStudentAcademicBackground(BaseTblStudentAcademicBackground):
+    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
 
 
 
-class TblStudentAcademicHistory(models.Model):
-    stdnt_id = models.ForeignKey('TblStudentPersonalData', on_delete=models.CASCADE)
+
+#student acamdemic history
+class BaseTblStudentAcademicHistory(models.Model):
     elementary_school = models.TextField(default='Not Provided')
     elementary_address = models.TextField(default='Not Provided')
     elementary_honors = models.TextField(default='None', blank=True, null=True)  
@@ -224,14 +266,19 @@ class TblStudentAcademicHistory(models.Model):
     college_honors = models.TextField(default='None', blank=True, null=True) 
     program = models.TextField(default='Not Specified', blank=True, null=True)  
     active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
     
 
-    def __str__(self):
-        return (f"Student ID: {self.stdnt_id.student_id}, Elementary School: {self.elementary_school}, Address: {self.elementary_address}, "
-                f"Honors: {self.elementary_honors}, Graduate Date: {self.elementary_graduate}, Secondary School: {self.secondary_school}, "
-                f"Address: {self.secondary_address}, Honors: {self.secondary_honors}, Graduate Date: {self.secondary_graduate}, "
-                f"NCAR: {self.ncar}, Latest College: {self.latest_college}, College Address: {self.college_address}, "
-                f"College Honors: {self.college_honors}, Program: {self.program}, Active: {self.active}")
+class TblStudentAcademicHistoryApplications(BaseTblStudentAcademicHistory):
+    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+
+class TblStudentAcademicHistory(BaseTblStudentAcademicHistory):
+    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+
+
+
 
 
 

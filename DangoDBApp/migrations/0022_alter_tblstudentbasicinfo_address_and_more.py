@@ -11,12 +11,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='tblstudentbasicinfo',
+            model_name='tblstudentbasicinfoapplications',
             name='address',
             field=models.TextField(),
         ),
         migrations.AlterField(
-            model_name='tblstudentbasicinfo',
+            model_name='tblstudentbasicinfoapplications',
             name='campus',
             field=models.CharField(max_length=225),
         ),

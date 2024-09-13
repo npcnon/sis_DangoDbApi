@@ -5,7 +5,7 @@ from DangoDBApp.models import (
     TblStudentAcademicHistory,
     TblStudentPersonalData,
     TblDepartment,
-    TblStudentBasicInfo
+    TblStudentBasicInfoApplications
 )
 
 def display_student_data(request):
@@ -14,7 +14,7 @@ def display_student_data(request):
     academic_histories = TblStudentAcademicHistory.objects.all()
     academic_backgrounds = TblStudentAcademicBackground.objects.all()
     family_backgrounds = TblStudentFamilyBackground.objects.all()
-    student_basic_info = TblStudentBasicInfo.objects.all()
+    student_basic_info = TblStudentBasicInfoApplications.objects.all()
     return render(request, './/DangoDBApp//student_data.html', {
         'student_personal_data': student_personal_data,
         'departments': departments,

@@ -4,12 +4,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import send_mail
+from rest_framework.permissions import IsAuthenticated
 from .models import (
     TblRoomInfo, TblProgram, TblDepartment, TblSubjInfo,
     TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory,
-    TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo
+    TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfoApplications,
+    TblStudentPersonalDataApplications, TblAddPersonalDataApplications,TblStudentFamilyBackgroundApplications,
+    TblStudentAcademicBackgroundApplications,TblStudentAcademicHistoryApplications,
+    
 )
 from .serializers import (
     TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,
@@ -17,7 +21,9 @@ from .serializers import (
     TblScheduleSerializer, TblStdntSubjEnrolledSerializer, TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
-    TblAddPersonalDataSerializer, TblStudentBasicInfoSerializer
+    TblAddPersonalDataSerializer, TblStudentBasicInfoSerializer,TblStudentPersonalDataApplicationsSerializer,
+    TblAddPersonalDataApplicationsSerializer,TblStudentFamilyBackgroundApplicationsSerializer,TblStudentAcademicBackgroundApplicationsSerializer,
+    TblStudentAcademicHistoryApplicationsSerializer, TblStudentBasicInfoApplicationsSerializer
 )
 import logging
 
@@ -25,10 +31,15 @@ logger = logging.getLogger(__name__)
 
 def create_api_view(model, serializer):
     class ViewSet(APIView):
+        
+        # def get_permissions(self):
+        #     if self.request.method in ['POST', 'PUT']:
+        #         return [IsAuthenticated()]
+        #     return []  
+
 
         def get(self, request):
             filter_condition = {'active': True}
-
             filter_param = request.GET.get('filter', None)
             if filter_param:
                 filter_parts = filter_param.split('=')
@@ -57,17 +68,15 @@ def create_api_view(model, serializer):
                 serializer_data = serializer(queryset, many=True)
                 return Response(serializer_data.data)
 
+
         def post(self, request):
             logger.info("Received POST request")
             logger.info(f"Request Data: {request.data}")
-
+            
             serializer_data = serializer(data=request.data)
             if serializer_data.is_valid():
                 validated_data = serializer_data.validated_data
                 logger.info(f"Validated Data: {validated_data}")
-
-                if 'student_id' not in validated_data or not validated_data['student_id']:
-                    validated_data['auto_generated'] = True
 
                 active_value = validated_data.pop('active', None)
                 try:
@@ -117,26 +126,67 @@ def create_api_view(model, serializer):
             logger.info(f"Request Data: {request.data}")
 
             try:
-                if deactivate.lower() == "true":
-                    logger.info("if is activated")
-                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
-                    instance.active = False
-                    instance.save()
-                    logger.info("Instance deactivated successfully")
-                    return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
+                if hasattr(model, 'student_id'):
+                    pk_field = 'student_id'
+                elif hasattr(model, 'applicant_id'):
+                    pk_field = 'applicant_id'
                 else:
-                    logger.info("else is activated")
-                    instance = model.objects.get(pk=id_or_offercode) if id_or_offercode.isdigit() else model.objects.get(student_id=id_or_offercode)
-                    serializer_data = serializer(instance, data=request.data, partial=True)
-                    if serializer_data.is_valid():
-                        serializer_data.save()
-                        logger.info(f"Instance updated successfully{serializer_data}")
-                        return Response(serializer_data.data, status=status.HTTP_200_OK)
-                    logger.error(f"Serializer errors: {serializer_data.errors}")
-                    return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
+                    pk_field = 'pk'  
+
+                
+                if deactivate.lower() == "true":
+                    logger.info("Deactivation process activated")
+                    try:
+                        instance = model.objects.get(**{pk_field: id_or_offercode})
+                        instance.active = False
+                        instance.save()
+                        logger.info("Instance deactivated successfully")
+                        return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
+                    except model.DoesNotExist:
+                        logger.error("Object not found")
+                        return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+
+                
+                try:
+                    instance = model.objects.get(**{pk_field: id_or_offercode})
+                except model.DoesNotExist:
+                    logger.error("Object not found")
+                    return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+                
+                serializer_data = serializer(instance, data=request.data, partial=True)
+
+                if serializer_data.is_valid():
+                    validated_data = serializer_data.validated_data
+
+                    # If 'student_id' or 'applicant_id' is being updated, handle it explicitly
+                    new_id = validated_data.get(pk_field)
+
+                    if new_id and new_id != getattr(instance, pk_field):
+                        # Check if the new ID already exists
+                        if model.objects.filter(**{pk_field: new_id}).exists():
+                            logger.error(f"Attempt to update to a {pk_field} that already exists")
+                            return Response({"error": f"{pk_field} already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+                        # Set the new ID directly on the instance and save
+                        setattr(instance, pk_field, new_id)
+
+                    # Save the rest of the changes
+                    serializer_data.save()
+                    logger.info(f"Instance updated successfully: {serializer_data.data}")
+                    return Response(serializer_data.data, status=status.HTTP_200_OK)
+
+                # Log any validation errors
+                logger.error(f"Serializer errors: {serializer_data.errors}")
+                return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            except Exception as e:
+                logger.error(f"Exception occurred: {e}")
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                    
             except model.DoesNotExist:
                 logger.error("Object not found")
                 return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+            
             except Exception as e:
                 logger.error(f"Exception occurred: {e}")
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -160,3 +210,10 @@ StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground,
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 AddPersonalDataAPIView = create_api_view(TblAddPersonalData,TblAddPersonalDataSerializer)
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
+
+StudentBasicInfoApplicationsAPIView = create_api_view(TblStudentBasicInfoApplications, TblStudentBasicInfoApplicationsSerializer)
+StudentPersonalDataApplicationsAPIView = create_api_view(TblStudentPersonalDataApplications, TblStudentPersonalDataApplicationsSerializer)
+AddPersonalDataApplicationsAPIView = create_api_view(TblAddPersonalDataApplications, TblAddPersonalDataApplicationsSerializer)
+StudentFamilyBackgroundApplicationsAPIView = create_api_view(TblStudentFamilyBackgroundApplications, TblStudentFamilyBackgroundApplicationsSerializer)
+StudentAcademicBackgroundApplicationsAPIView = create_api_view(TblStudentAcademicBackgroundApplications, TblStudentAcademicBackgroundApplicationsSerializer)
+StudentAcademicHistoryApplicationsAPIView = create_api_view(TblStudentAcademicHistoryApplications, TblStudentAcademicHistoryApplicationsSerializer)

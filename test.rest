@@ -1,0 +1,18 @@
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+
+{ "name": "non", "email": "non2@mail.com", "password": "Pass1234!"  }
+
+###
+
+POST http://127.0.0.1:8000/api/login 
+Content-Type: application/json
+
+{ "email": "non2@mail.com", "password": "Pass1234!" }
+
+
+###
+
+GET http://127.0.0.1:8000/api/user
+Content-Type: application/json 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI2MTgwNDkxLCJpYXQiOjE3MjYxODAxOTEsImp0aSI6IjUzMWNlOGVlMGFhODQ0MDY5ODBkY2YwNjE0MTdjNDNiIiwidXNlcl9pZCI6MX0.ZC04OAmY-CyFQhfydr_MGfytnKMisRuJ3xSHXBtpsuk

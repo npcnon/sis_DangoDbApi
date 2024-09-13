@@ -1,6 +1,6 @@
-#DangoDBApp.serializers
+# DangoDBApp.serializers
 
-from datetime import datetime,date
+from datetime import datetime, date
 from rest_framework import serializers
 from .models import (
     TblRoomInfo,
@@ -17,29 +17,18 @@ from .models import (
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
     TblAddPersonalData,
+    TblStudentBasicInfoApplications,
     TblStudentBasicInfo,
-    
+    TblStudentPersonalDataApplications,
+    TblStudentAcademicHistoryApplications,
+    TblAddPersonalDataApplications,
+    TblStudentFamilyBackgroundApplications,
+    TblStudentAcademicBackgroundApplications
 )
 
-def create_serializer(model_class):
-    class ModelSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = model_class
-            fields = '__all__'
-            
-    return ModelSerializer
-
-class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
-    birth_date = serializers.DateField(input_formats=['%Y-%m-%d'])
-
-    class Meta:
-        model = TblStudentBasicInfo
-        fields = '__all__'
-        extra_kwargs = {
-            'student_id': {'required': False, 'read_only': True}
-        }
-
-    def validate_birth_date(self, value):
+# Generalized DateField that handles date parsing/validation
+class CustomDateField(serializers.DateField):
+    def to_internal_value(self, value):
         if isinstance(value, str):
             try:
                 return datetime.strptime(value, '%Y-%m-%d').date()
@@ -50,12 +39,23 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError("Invalid date format.")
 
-    def create(self, validated_data):
-        return super().create(validated_data)
+def create_serializer(model_class):
+    class ModelSerializer(serializers.ModelSerializer):
+        # Generalized date fields processing
+        def get_fields(self):
+            fields = super().get_fields()
+            for field_name, field in fields.items():
+                if isinstance(field, serializers.DateField):
+                    fields[field_name] = CustomDateField(input_formats=['%Y-%m-%d'])
+            return fields
 
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        class Meta:
+            model = model_class
+            fields = '__all__'
+    
+    return ModelSerializer
 
+# Model serializers with generalized date serialization
 TblRoomInfoSerializer = create_serializer(TblRoomInfo)
 TblProgramSerializer = create_serializer(TblProgram)
 TblDepartmentSerializer = create_serializer(TblDepartment)
@@ -70,4 +70,10 @@ TblStudentFamilyBackgroundSerializer = create_serializer(TblStudentFamilyBackgro
 TblStudentAcademicBackgroundSerializer = create_serializer(TblStudentAcademicBackground)
 TblStudentAcademicHistorySerializer = create_serializer(TblStudentAcademicHistory)
 TblAddPersonalDataSerializer = create_serializer(TblAddPersonalData)
-
+TblStudentBasicInfoApplicationsSerializer = create_serializer(TblStudentBasicInfoApplications)
+TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
+TblStudentPersonalDataApplicationsSerializer = create_serializer(TblStudentPersonalDataApplications)
+TblAddPersonalDataApplicationsSerializer = create_serializer(TblAddPersonalDataApplications)
+TblStudentFamilyBackgroundApplicationsSerializer = create_serializer(TblStudentFamilyBackgroundApplications)
+TblStudentAcademicBackgroundApplicationsSerializer = create_serializer(TblStudentAcademicBackgroundApplications)
+TblStudentAcademicHistoryApplicationsSerializer = create_serializer(TblStudentAcademicHistoryApplications)

@@ -207,29 +207,43 @@
     {% endif %} {% endcomment %}
 
     <!-- New Section for Student Basic Info -->
+<!-- New Section for Student Basic Info -->
     <h1>Student Basic Information</h1>
     {% if student_basic_info %}
     <table>
         <tr>
-            <th>ID</th>
+            <th>Applicant ID</th>
             <th>Full Name</th>
             <th>Gender</th>
             <th>Date of Birth</th>
             <th>Contact Number</th>
             <th>Email</th>
+            <th>Address</th>
+            <th>Campus</th>
+            <th>Program</th>
+            <th>Transferee</th>
             <th>Approved</th>
             <th>Active</th>
         </tr>
         {% for basic_info in student_basic_info %}
         <tr>
-            <td>{{ basic_info.student_id }}</td>
-            <td>{{ basic_info.first_name }} {{ basic_info.last_name }}</td>
+            <td>{{ basic_info.applicant_id }}</td>
+            <td>
+                {{ basic_info.first_name }}
+                {% if basic_info.middle_name %}{{ basic_info.middle_name }}{% endif %}
+                {{ basic_info.last_name }}
+                {% if basic_info.suffix %}{{ basic_info.suffix }}{% endif %}
+            </td>
             <td>{{ basic_info.sex }}</td>
             <td>{{ basic_info.birth_date }}</td>
             <td>{{ basic_info.contact_number }}</td>
             <td>{{ basic_info.email }}</td>
-            <td>{{basic_info.accepted}}</td>
-            <td>{{ basic_info.active }}</td>
+            <td>{{ basic_info.address }}</td>
+            <td>{{ basic_info.campus }}</td>
+            <td>{{ basic_info.program }}</td>
+            <td>{% if basic_info.is_transfee %}Yes{% else %}No{% endif %}</td>
+            <td>{% if basic_info.accepted %}Yes{% else %}No{% endif %}</td>
+            <td>{% if basic_info.active %}Yes{% else %}No{% endif %}</td>
         </tr>
         {% endfor %}
     </table>

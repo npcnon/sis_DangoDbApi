@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='TblStudentBasicInfo',
+            name='TblStudentBasicInfoApplications',
             fields=[
                 ('student_id', models.CharField(max_length=8, primary_key=True, serialize=False)),
                 ('first_name', models.CharField(max_length=100)),

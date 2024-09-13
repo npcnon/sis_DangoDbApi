@@ -10,12 +10,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='tblstudentbasicinfo',
+            model_name='tblstudentbasicinfoapplications',
             name='created_at',
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='tblstudentbasicinfo',
+            model_name='tblstudentbasicinfoapplications',
             name='student_id',
             field=models.CharField(max_length=12, primary_key=True, serialize=False, unique=True),
         ),
