@@ -64,7 +64,7 @@ for data in sample_data:
         middle_name=data["middle_name"],
         last_name=data["last_name"],
         suffix=data["suffix"],
-        is_transfee=data["is_transfee"],
+        is_transferee=data["is_transfee"],
         contact_number=data["contact_number"],
         address=data["address"],
         campus=data["campus"],
