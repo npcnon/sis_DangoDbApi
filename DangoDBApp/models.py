@@ -91,7 +91,8 @@ class TblAddStaffInfo(models.Model):
 
 ####Student Basic info#####
 
-class BaseTblStudentBasicInfo(models.Model):
+class TblStudentBasicInfoApplications(models.Model):
+    applicant_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
@@ -109,15 +110,24 @@ class BaseTblStudentBasicInfo(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        abstract = True
-
-class TblStudentBasicInfoApplications(BaseTblStudentBasicInfo):
-    applicant_id = models.AutoField(primary_key=True)
-
-class TblStudentBasicInfo(BaseTblStudentBasicInfo):
+class TblStudentBasicInfo(models.Model):
     student_id = models.CharField(max_length=12, primary_key=True)
-
+    applicant_id = models.ForeignKey(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100)
+    suffix = models.CharField(max_length=100, null=True, blank=True)
+    is_transferee = models.BooleanField()
+    year_level = models.CharField(max_length=50)
+    contact_number = models.CharField(max_length=11)
+    address = models.TextField()
+    campus = models.CharField(max_length=225)
+    program = models.CharField(max_length=225)
+    birth_date = models.DateField()
+    sex = models.CharField(max_length=10)
+    email = models.EmailField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 

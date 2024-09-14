@@ -35,6 +35,7 @@ urlpatterns = [
     path('schedule/', ScheduleAPIView.as_view(), name = 'schedule-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
 
+    path('stdntbasicinfo',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
     path('stdntbasicinfo/',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
     path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
     path('addstdntpersonal/',AddPersonalDataAPIView.as_view(),name = 'student-addpersonal-list'),
@@ -42,6 +43,7 @@ urlpatterns = [
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
     
+    path('stdntbasicinfoapplication',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-application'),
     path('stdntbasicinfoapplication/',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-application'),
     path('stdntpersonalapplication/',StudentPersonalDataApplicationsAPIView.as_view(),name = 'student-personal-application'),
     path('addstdntpersonalapplication/',AddPersonalDataApplicationsAPIView.as_view(),name = 'additional-student-info-application'),
