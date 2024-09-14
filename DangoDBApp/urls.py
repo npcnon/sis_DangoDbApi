@@ -52,7 +52,7 @@ urlpatterns = [
     path('stdntacademichistoryapplication/',StudentAcademicHistoryApplicationsAPIView.as_view(),name = 'student-academichistory-list'),
 
 
-
+    path('stdntofficialmod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoAPIView.as_view(),name = 'student-official-info-mod'),
     path('stdntbasicinfomod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-info-mod'),
     path('deactivate_or_modify_program/<str:id_or_offercode>/<str:deactivate>', ProgramAPIView.as_view(), name='deactivate_modify_program-active'),
     path('deactivate_or_modify_department/<str:id_or_offercode>/<str:deactivate>', DepartmentAPIView.as_view(), name = 'deactivate_modify_department-active'),
