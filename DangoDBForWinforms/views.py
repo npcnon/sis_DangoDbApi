@@ -5,7 +5,8 @@ from DangoDBApp.models import (
     TblStudentAcademicHistory,
     TblStudentPersonalData,
     TblDepartment,
-    TblStudentBasicInfoApplications
+    TblStudentBasicInfoApplications,
+    TblStudentBasicInfo,
 )
 
 def display_student_data(request):
@@ -14,12 +15,18 @@ def display_student_data(request):
     academic_histories = TblStudentAcademicHistory.objects.all()
     academic_backgrounds = TblStudentAcademicBackground.objects.all()
     family_backgrounds = TblStudentFamilyBackground.objects.all()
+
+    # Query for both applicant data and official student data
     student_basic_info = TblStudentBasicInfoApplications.objects.all()
+    student_official = TblStudentBasicInfo.objects.select_related('applicant_id')  # Use select_related to fetch related applicant data
+
     return render(request, './/DangoDBApp//student_data.html', {
         'student_personal_data': student_personal_data,
         'departments': departments,
         'academic_histories': academic_histories,
         'academic_backgrounds': academic_backgrounds,
         'family_backgrounds': family_backgrounds,
-        'student_basic_info': student_basic_info
+        'student_basic_info': student_basic_info,
+        'student_official': student_official,
     })
+
