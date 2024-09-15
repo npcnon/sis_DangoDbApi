@@ -138,7 +138,10 @@ def create_api_view(model, serializer):
                     logger.info("Deactivation process activated")
                     try:
                         instance = model.objects.get(**{pk_field: id_or_offercode})
-                        instance.active = False
+                        if instance.active:
+                            instance.active = False
+                        else:
+                            instance.active = True
                         instance.save()
                         logger.info("Instance deactivated successfully")
                         return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
