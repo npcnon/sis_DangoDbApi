@@ -1,18 +1,52 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Profile
+from DangoDBApp.models import TblStudentBasicInfo, TblStudentBasicInfoApplications
+
+class TblStudentBasicInfoApplicationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TblStudentBasicInfoApplications
+        fields = ['first_name', 'middle_name', 'last_name', 'email', 'year_level', 'program', 'campus']
+
+class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
+    applicant_details = TblStudentBasicInfoApplicationsSerializer(source='applicant_id', read_only=True)
+
+    class Meta:
+        model = TblStudentBasicInfo
+        fields = ['student_id', 'applicant_details']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    student_info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Profile
+        fields = ['student_info']
+
+    def get_student_info(self, obj):
+        # Get the student_id from the related user
+        student_id = obj.user.student_id
+        # Retrieve TblStudentBasicInfo based on student_id
+        student_info = TblStudentBasicInfo.objects.filter(student_id=student_id).first()
+        # Serialize it using TblStudentBasicInfoSerializer
+        if student_info:
+            return TblStudentBasicInfoSerializer(student_info).data
+        return None
+
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
     class Meta:
         model = User
-        fields = ['id','name','email','password']
+        fields = ['id', 'name', 'email','student_id', 'password', 'profile']
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
     def create(self, validated_data):
-        password = validated_data.pop('password',None)
+        password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         instance.save()
-        return instance 
+        return instance
