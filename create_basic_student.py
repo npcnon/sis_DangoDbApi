@@ -22,7 +22,7 @@ sample_data = [
         "birth_date": "2000-01-15",
         "sex": "Male",
         "email": "johndoe@example.com",
-        "accepted": False,
+        "status": "pending", 
         "active": True,
     },
     {
@@ -39,7 +39,7 @@ sample_data = [
         "birth_date": "1999-05-22",
         "sex": "Female",
         "email": "janesmith@example.com",
-        "accepted": False,
+        "status": "pending",  
         "active": True,
     },
     {
@@ -56,7 +56,7 @@ sample_data = [
         "birth_date": "2001-09-10",
         "sex": "Male",
         "email": "mikejohnson@example.com",
-        "accepted": False,
+        "status": "pending", 
         "active": True,
     },
 ]
@@ -76,7 +76,7 @@ for data in sample_data:
         birth_date=datetime.strptime(data["birth_date"], "%Y-%m-%d").date(),
         sex=data["sex"],
         email=data["email"],
-        accepted=data["accepted"],
+        status=data["status"],  # Corrected field name
         active=data["active"],
     )
 

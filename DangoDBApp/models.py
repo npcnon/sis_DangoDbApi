@@ -92,6 +92,12 @@ class TblAddStaffInfo(models.Model):
 ####Student Basic info#####
 
 class TblStudentBasicInfoApplications(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
     applicant_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
@@ -106,7 +112,7 @@ class TblStudentBasicInfoApplications(models.Model):
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
     email = models.EmailField()
-    accepted = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
