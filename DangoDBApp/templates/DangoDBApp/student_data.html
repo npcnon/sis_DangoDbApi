@@ -223,7 +223,7 @@
             <th>Program</th>
             <th>Year Level</th>
             <th>Transferee</th>
-            <th>Approved</th>
+            <th>Status</th>
             <th>Active</th>
         </tr>
         {% for basic_info in student_basic_info %}
@@ -244,7 +244,7 @@
             <td>{{ basic_info.program }}</td>
             <td>{{ basic_info.year_level }}</td>
             <td>{% if basic_info.is_transfee %}Yes{% else %}No{% endif %}</td>
-            <td>{% if basic_info.accepted %}Yes{% else %}No{% endif %}</td>
+            <td>{{ basic_info.status }}</td>
             <td>{% if basic_info.active %}Yes{% else %}No{% endif %}</td>
         </tr>
         {% endfor %}
@@ -269,7 +269,7 @@
                 <th>Program</th>
                 <th>Year Level</th>
                 <th>Transferee</th>
-                <th>Approved</th>
+                <th>Status</th>
                 <th>Active</th>
             </tr>
             {% for official in student_official %}
@@ -290,7 +290,7 @@
                 <td>{{ official.applicant_id.program }}</td>
                 <td>{{ official.applicant_id.year_level }}</td>
                 <td>{% if official.applicant_id.is_transferee %}Yes{% else %}No{% endif %}</td>
-                <td>{% if official.applicant_id.accepted %}Yes{% else %}No{% endif %}</td>
+                <td>{{ official.applicant_id.status }}</td>
                 <td>{% if official.active %}Yes{% else %}No{% endif %}</td>
             </tr>
             {% endfor %}
