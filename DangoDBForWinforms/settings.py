@@ -146,7 +146,8 @@ CORS_ALLOW_HEADERS = [
 
 # Optionally specify allowed origins if CORS_ORIGIN_ALLOW_ALL is False
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://mu-isystem.vercel.app', 
 ]
 
 MEDIA_URL = '/media/'
