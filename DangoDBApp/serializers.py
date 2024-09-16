@@ -1,6 +1,7 @@
 # DangoDBApp.serializers
 
 from datetime import datetime, date
+import re
 from rest_framework import serializers
 from .models import (
     TblRoomInfo,
@@ -27,6 +28,46 @@ from .models import (
 )
 
 # Generalized DateField that handles date parsing/validation
+
+
+class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TblStudentBasicInfo
+        fields = '__all__'
+
+    def validate_student_id(self, value):
+        # Validate format
+        if not re.match(r'^\d{4}-\d{1,2}-\d{5}$', value):
+            raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNNN is the student number (5 digits).')
+        return value
+
+    def validate(self, data):
+        # Normalize department code to two digits
+        student_id = data.get('student_id')
+        if student_id:
+            parts = student_id.split('-')
+            if len(parts) == 3:
+                year, dept, number = parts
+                # Normalize department code to two digits
+                if len(dept) == 1:
+                    normalized_dept = f'0{dept}'
+                elif len(dept) == 2:
+                    normalized_dept = dept
+                else:
+                    raise serializers.ValidationError('Department ID must be 1 or 2 digits long.')
+                
+                # Normalize student_id
+                normalized_student_id = f"{year}-{normalized_dept}-{number}"
+                
+                # Update the department code in the data to the normalized version
+                data['student_id'] = normalized_student_id
+            else:
+                raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN.')
+        return data
+
+
+    
+
 class CustomDateField(serializers.DateField):
     def to_internal_value(self, value):
         if isinstance(value, str):
@@ -71,7 +112,7 @@ TblStudentAcademicBackgroundSerializer = create_serializer(TblStudentAcademicBac
 TblStudentAcademicHistorySerializer = create_serializer(TblStudentAcademicHistory)
 TblAddPersonalDataSerializer = create_serializer(TblAddPersonalData)
 TblStudentBasicInfoApplicationsSerializer = create_serializer(TblStudentBasicInfoApplications)
-TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
+#TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
 TblStudentPersonalDataApplicationsSerializer = create_serializer(TblStudentPersonalDataApplications)
 TblAddPersonalDataApplicationsSerializer = create_serializer(TblAddPersonalDataApplications)
 TblStudentFamilyBackgroundApplicationsSerializer = create_serializer(TblStudentFamilyBackgroundApplications)

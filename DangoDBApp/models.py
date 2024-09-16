@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 ##notes##
 #remove _id from foreign field
 
@@ -118,21 +120,12 @@ class TblStudentBasicInfoApplications(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(
-        max_length=13,
-        primary_key=True,
-        validators=[
-            RegexValidator(
-                regex=r'^\d{4}-\d{1,2}-\d{5}$',
-                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNNN is the student number (5 digits).',
-                code='invalid_student_id'
-            )
-        ]
-    )
-    applicant_id = models.ForeignKey(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
+    student_id = models.CharField(max_length=13, primary_key=True)
+    applicant_id = models.OneToOneField(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
 
