@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import RegexValidator
 ##notes##
 #remove _id from foreign field
 
@@ -115,12 +115,24 @@ class TblStudentBasicInfoApplications(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=12, primary_key=True)
+    student_id = models.CharField(
+        max_length=12,
+        primary_key=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\d{4}-\d{2}-\d{4}$',
+                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (02 digits), and NNNN is the student number (4 digits).',
+                code='invalid_student_id'
+            )
+        ]
+    )
     applicant_id = models.ForeignKey(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
