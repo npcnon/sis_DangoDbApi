@@ -119,12 +119,12 @@ class TblStudentBasicInfoApplications(models.Model):
 
 class TblStudentBasicInfo(models.Model):
     student_id = models.CharField(
-        max_length=12,
+        max_length=13,
         primary_key=True,
         validators=[
             RegexValidator(
-                regex=r'^\d{4}-\d{2}-\d{4}$',
-                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (02 digits), and NNNN is the student number (4 digits).',
+                regex=r'^\d{4}-\d{2}-\d{5}$',
+                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (02 digits), and NNNNN is the student number (5 digits).',
                 code='invalid_student_id'
             )
         ]
