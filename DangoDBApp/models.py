@@ -123,8 +123,8 @@ class TblStudentBasicInfo(models.Model):
         primary_key=True,
         validators=[
             RegexValidator(
-                regex=r'^\d{4}-\d{2}-\d{5}$',
-                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (02 digits), and NNNNN is the student number (5 digits).',
+                regex=r'^\d{4}-\d{1,2}-\d{5}$',
+                message='Student ID must be in the format YYYY-DD-NNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNNN is the student number (5 digits).',
                 code='invalid_student_id'
             )
         ]
