@@ -31,13 +31,22 @@ cebu_programs = [
     ("BSTM", "Cebu Campus"),
 ]
 
-
 status_choices = ["pending"]
-
 suffixes = ["Jr.", "Sr.", None]
 middle_names = ["A.", "B.", "C.", None]
 
-def generate_student_data(first_name, last_name, program, campus):
+# Extended name pools
+first_names = [
+    "John", "Jane", "Mike", "Emily", "Peter", "Sara", "Chris", "Anna", "Tom", "Lucy",
+    "Robert", "Linda", "James", "Patricia", "Michael", "Jennifer", "David", "Elizabeth",
+    "Joseph", "Barbara", "Charles", "Susan", "Thomas", "Jessica", "Daniel", "Karen"
+]
+last_names = [
+    "Doe", "Smith", "Johnson", "Brown", "Lee", "Clark", "Martinez", "Davis", "Rodriguez", "Taylor",
+    "Miller", "Garcia", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Moore"
+]
+
+def generate_student_data(first_name, last_name, program, campus, unique_id):
     year_num = random.randint(1, 4)
     if year_num == 1:
         year_level = "1st year"
@@ -49,9 +58,9 @@ def generate_student_data(first_name, last_name, program, campus):
         year_level = "4th year"
     
     return {
-        "first_name": first_name,
+        "first_name": f"{first_name}{unique_id}",  # Ensure uniqueness with unique_id
         "middle_name": random.choice(middle_names),
-        "last_name": last_name,
+        "last_name": f"{last_name}{unique_id}",  # Ensure uniqueness with unique_id
         "suffix": random.choice(suffixes),
         "is_transferee": random.choice([True, False]),
         "contact_number": f"09{random.randint(100000000, 999999999)}",
@@ -61,29 +70,25 @@ def generate_student_data(first_name, last_name, program, campus):
         "program": program,
         "birth_date": f"{random.randint(1995, 2005)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}",
         "sex": random.choice(["Male", "Female"]),
-        "email": f"{first_name.lower()}{last_name.lower()}@example.com",
+        "email": f"{first_name.lower()}{last_name.lower()}{unique_id}@example.com",  # Ensure uniqueness in email
         "status": random.choice(status_choices),
         "active": True,
     }
 
-
-first_names = ["John", "Jane", "Mike", "Emily", "Peter", "Sara", "Chris", "Anna", "Tom", "Lucy"]
-last_names = ["Doe", "Smith", "Johnson", "Brown", "Lee", "Clark", "Martinez", "Davis", "Rodriguez", "Taylor"]
+# Combine both campuses' programs for simplicity
+programs = mandaue_programs + cebu_programs
 
 sample_data = []
 
-for program, campus in mandaue_programs:
-    for _ in range(3):  # Add 3 students per program
-        first_name = random.choice(first_names)
-        last_name = random.choice(last_names)
-        sample_data.append(generate_student_data(first_name, last_name, program, campus))
+# Generate 1000 unique entries
+for i in range(1000):
+    program, campus = random.choice(programs)
+    first_name = random.choice(first_names)
+    last_name = random.choice(last_names)
+    unique_id = i  # Ensure uniqueness with an ID for names and email
+    sample_data.append(generate_student_data(first_name, last_name, program, campus, unique_id))
 
-for program, campus in cebu_programs:
-    for _ in range(3):  # Add 3 students per program
-        first_name = random.choice(first_names)
-        last_name = random.choice(last_names)
-        sample_data.append(generate_student_data(first_name, last_name, program, campus))
-
+# Insert into the database
 for data in sample_data:
     TblStudentBasicInfoApplications.objects.create(
         first_name=data["first_name"],
@@ -103,4 +108,4 @@ for data in sample_data:
         active=data["active"],
     )
 
-print("Data inserted successfully!")
+print("1000 records inserted successfully!")
