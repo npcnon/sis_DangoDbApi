@@ -38,6 +38,16 @@ suffixes = ["Jr.", "Sr.", None]
 middle_names = ["A.", "B.", "C.", None]
 
 def generate_student_data(first_name, last_name, program, campus):
+    year_num = random.randint(1, 4)
+    if year_num == 1:
+        year_level = "1st year"
+    elif year_num == 2:
+        year_level = "2nd year"
+    elif year_num == 3:
+        year_level = "3rd year"
+    else:
+        year_level = "4th year"
+    
     return {
         "first_name": first_name,
         "middle_name": random.choice(middle_names),
@@ -45,7 +55,7 @@ def generate_student_data(first_name, last_name, program, campus):
         "suffix": random.choice(suffixes),
         "is_transferee": random.choice([True, False]),
         "contact_number": f"09{random.randint(100000000, 999999999)}",
-        "year_level": f"{random.randint(1, 4)}rd year",
+        "year_level": year_level, 
         "address": f"{random.randint(100, 999)} Random St, SomeCity",
         "campus": campus,
         "program": program,
@@ -55,6 +65,7 @@ def generate_student_data(first_name, last_name, program, campus):
         "status": random.choice(status_choices),
         "active": True,
     }
+
 
 first_names = ["John", "Jane", "Mike", "Emily", "Peter", "Sara", "Chris", "Anna", "Tom", "Lucy"]
 last_names = ["Doe", "Smith", "Johnson", "Brown", "Lee", "Clark", "Martinez", "Davis", "Rodriguez", "Taylor"]
