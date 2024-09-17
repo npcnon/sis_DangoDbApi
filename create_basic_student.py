@@ -1,116 +1,77 @@
 import os
 import django
 from datetime import datetime
+import random
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 from DangoDBApp.models import TblStudentBasicInfoApplications
 
-sample_data = [
-    {
-        "first_name": "John",
-        "middle_name": None,
-        "last_name": "Doe",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09123456789",
-        "year_level": "1st year",
-        "address": "123 Main St, Anytown",
-        "campus": "Mandaue Campus",
-        "program": "BSIT",
-        "birth_date": "2000-01-15",
-        "sex": "Male",
-        "email": "johndoe@example.com",
-        "status": "pending",
-        "active": True,
-    },
-    {
-        "first_name": "Jane",
-        "middle_name": None,
-        "last_name": "Smith",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09198765432",
-        "year_level": "2nd year",
-        "address": "456 Elm St, Othertown",
-        "campus": "Cebu Campus",
-        "program": "BSTM",
-        "birth_date": "1999-05-22",
-        "sex": "Female",
-        "email": "janesmith@example.com",
-        "status": "pending",
-        "active": True,
-    },
-    {
-        "first_name": "Mike",
-        "middle_name": None,
-        "last_name": "Johnson",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09234567890",
-        "year_level": "3rd year",
-        "address": "789 Oak St, Differenttown",
-        "campus": "Mandaue Campus",
-        "program": "BSIT",
-        "birth_date": "2001-09-10",
-        "sex": "Male",
-        "email": "mikejohnson@example.com",
-        "status": "pending",
-        "active": True,
-    },
-    {
-        "first_name": "Wisadel",
-        "middle_name": None,
-        "last_name": "Ak",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09234567890",
-        "year_level": "3rd year",
-        "address": "789 Oak St, Differenttown",
-        "campus": "Mandaue Campus",
-        "program": "BMMA",
-        "birth_date": "2001-09-10",
-        "sex": "Male",
-        "email": "Wisadel@example.com",
-        "status": "pending",
-        "active": True,
-    },
-    {
-        "first_name": "Petelguse",
-        "middle_name": "Romanee",
-        "last_name": "Conti",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09234567890",
-        "year_level": "2nd year",
-        "address": "789 Oak St, Differenttown",
-        "campus": "Mandaue Campus",
-        "program": "BSIT",
-        "birth_date": "2001-09-10",
-        "sex": "Male",
-        "email": "Petelguse@example.com",
-        "status": "pending",
-        "active": True,
-    },
-    {
-        "first_name": "Pablo",
-        "middle_name": "Esco",
-        "last_name": "Barnuts",
-        "suffix": None,
-        "is_transferee": False,
-        "contact_number": "09234567890",
-        "year_level": "1st year",
-        "address": "789 Oak St, Differenttown",
-        "campus": "Mandaue Campus",
-        "program": "BSIT",
-        "birth_date": "2001-09-10",
-        "sex": "Male",
-        "email": "Pablo@example.com",
-        "status": "pending",
-        "active": True,
-    },
+mandaue_programs = [
+    ("BSIT", "Mandaue Campus"),
+    ("BSBA-HRM", "Mandaue Campus"),
+    ("BSBA-MM", "Mandaue Campus"),
+    ("BSHM", "Mandaue Campus"),
+    ("BSA", "Mandaue Campus"),
+    ("BEED", "Mandaue Campus"),
+    ("BSED", "Mandaue Campus"),
+    ("BA-COMM", "Mandaue Campus"),
+    ("BSME", "Mandaue Campus"),
+    ("BSCE", "Mandaue Campus"),
+    ("BSEE", "Mandaue Campus"),
+    ("BSIE", "Mandaue Campus"),
 ]
+
+cebu_programs = [
+    ("BSIT", "Cebu Campus"),
+    ("BSBA-MM", "Cebu Campus"),
+    ("BSA", "Cebu Campus"),
+    ("BSED", "Cebu Campus"),
+    ("BSTM", "Cebu Campus"),
+]
+
+
+status_choices = ["pending"]
+
+suffixes = ["Jr.", "Sr.", None]
+middle_names = ["A.", "B.", "C.", None]
+
+def generate_student_data(first_name, last_name, program, campus):
+    return {
+        "first_name": first_name,
+        "middle_name": random.choice(middle_names),
+        "last_name": last_name,
+        "suffix": random.choice(suffixes),
+        "is_transferee": random.choice([True, False]),
+        "contact_number": f"09{random.randint(100000000, 999999999)}",
+        "year_level": f"{random.randint(1, 4)}rd year",
+        "address": f"{random.randint(100, 999)} Random St, SomeCity",
+        "campus": campus,
+        "program": program,
+        "birth_date": f"{random.randint(1995, 2005)}-{random.randint(1, 12):02d}-{random.randint(1, 28):02d}",
+        "sex": random.choice(["Male", "Female"]),
+        "email": f"{first_name.lower()}{last_name.lower()}@example.com",
+        "status": random.choice(status_choices),
+        "active": True,
+    }
+
+first_names = ["John", "Jane", "Mike", "Emily", "Peter", "Sara", "Chris", "Anna", "Tom", "Lucy"]
+last_names = ["Doe", "Smith", "Johnson", "Brown", "Lee", "Clark", "Martinez", "Davis", "Rodriguez", "Taylor"]
+
+sample_data = []
+
+for program, campus in mandaue_programs:
+    for _ in range(3):  # Add 3 students per program
+        first_name = random.choice(first_names)
+        last_name = random.choice(last_names)
+        sample_data.append(generate_student_data(first_name, last_name, program, campus))
+
+for program, campus in cebu_programs:
+    for _ in range(3):  # Add 3 students per program
+        first_name = random.choice(first_names)
+        last_name = random.choice(last_names)
+        sample_data.append(generate_student_data(first_name, last_name, program, campus))
 
 for data in sample_data:
     TblStudentBasicInfoApplications.objects.create(
@@ -127,7 +88,7 @@ for data in sample_data:
         birth_date=datetime.strptime(data["birth_date"], "%Y-%m-%d").date(),
         sex=data["sex"],
         email=data["email"],
-        status=data["status"],  # Corrected field name
+        status=data["status"],
         active=data["active"],
     )
 

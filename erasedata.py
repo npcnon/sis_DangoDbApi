@@ -49,3 +49,48 @@ from django.db import connection
 with connection.cursor() as cursor:
     cursor.execute("DELETE FROM sqlite_sequence;")
     cursor.execute("VACUUM;")
+
+
+
+
+'''
+
+
+departments0 = Mandaue
+departments1 = Mandaue
+departments4 = Mandaue
+departments5 = Mandaue
+
+departments2 = Cebu
+departments3 = Cebu
+departments6 = Cebu
+
+       #Mandaue Campus
+       departments[0].department_id, programCode: "BSIT"
+       departments[1].department_id, programCode: "BSBA-HRM"
+       departments[1].department_id, programCode: "BSBA-MM"
+       departments[1].department_id, programCode: "BSHM"
+       departments[1].department_id, programCode: "BSA"
+       departments[4].department_id, programCode: "BEED"
+       departments[4].department_id, programCode: "BSED"
+       departments[4].department_id, programCode: "BA-COMM"
+       departments[5].department_id, programCode: "BSME"
+       departments[5].department_id, programCode: "BSCE"
+       departments[5].department_id, programCode: "BSEE"
+       departments[5].department_id, programCode: "BSIE"
+
+
+        #CEBU CAMPUS
+       departments[2].department_id, programCode: "BSIT"
+       departments[3].department_id, programCode: "BSBA-MM"
+       departments[3].department_id, programCode: "BSA"
+       departments[6].department_id, programCode: "BSED"
+       departments[6].department_id, programCode: "BSTM"
+       
+
+
+
+       
+       '''
+
+       
