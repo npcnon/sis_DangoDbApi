@@ -37,11 +37,11 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
 
     def validate_student_id(self, value):
         # Validate format
-        if not re.match(r'^\d{4}-\d{1,2}-\d{5}$', value):
-            raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNNN is the student number (5 digits).')
+        if not re.match(r'^\d{4}-\d{1,2}-\d{4}$', value):
+            raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNN is the student number ( digits).')
         return value
 
-    def validate(self, data):
+    def validate(self, data):   
         # Normalize department code to two digits
         student_id = data.get('student_id')
         if student_id:
@@ -62,7 +62,7 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
                 # Update the department code in the data to the normalized version
                 data['student_id'] = normalized_student_id
             else:
-                raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN.')
+                raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNN.')
         return data
 
 

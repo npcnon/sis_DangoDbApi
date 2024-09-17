@@ -120,7 +120,7 @@ class TblStudentBasicInfoApplications(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=13, primary_key=True)
+    student_id = models.CharField(max_length=12, primary_key=True)
     applicant_id = models.OneToOneField(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
