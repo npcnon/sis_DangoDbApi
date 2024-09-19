@@ -139,7 +139,7 @@ def create_api_view(model, serializer):
                 active_value = validated_data.pop('active', None)
                 try:
                     # Sending email for TblStudentAcademicHistory
-                    if model.__name__ in ["TblStudentBasicInfo"]:
+                    if model.__name__ in ["TblStudentBasicInfoApplication"]:
                         recipient_email = validated_data.get('email')
                         logger.info(f"Email found: {recipient_email}")
                         send_mail(
