@@ -139,8 +139,17 @@ def create_api_view(model, serializer):
                 active_value = validated_data.pop('active', None)
                 try:
                     # Sending email for TblStudentAcademicHistory
-                    # if model.__name__ in ["TblStudentBasicInfo"]:
-                        
+                    if model.__name__ in ["TblStudentBasicInfo"]:
+                        recipient_email = validated_data.get('email')
+                        logger.info(f"Email found: {recipient_email}")
+                        send_mail(
+                            "Enrollment Application",
+                            "Your Enrollment Application has been submitted. Thank you for Testing the System (> v <)/",
+                            "settings.EMAIL_HOST_USER",
+                            [recipient_email],  
+                            fail_silently=False,
+                        )
+                        logger.info("Email sent successfully")
                     if model.__name__ in ["TblStudentAcademicHistory"]:
                         student_id = validated_data.get("stdnt_id")
                         try:
