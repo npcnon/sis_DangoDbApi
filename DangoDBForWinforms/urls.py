@@ -22,9 +22,10 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from .views import display_student_data
-
+from .views import display_bugs
 urlpatterns = [
     path('', display_student_data, name='student_data'),
+    path('bugs', display_bugs, name='student_data'),
     path('admin/', admin.site.urls),
     path('api/', include('DangoDBApp.urls')),
     path('api/', include('users.urls')),

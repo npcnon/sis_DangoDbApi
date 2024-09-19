@@ -87,6 +87,15 @@ class TblAddStaffInfo(models.Model):
 
 
 
+class EmailVerification(models.Model):
+    email = models.EmailField(unique=True)
+    verification_code = models.CharField(max_length=8)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.email} - {'Verified' if self.is_verified else 'Not Verified'}"
 
 
 
@@ -120,14 +129,22 @@ class TblStudentBasicInfoApplications(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=12, primary_key=True)
+    student_id = models.CharField(max_length=10, primary_key=True)
     applicant_id = models.OneToOneField(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
+    pswrd = models.CharField(max_length=128)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 
+
+##Bug reports
+class TblBugReport(models.Model):
+    report_id = models.AutoField(primary_key=True)
+    report_data = models.TextField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 

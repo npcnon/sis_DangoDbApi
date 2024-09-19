@@ -24,7 +24,8 @@ from .models import (
     TblStudentAcademicHistoryApplications,
     TblAddPersonalDataApplications,
     TblStudentFamilyBackgroundApplications,
-    TblStudentAcademicBackgroundApplications
+    TblStudentAcademicBackgroundApplications,
+    TblBugReport,
 )
 
 # Generalized DateField that handles date parsing/validation
@@ -37,8 +38,8 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
 
     def validate_student_id(self, value):
         # Validate format
-        if not re.match(r'^\d{4}-\d{1,2}-\d{4}$', value):
-            raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNNN, where YYYY is the year, DD is the department id (1 or 2 digits), and NNNN is the student number ( digits).')
+        if not re.match(r'^\d{4}-\d{4}$', value):
+            raise serializers.ValidationError('Student ID must be in the format YYYY-NNNNN, where YYYY is the year, and NNNN is the student number ( digits).')
         return value
 
     def validate(self, data):   
@@ -46,23 +47,12 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
         student_id = data.get('student_id')
         if student_id:
             parts = student_id.split('-')
-            if len(parts) == 3:
-                year, dept, number = parts
-                # Normalize department code to two digits
-                if len(dept) == 1:
-                    normalized_dept = f'0{dept}'
-                elif len(dept) == 2:
-                    normalized_dept = dept
-                else:
-                    raise serializers.ValidationError('Department ID must be 1 or 2 digits long.')
-                
-                # Normalize student_id
-                normalized_student_id = f"{year}-{normalized_dept}-{number}"
-                
-                # Update the department code in the data to the normalized version
+            if len(parts) == 2:
+                year, number = parts
+                normalized_student_id = f"{year}-{number}"
                 data['student_id'] = normalized_student_id
             else:
-                raise serializers.ValidationError('Student ID must be in the format YYYY-DD-NNNN.')
+                raise serializers.ValidationError('Student ID must be in the format YYYY-NNNN.')
         return data
 
 
@@ -118,3 +108,5 @@ TblAddPersonalDataApplicationsSerializer = create_serializer(TblAddPersonalDataA
 TblStudentFamilyBackgroundApplicationsSerializer = create_serializer(TblStudentFamilyBackgroundApplications)
 TblStudentAcademicBackgroundApplicationsSerializer = create_serializer(TblStudentAcademicBackgroundApplications)
 TblStudentAcademicHistoryApplicationsSerializer = create_serializer(TblStudentAcademicHistoryApplications)
+TblBugReportSerializer = create_serializer(TblBugReport)
+#EmailVerificationSerializer = create_serializer(EmailVerification)

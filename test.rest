@@ -1,14 +1,14 @@
 POST http://127.0.0.1:8000/api/register
 Content-Type: application/json
 
-{ "name": "non","student_id": "2024-06-0007", "email": "qwe@mail.com", "password": "Pass1234!"  }
+{ "name": "non","student_id": "2024-01-0003", "email": "qwe2@mail.com", "password": "Pass1234!"  }
 
 ###
 
 POST http://127.0.0.1:8000/api/login 
 Content-Type: application/json
 
-{ "student_id": "2024-06-0003", "password": "Pass1234!" }
+{ "student_id": "2024-01-0999", "password": "default123123" }
 
 
 ###

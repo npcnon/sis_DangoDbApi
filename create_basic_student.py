@@ -58,9 +58,9 @@ def generate_student_data(first_name, last_name, program, campus, unique_id):
         year_level = "4th year"
     
     return {
-        "first_name": f"{first_name}{unique_id}",  # Ensure uniqueness with unique_id
+        "first_name": f"{first_name}",  # Ensure uniqueness with unique_id
         "middle_name": random.choice(middle_names),
-        "last_name": f"{last_name}{unique_id}",  # Ensure uniqueness with unique_id
+        "last_name": f"{last_name}",  # Ensure uniqueness with unique_id
         "suffix": random.choice(suffixes),
         "is_transferee": random.choice([True, False]),
         "contact_number": f"09{random.randint(100000000, 999999999)}",
@@ -80,12 +80,11 @@ programs = mandaue_programs + cebu_programs
 
 sample_data = []
 
-# Generate 1000 unique entries
-for i in range(1000):
+for i in range(10):
     program, campus = random.choice(programs)
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
-    unique_id = i  # Ensure uniqueness with an ID for names and email
+    unique_id = i  
     sample_data.append(generate_student_data(first_name, last_name, program, campus, unique_id))
 
 # Insert into the database

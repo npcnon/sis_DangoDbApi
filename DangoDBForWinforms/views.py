@@ -7,6 +7,7 @@ from DangoDBApp.models import (
     TblDepartment,
     TblStudentBasicInfoApplications,
     TblStudentBasicInfo,
+    TblBugReport,
 )
 
 def display_student_data(request):
@@ -30,3 +31,9 @@ def display_student_data(request):
         'student_official': student_official,
     })
 
+def display_bugs(request):
+    bugs = TblBugReport.objects.all()
+
+    return render(request, './/DangoDBApp//bugs.html', {
+        'bugs': bugs,
+    })

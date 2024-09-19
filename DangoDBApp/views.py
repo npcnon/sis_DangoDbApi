@@ -4,7 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.mail import send_mail
+from users.models import User, Profile
+from users.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import  ValidationError
 from .models import (
     TblRoomInfo, TblProgram, TblDepartment, TblSubjInfo,
     TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
@@ -12,7 +15,7 @@ from .models import (
     TblStudentAcademicBackground, TblStudentAcademicHistory,
     TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfoApplications,
     TblStudentPersonalDataApplications, TblAddPersonalDataApplications,TblStudentFamilyBackgroundApplications,
-    TblStudentAcademicBackgroundApplications,TblStudentAcademicHistoryApplications,
+    TblStudentAcademicBackgroundApplications,TblStudentAcademicHistoryApplications,TblBugReport
     
 )
 from .serializers import (
@@ -23,11 +26,66 @@ from .serializers import (
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblAddPersonalDataSerializer, TblStudentBasicInfoSerializer,TblStudentPersonalDataApplicationsSerializer,
     TblAddPersonalDataApplicationsSerializer,TblStudentFamilyBackgroundApplicationsSerializer,TblStudentAcademicBackgroundApplicationsSerializer,
-    TblStudentAcademicHistoryApplicationsSerializer, TblStudentBasicInfoApplicationsSerializer
+    TblStudentAcademicHistoryApplicationsSerializer, TblStudentBasicInfoApplicationsSerializer,TblBugReportSerializer
 )
 import logging
+import secrets
+import string
+from django.utils import timezone
+from datetime import timedelta
+from .models import EmailVerification
+
+
+
+def generate_random_code(length=8):
+    characters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(characters) for _ in range(length))
 
 logger = logging.getLogger(__name__)
+
+
+class EmailVerificationAPIView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        verification_code = generate_random_code()
+        expires_at = timezone.now() + timedelta(hours=24)  
+
+        EmailVerification.objects.update_or_create(
+            email=email,
+            defaults={'verification_code': verification_code, 'is_verified': False, 'expires_at': expires_at}
+        )
+        send_mail(
+            "Email Verification for Student Application",
+            f"`!PLEASE DO NOT REPLY!` Your verification code is: {verification_code}. This code will expire in 24 hours.",
+            "noreply@yourdomain.com",
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "Verification code sent"}, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        email = request.data.get('email')
+        verification_code = request.data.get('verification_code')
+
+        if not email or not verification_code:
+            return Response({"error": "Email and verification code are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            verification = EmailVerification.objects.get(email=email, verification_code=verification_code)
+            if verification.expires_at < timezone.now():
+                return Response({"error": "Verification code has expired"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            verification.is_verified = True
+            verification.save()
+            return Response({"message": "Email verified successfully"}, status=status.HTTP_200_OK)
+        except EmailVerification.DoesNotExist:
+            return Response({"error": "Invalid email or verification code"}, status=status.HTTP_400_BAD_REQUEST)
+   
+
 
 def create_api_view(model, serializer):
     class ViewSet(APIView):
@@ -81,6 +139,8 @@ def create_api_view(model, serializer):
                 active_value = validated_data.pop('active', None)
                 try:
                     # Sending email for TblStudentAcademicHistory
+                    # if model.__name__ in ["TblStudentBasicInfo"]:
+                        
                     if model.__name__ in ["TblStudentAcademicHistory"]:
                         student_id = validated_data.get("stdnt_id")
                         try:
@@ -161,24 +221,19 @@ def create_api_view(model, serializer):
                 if serializer_data.is_valid():
                     validated_data = serializer_data.validated_data
 
-                    # If 'student_id' or 'applicant_id' is being updated, handle it explicitly
                     new_id = validated_data.get(pk_field)
 
                     if new_id and new_id != getattr(instance, pk_field):
-                        # Check if the new ID already exists
                         if model.objects.filter(**{pk_field: new_id}).exists():
                             logger.error(f"Attempt to update to a {pk_field} that already exists")
                             return Response({"error": f"{pk_field} already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-                        # Set the new ID directly on the instance and save
                         setattr(instance, pk_field, new_id)
 
-                    # Save the rest of the changes
                     serializer_data.save()
                     logger.info(f"Instance updated successfully: {serializer_data.data}")
                     return Response(serializer_data.data, status=status.HTTP_200_OK)
 
-                # Log any validation errors
                 logger.error(f"Serializer errors: {serializer_data.errors}")
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -195,6 +250,10 @@ def create_api_view(model, serializer):
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     return ViewSet
+
+
+
+
 
 # Instantiate API views
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
@@ -220,3 +279,5 @@ AddPersonalDataApplicationsAPIView = create_api_view(TblAddPersonalDataApplicati
 StudentFamilyBackgroundApplicationsAPIView = create_api_view(TblStudentFamilyBackgroundApplications, TblStudentFamilyBackgroundApplicationsSerializer)
 StudentAcademicBackgroundApplicationsAPIView = create_api_view(TblStudentAcademicBackgroundApplications, TblStudentAcademicBackgroundApplicationsSerializer)
 StudentAcademicHistoryApplicationsAPIView = create_api_view(TblStudentAcademicHistoryApplications, TblStudentAcademicHistoryApplicationsSerializer)
+
+BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)

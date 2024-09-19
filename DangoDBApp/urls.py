@@ -21,7 +21,9 @@ from .views import (
     AddPersonalDataApplicationsAPIView,
     StudentFamilyBackgroundApplicationsAPIView,
     StudentAcademicBackgroundApplicationsAPIView,
-    StudentAcademicHistoryApplicationsAPIView
+    StudentAcademicHistoryApplicationsAPIView,
+    EmailVerificationAPIView,
+    BugReportAPIView,
     )
 
 urlpatterns = [
@@ -35,14 +37,18 @@ urlpatterns = [
     path('schedule/', ScheduleAPIView.as_view(), name = 'schedule-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
 
-    path('stdntbasicinfo',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
-    path('stdntbasicinfo/',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
+    path('emailapi', EmailVerificationAPIView.as_view(), name = 'email-verification'),
+
+
     path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
     path('addstdntpersonal/',AddPersonalDataAPIView.as_view(),name = 'student-addpersonal-list'),
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
+
     
+    path('stdntbasicinfo',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
+    path('stdntbasicinfo/',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
     path('stdntbasicinfoapplication',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-application'),
     path('stdntbasicinfoapplication/',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-application'),
     path('stdntpersonalapplication/',StudentPersonalDataApplicationsAPIView.as_view(),name = 'student-personal-application'),
@@ -51,7 +57,7 @@ urlpatterns = [
     path('stdntacademicbackgroundapplication/',StudentAcademicBackgroundApplicationsAPIView.as_view(),name = 'student-academic-info-application'),
     path('stdntacademichistoryapplication/',StudentAcademicHistoryApplicationsAPIView.as_view(),name = 'student-academichistory-list'),
 
-
+    path('bugs/', BugReportAPIView.as_view(), name= 'bug-report'),
     path('stdntofficialmod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoAPIView.as_view(),name = 'student-official-info-mod'),
     path('stdntbasicinfomod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoApplicationsAPIView.as_view(),name = 'student-basic-info-mod'),
     path('deactivate_or_modify_program/<str:id_or_offercode>/<str:deactivate>', ProgramAPIView.as_view(), name='deactivate_modify_program-active'),
