@@ -15,9 +15,8 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         print('signals is running')
         try:
-            # Get the related TblStudentBasicInfoApplications instance
             related_application= instance.applicant_id
-            # Create a new User instance
+
             user = User.objects.create(
                 student_id=instance.student_id,
                 name=f"{related_application.first_name} {related_application.middle_name or ''} {related_application.last_name}".strip(),
@@ -38,7 +37,6 @@ def update_student_basic_info(sender, instance, created, **kwargs):
             student_info = TblStudentBasicInfo.objects.get(applicant_id=instance)
             user = User.objects.get(student_id=student_info.student_id)
             
-            # Update user information
             user.name = f"{instance.first_name} {instance.middle_name or ''} {instance.last_name}".strip()
             user.email = instance.email
             user.save()
