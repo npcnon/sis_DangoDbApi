@@ -99,7 +99,11 @@ class EmailVerification(models.Model):
 
 
 
+class TblCampus(models.Model):
+    name = models.CharField(max_length=225, primary_key=True)
 
+    def __str__(self):
+        return self.name
 ####Student Basic info#####
 
 class TblStudentBasicInfoApplications(models.Model):
@@ -118,7 +122,7 @@ class TblStudentBasicInfoApplications(models.Model):
     year_level = models.CharField(max_length=50)
     contact_number = models.CharField(max_length=11)
     address = models.TextField()
-    campus = models.CharField(max_length=225)
+    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     program = models.CharField(max_length=225)
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
@@ -129,9 +133,11 @@ class TblStudentBasicInfoApplications(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=10, primary_key=True)
+    student_id = models.CharField(max_length=10)  
+    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = (('campus', 'student_id'),)
     applicant_id = models.OneToOneField(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
-    pswrd = models.CharField(max_length=128)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
