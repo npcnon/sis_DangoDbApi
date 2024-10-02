@@ -7,21 +7,7 @@ from django.core.exceptions import ValidationError
 
 
 ####Program related stuff
-class TblDepartment(models.Model):
-    department_id = models.CharField(max_length=255, primary_key=True)
-    department = models.CharField(max_length=255)
-    active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return f"Department ID: {self.department_id}, Name: {self.department}, Active: {self.active}"
-
-class TblProgram(models.Model):
-    program = models.CharField(max_length=255)
-    department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"id: {self.id}, program: {self.program}, Department: {self.department_Id.department}, Active: {self.active}"
 
 class TblSubjInfo(models.Model):
     offercode = models.CharField(max_length=255, primary_key=True)
@@ -100,20 +86,38 @@ class EmailVerification(models.Model):
 
 
 class TblCampus(models.Model):
-    name = models.CharField(max_length=225, primary_key=True)
+    name = models.CharField(max_length=225)
+    address = models.CharField(max_length=225)
 
     def __str__(self):
         return self.name
 ####Student Basic info#####
 
+class TblDepartment(models.Model):
+    department_name = models.CharField(max_length=255)
+    campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    department_code = models.CharField(max_length=255)
+    department_dean = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+class TblProgram(models.Model):
+    program = models.CharField(max_length=255)
+    department_Id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"id: {self.id}, program: {self.program}, Department: {self.department_Id.department}, Active: {self.active}"
+
+
+
+
 class TblStudentBasicInfoApplications(models.Model):
     STATUS_CHOICES = [
+        ('initially enrolled', 'Initially Enrolled'),
         ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
         ('rejected', 'Rejected'),
     ]
 
-    applicant_id = models.AutoField(primary_key=True)
+    basicdata_applicant_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
@@ -126,21 +130,13 @@ class TblStudentBasicInfoApplications(models.Model):
     program = models.CharField(max_length=225)
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class TblStudentBasicInfo(models.Model):
-    student_id = models.CharField(max_length=10)  
-    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
-    class Meta:
-        unique_together = (('campus', 'student_id'),)
-    applicant_id = models.OneToOneField(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
 
 
 
@@ -158,6 +154,11 @@ class TblBugReport(models.Model):
 
 # student personal data
 class BaseTblStudentPersonalData(models.Model):
+    STATUS_CHOICES = [
+        ('officially enrolled', 'Officially Enrolled'),
+        ('pending', 'Pending'),
+        ('rejected', 'Rejected'),
+    ]
     f_name = models.CharField(max_length=100)
     m_name = models.CharField(max_length=100, null=True, blank=True)
     suffix = models.CharField(max_length=100, null=True, blank=True)
@@ -169,16 +170,31 @@ class BaseTblStudentPersonalData(models.Model):
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
     email = models.EmailField() 
-    acr = models.CharField(max_length=100, null=True, blank=True) 
+    acr = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         abstract = True
 
 
 class TblStudentPersonalDataApplications(BaseTblStudentPersonalData):
-    applicant_id = models.AutoField(primary_key=True)
+    fulldata_applicant_id = models.AutoField(primary_key=True)
+    basicdata_applicant_id = models.ForeignKey(TblStudentBasicInfoApplications, on_delete=models.CASCADE)
+
+class TblStudentOfficialInfo(models.Model):
+    student_id = models.CharField(max_length=10)
+    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    password = models.TextField(null=True, blank=True)
+    class Meta:
+        unique_together = (('campus', 'student_id'),)  
+
+    fulldata_applicant_id = models.OneToOneField(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
 class TblStudentPersonalData(BaseTblStudentPersonalData):
     student_id = models.CharField(max_length=12, primary_key=True)
@@ -196,13 +212,15 @@ class BaseTblAddPersonalData(models.Model):
     province_contact_number = models.CharField(max_length=20,null=True, blank=True)
     citizenship = models.CharField(max_length=70)
     active = models.BooleanField(default=True)      
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
 
 
 class TblAddPersonalDataApplications(BaseTblAddPersonalData):
-    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
 
 
 class TblAddPersonalData(BaseTblAddPersonalData):
@@ -237,16 +255,15 @@ class BaseTblStudentFamilyBackground(models.Model):
     guardian_contact_number = models.CharField(max_length=30,null=True, blank=True)
     guardian_email = models.EmailField(null=True, blank=True)
     active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
 
 
 class TblStudentFamilyBackgroundApplications(BaseTblStudentFamilyBackground):
-    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
-class TblStudentFamilyBackground(BaseTblStudentFamilyBackground):
-    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
-
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
 
 
 
@@ -263,16 +280,15 @@ class BaseTblStudentAcademicBackground(models.Model):
     year_graduate = models.IntegerField()
     application_type = models.CharField(max_length=15)
     active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
 
 
 class TblStudentAcademicBackgroundApplications(BaseTblStudentAcademicBackground):
-    applicant_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
-
-class TblStudentAcademicBackground(BaseTblStudentAcademicBackground):
-    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
 
 
 
@@ -298,16 +314,15 @@ class BaseTblStudentAcademicHistory(models.Model):
     college_honors = models.TextField(default='None', blank=True, null=True) 
     program = models.TextField(default='Not Specified', blank=True, null=True)  
     active = models.BooleanField(default=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         abstract = True
     
 
 class TblStudentAcademicHistoryApplications(BaseTblStudentAcademicHistory):
-    applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalDataApplications, on_delete=models.CASCADE)
 
-class TblStudentAcademicHistory(BaseTblStudentAcademicHistory):
-    student_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
 
 
 

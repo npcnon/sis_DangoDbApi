@@ -4,34 +4,28 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import TblStudentBasicInfo, TblStudentBasicInfoApplications
 from users.models import User, Profile
-from users.serializers import TblStudentBasicInfoApplicationsSerializer
 from django.contrib.auth.hashers import make_password
 import logging
 
 logger = logging.getLogger(__name__)
 
-@receiver(post_save, sender=TblStudentBasicInfo)
+@receiver(post_save, sender=TblStudentBasicInfoApplications)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         print('signals is running')
         try:
-            related_application= instance.applicant_id
-
             user = User.objects.create(
                 student_id=instance.student_id,
-                name=f"{related_application.first_name} {related_application.middle_name or ''} {related_application.last_name}".strip(),
-                email=related_application.email,
+                name=f"{instance.first_name} {instance.middle_name or ''} {instance.last_name}".strip(),
+                email=instance.email,
                 password=make_password(instance.pswrd)  
             )
             print(user)
             Profile.objects.create(user=user)
 
-            logger.info(f"Created new user and profile for student ID: {instance.student_id}")
+            print(f"Created new user and profile for student ID: {instance.student_id}")
         except Exception as e:
-            logger.error(f"Error creating user and profile for student ID {instance.student_id}: {str(e)}")
-
-@receiver(post_save, sender=TblStudentBasicInfoApplications)
-def update_student_basic_info(sender, instance, created, **kwargs):
+            print(f"Error creating user and profile for student ID {instance.student_id}: {str(e)}")
     if not created:
         try:
             student_info = TblStudentBasicInfo.objects.get(applicant_id=instance)
@@ -48,3 +42,4 @@ def update_student_basic_info(sender, instance, created, **kwargs):
             logger.warning(f"No User found for student ID: {student_info.student_id}")
         except Exception as e:
             logger.error(f"Error updating user information: {str(e)}")
+    

@@ -38,8 +38,8 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
 
     def validate_student_id(self, value):
         # Validate format
-        if not re.match(r'^\d{4}-\d{4}$', value):
-            raise serializers.ValidationError('Student ID must be in the format YYYY-NNNNN, where YYYY is the year, and NNNN is the student number ( digits).')
+        if not re.match(r'^\d{4}-\d{5}$', value):
+            raise serializers.ValidationError('Student ID must be in the format YYYY-NNNNN, where YYYY is the year, and NNNNN is the student number (5 digits).')
         return value
 
     def validate(self, data):   

@@ -100,7 +100,15 @@ DATABASES = {
         'PASSWORD': 'qwerty',
         'HOST':'localhost',
         'PORT':'3306',
-    }
+    },
+     'secondary': { 
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'AnotherDatabase',
+        'USER': 'root',
+        'PASSWORD': 'qwerty',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    },
 }
 
 # #SQLite
