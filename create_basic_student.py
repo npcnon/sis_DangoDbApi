@@ -6,7 +6,7 @@ import random
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
-from DangoDBApp.models import TblStudentBasicInfoApplications
+from DangoDBApp.models import TblStudentBasicInfo
 
 mandaue_programs = [
     ("BSIT", "Mandaue Campus"),
@@ -89,7 +89,7 @@ for i in range(10):
 
 # Insert into the database
 for data in sample_data:
-    TblStudentBasicInfoApplications.objects.create(
+    TblStudentBasicInfo.objects.create(
         first_name=data["first_name"],
         middle_name=data["middle_name"],
         last_name=data["last_name"],

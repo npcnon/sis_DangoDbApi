@@ -1,0 +1,111 @@
+
+### POST basic student
+POST https://afknon.pythonanywhere.com/api/stdntbasicinfo/
+Content-Type: application/json
+
+{
+    "first_name": "Pablo",
+    "middle_name": "Esco",
+    "last_name": "Bar",
+    "is_transferee": "True",
+    "contact_number": "09111111111",
+    "year_level": "2nd Year",
+    "address": "Somewhere around the earth",
+    "campus": 1,
+    "program": "BSIT",
+    "birth_date": "2000-01-01",
+    "sex": "Male",
+    "email": "afkmhafric@gmail.com"
+}
+
+### POST Full student
+POST http://127.0.0.1:8000/api/fullstudentdata/
+Content-Type: application/json
+
+{
+    "personal_data": {
+        "basicdata_applicant_id": 11,
+        "f_name": "Pablo",
+        "m_name": "Esco",
+        "suffix": "Bar",
+        "l_name": "Smith",
+        "sex": "Male",
+        "birth_date": "2000-01-01",
+        "birth_place": "New York",
+        "marital_status": "Single",
+        "religion": "Christian",
+        "country": "USA",
+        "email": "john.smith@example.com",
+        "acr": "123456",
+        "status": "officially enrolled"
+    },
+    "additional_data": {
+        "city_address": "123 Main St",
+        "province_address": "NY",
+        "contact_number": "1234567890",
+        "city_contact_number": "0987654321",
+        "province_contact_number": "1122334455",
+        "citizenship": "American"
+    },
+    "family_background": {
+        "father_fname": "Robert",
+        "father_mname": "Michael",
+        "father_lname": "Smith",
+        "father_contact_number": "1234567890",
+        "father_email": "robert.smith@example.com",
+        "father_occupation": "Engineer",
+        "father_income": 80000,
+        "father_company": "ABC Corp",
+        "mother_fname": "Mary",
+        "mother_mname": "Ann",
+        "mother_lname": "Smith",
+        "mother_contact_number": "0987654321",
+        "mother_email": "mary.smith@example.com",
+        "mother_occupation": "Doctor",
+        "mother_income": 95000,
+        "mother_company": "XYZ Clinic",
+        "guardian_fname": "Alice",
+        "guardian_mname": "B.",
+        "guardian_lname": "Johnson",
+        "guardian_relation": "Aunt",
+        "guardian_contact_number": "4567891230",
+        "guardian_email": "alice.johnson@example.com"
+    },
+    "academic_background": {
+        "program": 1,
+        "major_in": "Computer Science",
+        "student_type": "Full-time",
+        "semester_entry": "1st Semester",
+        "year_level":"1st Year",
+        "year_entry": 2023,
+        "year_graduate": 2027,
+        "application_type": "New"
+    },
+    "academic_history": {
+        "elementary_school": "ABC Elementary",
+        "elementary_address": "Elementary St, City",
+        "elementary_honors": "Valedictorian",
+        "elementary_graduate": 2012,
+        "junior_highschool": "XYZ Junior High",
+        "junior_address": "Junior High St, City",
+        "junior_honors": "Honors",
+        "junior_graduate": 2015,
+        "senior_highschool": "LMN Senior High",
+        "senior_address": "Senior High St, City",
+        "senior_honors": "Graduated with Honors",
+        "senior_graduate": 2018,
+        "ncae_grade": "95",
+        "ncae_year_taken": 2018,
+        "latest_college": "Best College",
+        "college_address": "College St, City",
+        "college_honors": "Cum Laude",
+        "program": "Bachelor of Science in Information Technology"
+    }
+}
+
+
+
+
+
+### GET Full student
+GET http://127.0.0.1:8000/fullstudentdata/

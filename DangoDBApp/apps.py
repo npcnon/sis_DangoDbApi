@@ -6,4 +6,4 @@ class DangodbappConfig(AppConfig):
     name = 'DangoDBApp'
 
     def ready(self):
-        import DangoDBApp.signals
+        pass#import DangoDBApp.signals

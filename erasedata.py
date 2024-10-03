@@ -21,7 +21,7 @@ from DangoDBApp.models import (
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
-    TblAddPersonalData,
+    TblStudentAddPersonalData,
 )
 # Rest of your script remains the same...
 

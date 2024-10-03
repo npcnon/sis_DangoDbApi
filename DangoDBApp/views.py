@@ -9,25 +9,17 @@ from users.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
 from .models import (
-    TblRoomInfo, TblProgram, TblDepartment, TblSubjInfo,
-    TblStaffInfo, TblAddStaffInfo, TblSchedule, TblUsers,
+    TblRoomInfo, TblProgram, TblDepartment, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
-    TblStudentAcademicBackground, TblStudentAcademicHistory,
-    TblStdntSubjEnrolled, TblAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfoApplications,
-    TblStudentPersonalDataApplications, TblAddPersonalDataApplications,TblStudentFamilyBackgroundApplications,
-    TblStudentAcademicBackgroundApplications,TblStudentAcademicHistoryApplications,TblBugReport
-    
+    TblStudentAcademicBackground, TblStudentAcademicHistory, TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport
 )
 from .serializers import (
-    TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,
-    TblSubjInfoSerializer, TblStaffInfoSerializer, TblAddStaffInfoSerializer,
-    TblScheduleSerializer, TblStdntSubjEnrolledSerializer, TblUsersSerializer,
+    TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
-    TblAddPersonalDataSerializer, TblStudentBasicInfoSerializer,TblStudentPersonalDataApplicationsSerializer,
-    TblAddPersonalDataApplicationsSerializer,TblStudentFamilyBackgroundApplicationsSerializer,TblStudentAcademicBackgroundApplicationsSerializer,
-    TblStudentAcademicHistoryApplicationsSerializer, TblStudentBasicInfoApplicationsSerializer,TblBugReportSerializer
+    TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,TblBugReportSerializer,
 )
+
 import logging
 import secrets
 import string
@@ -139,7 +131,7 @@ def create_api_view(model, serializer):
                 active_value = validated_data.pop('active', None)
                 try:
                     # Sending email for TblStudentAcademicHistory
-                    if model.__name__ in ["TblStudentBasicInfoApplications"]:
+                    if model.__name__ in ["TblStudentBasicInfo"]:
                         recipient_email = validated_data.get('email')
                         logger.info(f"Email found: {recipient_email}")
                         send_mail(
@@ -154,7 +146,7 @@ def create_api_view(model, serializer):
                     if model.__name__ in ["TblStudentAcademicHistory"]:
                         student_id = validated_data.get("stdnt_id")
                         try:
-                            add_personal_data = TblAddPersonalData.objects.get(stdnt_id=student_id)
+                            add_personal_data = TblStudentAddPersonalData.objects.get(stdnt_id=student_id)
                             recipient_email = add_personal_data.email
                             logger.info(f"Email found: {recipient_email}")
                             send_mail(
@@ -165,7 +157,7 @@ def create_api_view(model, serializer):
                                 fail_silently=False,
                             )
                             logger.info("Email sent successfully")
-                        except TblAddPersonalData.DoesNotExist:
+                        except TblStudentAddPersonalData.DoesNotExist:
                             logger.error("No corresponding email found for the student.")
                             return Response({"error": "No corresponding email found for the student."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -269,25 +261,14 @@ def create_api_view(model, serializer):
 RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
 ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
-SubjInfoAPIView = create_api_view(TblSubjInfo, TblSubjInfoSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
-StaffInfoAPIView = create_api_view(TblStaffInfo, TblStaffInfoSerializer)
-AddStaffInfoAPIView = create_api_view(TblAddStaffInfo, TblAddStaffInfoSerializer)
-ScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
-StdntSubjAPIView = create_api_view(TblStdntSubjEnrolled, TblStdntSubjEnrolledSerializer)
 UsersAPIView = create_api_view(TblUsers, TblUsersSerializer)
 StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
 StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
-AddPersonalDataAPIView = create_api_view(TblAddPersonalData,TblAddPersonalDataSerializer)
+StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
 
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
-StudentBasicInfoApplicationsAPIView = create_api_view(TblStudentBasicInfoApplications, TblStudentBasicInfoApplicationsSerializer)
-StudentPersonalDataApplicationsAPIView = create_api_view(TblStudentPersonalDataApplications, TblStudentPersonalDataApplicationsSerializer)
-AddPersonalDataApplicationsAPIView = create_api_view(TblAddPersonalDataApplications, TblAddPersonalDataApplicationsSerializer)
-StudentFamilyBackgroundApplicationsAPIView = create_api_view(TblStudentFamilyBackgroundApplications, TblStudentFamilyBackgroundApplicationsSerializer)
-StudentAcademicBackgroundApplicationsAPIView = create_api_view(TblStudentAcademicBackgroundApplications, TblStudentAcademicBackgroundApplicationsSerializer)
-StudentAcademicHistoryApplicationsAPIView = create_api_view(TblStudentAcademicHistoryApplications, TblStudentAcademicHistoryApplicationsSerializer)
 
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)

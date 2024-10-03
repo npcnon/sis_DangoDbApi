@@ -1,0 +1,8 @@
+from DangoDBApp.models import TblCampus
+
+
+mandaue_campus = TblCampus.objects.create(name="Mandaue Campus", address="Mandaue City, Cebu")
+cebu_campus = TblCampus.objects.create(name="Cebu Campus", address="Cebu City, Cebu")
+
+print(f"Created campus: {mandaue_campus}")
+print(f"Created campus: {cebu_campus}")

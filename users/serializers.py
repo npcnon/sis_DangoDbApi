@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import User, Profile
-from DangoDBApp.models import TblStudentBasicInfo, TblStudentBasicInfoApplications
+from DangoDBApp.models import TblStudentBasicInfo, TblStudentBasicInfo
 
 class TblStudentBasicInfoApplicationsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TblStudentBasicInfoApplications
+        model = TblStudentBasicInfo
         fields = ['first_name', 'middle_name', 'last_name','suffix','is_transferee','contact_number' ,'email', 'year_level', 'program', 'campus', 'status','sex','birth_date', 'address']
 
 class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
