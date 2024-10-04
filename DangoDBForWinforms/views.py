@@ -19,7 +19,7 @@ def display_student_data(request):
 
     # Query for both applicant data and official student data
     student_basic_info = TblStudentBasicInfo.objects.all()
-    student_official = TblStudentBasicInfo.objects.select_related('applicant_id')  
+    student_official = TblStudentBasicInfo.objects.select_related('fulldata_applicant_id')  
 
     return render(request, './/DangoDBApp//student_data.html', {
         'student_personal_data': student_personal_data,
