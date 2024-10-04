@@ -275,12 +275,12 @@
             {% for official in student_official %}
             <tr>
                 <td>{{ official.student_id }}</td>
-                <td>{{ official.applicant_id.fulldata_applicant_id }}</td> <!-- Access related applicant's ID -->
+                <td>{{ official.fulldata_applicant_id.fulldata_applicant_id }}</td> <!-- Access related applicant's ID -->
                 <td>
                     {{ official.fulldata_applicant_id.first_name }} 
                     {% if official.fulldata_applicant_id.middle_name %}{{ official.fulldata_applicant_id.middle_name }}{% endif %}
                     {{ official.fulldata_applicant_id.last_name }}
-                    {% if official.fulldata_applicant_id.suffix %}{{ official.applicant_id.suffix }}{% endif %}
+                    {% if official.fulldata_applicant_id.suffix %}{{ official.fulldata_applicant_id.suffix }}{% endif %}
                 </td>
                 <td>{{ official.fulldata_applicant_id.sex }}</td>
                 <td>{{ official.fulldata_applicant_id.contact_number }}</td>
