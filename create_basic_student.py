@@ -7,7 +7,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 from DangoDBApp.models import TblStudentBasicInfo
-
+#asdasd
 mandaue_programs = [
     ("BSIT", "Mandaue Campus"),
     ("BSBA-HRM", "Mandaue Campus"),
