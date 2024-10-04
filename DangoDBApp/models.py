@@ -189,7 +189,7 @@ class TblStudentPersonalData(models.Model):
                             )
 
 class TblStudentOfficialInfo(models.Model):
-    student_id = models.CharField(primary_key=True,max_length=10)
+    student_id = models.CharField(max_length=10)
     campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     password = models.CharField(max_length=128, null=True, blank=True)
 
@@ -207,7 +207,7 @@ class TblStudentOfficialInfo(models.Model):
 
 #student additional data
 class TblStudentAddPersonalData(models.Model):
-    fulldata_applicant_id = models.OneToOneField(
+    fulldata_applicant_id = models.ForeignKey(
         TblStudentPersonalData,
           on_delete=models.CASCADE,
           related_name='related_addpersonal_data'

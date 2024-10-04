@@ -1,10 +1,41 @@
 
+
+# #GET basic student
+# basic student same as before
+# as usual we can use ?filter=fieldname=fieldvalue
+# for example: http://127.0.0.1:8000/api/stdntbasicinfo/?filter=first_name=Lucy
+# can also use ?latest=true to get the most latest data http://127.0.0.1:8000/api/stdntbasicinfo/?latest=true
+# can nest ?latest=true to filter to get the latest data that is filtered http://127.0.0.1:8000/api/stdntbasicinfo/?latest=true&filter=first_name=Lucy
+GET http://127.0.0.1:8000/api/stdntbasicinfo/
+
+### GET Full student
+## can use filter but in a more comprehensive way
+
+#####Example1 filter: using 1 filter argument which is `id` 
+## you can use `?filter=id=1` to get all the rows and 
+## models inside `Full Student Data` that have a field that is `id` and is equal to `1`
+
+##### example2 filer: using model as a filter argument to get all the data on that model
+## you can use `?filter=personal_data` to get all the data in `personal_data` model
+
+
+#####example3 filter: using2 filter argument which is the `model` and the `id`
+## you can use `?filter=personal_data=f_name=Jane` with this you can get all the data in personal_data with the
+## first name `Jane`
+
+
+GET http://127.0.0.1:8000/api/full-student-data/?filter=academic_history
+
+
+
+
+
 ### POST basic student
-POST https://afknon.pythonanywhere.com/api/stdntbasicinfo/
+POST http://127.0.0.1:8000/api/stdntbasicinfo/
 Content-Type: application/json
 
 {
-    "first_name": "Pablo",
+    "first_name": "Pablot",
     "middle_name": "Esco",
     "last_name": "Bar",
     "is_transferee": "True",
@@ -15,17 +46,17 @@ Content-Type: application/json
     "program": "BSIT",
     "birth_date": "2000-01-01",
     "sex": "Male",
-    "email": "afkmhafric@gmail.com"
+    "email": "afkmhafric9@gmail.com"
 }
 
 ### POST Full student
-POST http://127.0.0.1:8000/api/fullstudentdata/
+POST http://127.0.0.1:8000/api/full-student-data/
 Content-Type: application/json
 
 {
     "personal_data": {
-        "basicdata_applicant_id": 11,
-        "f_name": "Pablo",
+        "basicdata_applicant_id": 14,
+        "f_name": "Pablot",
         "m_name": "Esco",
         "suffix": "Bar",
         "l_name": "Smith",
@@ -39,7 +70,7 @@ Content-Type: application/json
         "acr": "123456",
         "status": "officially enrolled"
     },
-    "additional_data": {
+    "add_personal_data": {
         "city_address": "123 Main St",
         "province_address": "NY",
         "contact_number": "1234567890",
@@ -103,9 +134,27 @@ Content-Type: application/json
     }
 }
 
+### POST additional personal data student
+POST http://127.0.0.1:8000/api/add-personal-data/
+Content-Type: application/json
 
+{
+    "fulldata_applicant_id": 2,
+    "city_address": "123 Main St",
+    "province_address": "Nz",
+    "contact_number": "qwe",
+    "city_contact_number": "0987654321",
+    "province_contact_number": "1122334455",
+    "citizenship": "American"
+}
+### POST Official student
+POST http://127.0.0.1:8000/api/official-student-data/
+Content-Type: application/json
 
+{
+    "student_id": "2024-00001",
+    "campus": 2,
+    "password": "default pass or can be blank",
+    "fulldata_applicant_id": 2
+}
 
-
-### GET Full student
-GET http://127.0.0.1:8000/fullstudentdata/

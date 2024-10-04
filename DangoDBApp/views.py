@@ -11,13 +11,16 @@ from rest_framework.exceptions import  ValidationError
 from .models import (
     TblRoomInfo, TblProgram, TblDepartment, TblUsers,
     TblStudentPersonalData, TblStudentFamilyBackground,
-    TblStudentAcademicBackground, TblStudentAcademicHistory, TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport
+    TblStudentAcademicBackground, TblStudentAcademicHistory, 
+    TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
+    TblStudentOfficialInfo,
 )
 from .serializers import (
     TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,TblUsersSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
-    TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,TblBugReportSerializer,
+    TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
+    TblBugReportSerializer, TblStudentOfficialInfoSerializer,
 )
 
 import logging
@@ -268,6 +271,9 @@ StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFam
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
+
+
+StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
 
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
 

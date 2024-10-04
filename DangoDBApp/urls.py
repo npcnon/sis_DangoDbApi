@@ -14,15 +14,22 @@ from .views import (
     StudentBasicInfoAPIView,
     EmailVerificationAPIView,
     BugReportAPIView,
+    StudentOfficialInfoAPIView,
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
 
 urlpatterns = [
     #Full Student Data
-    path('fullstudentdata/', StudentDataAPIView.as_view(), name='full-student-data'),
-    path('fullstudentdata', StudentDataAPIView.as_view(), name='full-student-data'),
+    path('full-student-data/', StudentDataAPIView.as_view(), name='full-student-data'),
+    path('full-student-data', StudentDataAPIView.as_view(), name='full-student-data'),
 
 
+    #Official student Data
+    path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
+    path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
+    
+    
+    
     #path('apimymodel/', TblProgramAPIView.as_view(), name='mymodel-list'),
     path('room/', RoomAPIView.as_view(), name='room-list'),
     path('program/', ProgramAPIView.as_view(), name = 'program-list'),
@@ -33,12 +40,12 @@ urlpatterns = [
 
 
     path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
-    path('addstdntpersonal/',StudentAddPersonalDataAPIView.as_view(),name = 'student-addpersonal-list'),
+    path('add-personal-data/',StudentAddPersonalDataAPIView.as_view(),name = 'add-personal-data'),
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
     path('stdntacademichistory/',StudentAcademicHistoryAPIView.as_view(),name = 'student-academichistory-list'),
 
-    
+
     path('stdntbasicinfo',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
     path('stdntbasicinfo/',StudentBasicInfoAPIView.as_view(),name = 'student-basic-list'),
 
