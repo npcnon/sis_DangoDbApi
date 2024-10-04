@@ -228,7 +228,7 @@
         </tr>
         {% for basic_info in student_basic_info %}
         <tr>
-            <td>{{ basic_info.applicant_id }}</td>
+            <td>{{ basic_info.fulldata_applicant_id }}</td>
             <td>
                 {{ basic_info.first_name }}
                 {% if basic_info.middle_name %}{{ basic_info.middle_name }}{% endif %}
@@ -275,22 +275,22 @@
             {% for official in student_official %}
             <tr>
                 <td>{{ official.student_id }}</td>
-                <td>{{ official.applicant_id.applicant_id }}</td> <!-- Access related applicant's ID -->
+                <td>{{ official.applicant_id.fulldata_applicant_id }}</td> <!-- Access related applicant's ID -->
                 <td>
-                    {{ official.applicant_id.first_name }} 
-                    {% if official.applicant_id.middle_name %}{{ official.applicant_id.middle_name }}{% endif %}
-                    {{ official.applicant_id.last_name }}
-                    {% if official.applicant_id.suffix %}{{ official.applicant_id.suffix }}{% endif %}
+                    {{ official.fulldata_applicant_id.first_name }} 
+                    {% if official.fulldata_applicant_id.middle_name %}{{ official.fulldata_applicant_id.middle_name }}{% endif %}
+                    {{ official.fulldata_applicant_id.last_name }}
+                    {% if official.fulldata_applicant_id.suffix %}{{ official.applicant_id.suffix }}{% endif %}
                 </td>
-                <td>{{ official.applicant_id.sex }}</td>
-                <td>{{ official.applicant_id.contact_number }}</td>
-                <td>{{ official.applicant_id.email }}</td>
-                <td>{{ official.applicant_id.address }}</td>
-                <td>{{ official.applicant_id.campus }}</td>
-                <td>{{ official.applicant_id.program }}</td>
-                <td>{{ official.applicant_id.year_level }}</td>
-                <td>{% if official.applicant_id.is_transferee %}Yes{% else %}No{% endif %}</td>
-                <td>{{ official.applicant_id.status }}</td>
+                <td>{{ official.fulldata_applicant_id.sex }}</td>
+                <td>{{ official.fulldata_applicant_id.contact_number }}</td>
+                <td>{{ official.fulldata_applicant_id.email }}</td>
+                <td>{{ official.fulldata_applicant_id.address }}</td>
+                <td>{{ official.fulldata_applicant_id.campus }}</td>
+                <td>{{ official.fulldata_applicant_id.program }}</td>
+                <td>{{ official.fulldata_applicant_id.year_level }}</td>
+                <td>{% if official.fulldata_applicant_id.is_transferee %}Yes{% else %}No{% endif %}</td>
+                <td>{{ official.fulldata_applicant_id.status }}</td>
                 <td>{% if official.active %}Yes{% else %}No{% endif %}</td>
             </tr>
             {% endfor %}
