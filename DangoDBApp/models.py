@@ -269,7 +269,8 @@ class TblStudentAcademicBackground(models.Model):
         on_delete=models.CASCADE,
         related_name='related_acedemicbackground_data'
         )
-    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE) 
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
+    
     major_in = models.TextField(null=True)
     student_type = models.CharField(max_length=30)  
     semester_entry = models.CharField(max_length=20)

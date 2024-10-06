@@ -40,6 +40,11 @@ class StudentDataAPIView(APIView):
             elif len(filter_parts) == 2:
                 filter_field, filter_value = filter_parts
                 filter_value = filter_value.strip().replace("'", "")
+                if filter_field == 'campus':
+                    if filter_value == '1':
+                        return {
+                            ''
+                        }
                 data = self.get_filtered_data_all_tables(filter_field, filter_value, latest)
             elif len(filter_parts) == 3:
                 filter_table, filter_field, filter_value = filter_parts
