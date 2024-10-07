@@ -62,7 +62,7 @@ Content-Type: application/json
 
 {
     "personal_data": {
-        "f_name": "Pablot",
+        "f_name": "Pablox",
         "m_name": "Esco",
         "suffix": "Bar",
         "l_name": "Smith",
