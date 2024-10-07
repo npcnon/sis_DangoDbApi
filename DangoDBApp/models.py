@@ -160,11 +160,6 @@ class TblStudentPersonalData(models.Model):
         ('rejected', 'Rejected'),
     ]
     fulldata_applicant_id = models.AutoField(primary_key=True)
-    basicdata_applicant_id = models.OneToOneField(
-        TblStudentBasicInfo, 
-        on_delete=models.CASCADE,
-        related_name='related_personal_data',
-        )
     f_name = models.CharField(max_length=100)
     m_name = models.CharField(max_length=100, null=True, blank=True)
     suffix = models.CharField(max_length=100, null=True, blank=True)
