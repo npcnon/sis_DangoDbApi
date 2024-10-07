@@ -18,14 +18,12 @@ from .views import (
     
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
-from .Views_V2.StudentsCampusView import StudentPersonalDataByCampusView
 
 urlpatterns = [
     #Full Student Data
     path('full-student-data/', StudentDataAPIView.as_view(), name='full-student-data'),
     path('full-student-data', StudentDataAPIView.as_view(), name='full-student-data'),
 
-    path('students/campus/<int:campus_id>/', StudentPersonalDataByCampusView.as_view(), name='students-by-campus'),
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
     path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),

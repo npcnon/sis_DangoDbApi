@@ -3,7 +3,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from ..serializers import StudentFullDataSerializer, TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer, TblStudentAddPersonalDataFullSerializer, TblStudentFamilyBackgroundSerializer, TblStudentPersonalDataSerializer
+from ..serializers import (StudentFullDataSerializer, 
+    TblStudentAcademicBackgroundSerializer, 
+    TblStudentAcademicHistorySerializer, 
+    TblStudentAddPersonalDataFullSerializer, 
+    TblStudentFamilyBackgroundSerializer, 
+    TblStudentPersonalDataSerializer,
+    TblStudentAddPersonalDataSerializer
+    )
 from ..models import (
     TblStudentBasicInfo,
     TblStudentPersonalData,
@@ -14,7 +21,8 @@ from ..models import (
 )
 
 import logging
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import DatabaseError
 from django.db.models import Q
 logger = logging.getLogger(__name__)
 
@@ -28,29 +36,76 @@ class StudentDataAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get(self, request):
+        
         filter_param = request.GET.get('filter', None)
         latest = request.GET.get('latest', 'false').lower() == 'true'
+        def GetRelatedPersonalCampus(campus_id):
+
+            return TblStudentPersonalData.objects.filter(
+            related_academicbackground_data__program__department_id__campus_id=campus_id,
+            related_academicbackground_data__active=True
+            )
+
+        def GetRelatedCampus(table, campus_id):
+            personal_data_ids = GetRelatedPersonalCampus(campus_id).values_list('fulldata_applicant_id', flat=True)
+            return table.objects.filter(fulldata_applicant_id__in=personal_data_ids)
 
         if filter_param:
             filter_parts = filter_param.split('=')
             if len(filter_parts) == 1:
-                # Handle single table retrieval
                 filter_table = filter_parts[0]
                 data = self.get_table_data(filter_table, latest)
             elif len(filter_parts) == 2:
                 filter_field, filter_value = filter_parts
                 filter_value = filter_value.strip().replace("'", "")
                 if filter_field == 'campus':
-                    if filter_value == '1':
-                        return {
-                            ''
-                        }
-                data = self.get_filtered_data_all_tables(filter_field, filter_value, latest)
+                        
+                    data = {
+                        'personal_data': TblStudentPersonalDataSerializer(GetRelatedPersonalCampus(filter_value), many=True).data,
+                        'add_personal_data': TblStudentAddPersonalDataSerializer(GetRelatedCampus(TblStudentAddPersonalData, filter_value), many=True).data,
+                        'family_background': TblStudentFamilyBackgroundSerializer(GetRelatedCampus(TblStudentFamilyBackground, filter_value), many=True).data,
+                        'academic_background': TblStudentAcademicBackgroundSerializer(GetRelatedCampus(TblStudentAcademicBackground, filter_value), many=True).data,
+                        'academic_history': TblStudentAcademicHistorySerializer(GetRelatedCampus(TblStudentAcademicHistory, filter_value), many=True).data,
+
+                    }
+                if not data:
+                    data = self.get_filtered_data_all_tables(filter_field, filter_value, latest)
+                
             elif len(filter_parts) == 3:
                 filter_table, filter_field, filter_value = filter_parts
                 filter_value = filter_value.strip().replace("'", "")
                 filter_condition = Q(**{filter_field: filter_value, 'active': True})
-                data = self.get_filtered_data(filter_table, filter_condition, latest)
+                if filter_table == 'campus':
+                    
+                    if filter_field == 'personal_data':
+                        data = {
+                            'personal_data': TblStudentPersonalDataSerializer(GetRelatedPersonalCampus(filter_value), many=True).data,
+                        }
+
+
+                    elif filter_field == 'add_personal_data':
+                        data = {
+                            'add_personal_data': TblStudentAddPersonalDataSerializer(GetRelatedCampus(TblStudentAddPersonalData, filter_value), many=True).data,
+                        }
+
+                    elif filter_field == 'family_background':
+                        data = {
+                            'family_background': TblStudentFamilyBackgroundSerializer(GetRelatedCampus(TblStudentFamilyBackground, filter_value), many=True).data,
+                        }
+
+
+                    elif filter_field == 'academic_background':
+                        data = {
+                            'academic_background': TblStudentAcademicBackgroundSerializer(GetRelatedCampus(TblStudentAcademicBackground,filter_value), many=True).data,
+                        }
+
+
+                    elif filter_field == 'academic_history':
+                        data = {
+                            'academic_history': TblStudentAcademicHistorySerializer(GetRelatedCampus(TblStudentAcademicHistory, filter_value), many=True).data,
+                        }
+                if not data:
+                    data = self.get_filtered_data(filter_table, filter_condition, latest)
             else:
                 return Response({"error": "Invalid filter format"}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -60,7 +115,8 @@ class StudentDataAPIView(APIView):
             return Response(data)
         else:
             return Response({"detail": "No data found."}, status=status.HTTP_404_NOT_FOUND)
-
+    
+    
     def get_table_data(self, table, latest):
         model_map = {
             'personal_data': (TblStudentPersonalData, TblStudentPersonalDataSerializer),

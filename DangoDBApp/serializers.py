@@ -1,6 +1,7 @@
 # DangoDBApp.serializers
 
 from datetime import datetime, date
+from django.db import transaction   
 import re
 from rest_framework import serializers
 from .models import (
@@ -125,19 +126,26 @@ class StudentFullDataSerializer(serializers.Serializer):
     academic_background = TblStudentAcademicBackgroundSerializer()
     academic_history = TblStudentAcademicHistorySerializer()
 
-    def create(self, validated_data):
+def create(self, validated_data):
         personal_data = validated_data.pop('personal_data')
-        add_personal_data= validated_data.pop('add_personal_data')
+        add_personal_data = validated_data.pop('add_personal_data')
         family_background = validated_data.pop('family_background')
         academic_background = validated_data.pop('academic_background')
         academic_history = validated_data.pop('academic_history')
 
-        personal_instance = TblStudentPersonalData.objects.create(**personal_data)
+        try:
+            with transaction.atomic():
+                # Create the personal data instance
+                personal_instance = TblStudentPersonalData.objects.create(**personal_data)
 
-        TblStudentAddPersonalData.objects.create(fulldata_applicant_id=personal_instance, **add_personal_data)
-        TblStudentFamilyBackground.objects.create(fulldata_applicant_id=personal_instance, **family_background)
-        TblStudentAcademicBackground.objects.create(fulldata_applicant_id=personal_instance, **academic_background)
-        TblStudentAcademicHistory.objects.create(fulldata_applicant_id=personal_instance, **academic_history)
+                # Create related instances linked to personal_data
+                TblStudentAddPersonalData.objects.create(fulldata_applicant_id=personal_instance, **add_personal_data)
+                TblStudentFamilyBackground.objects.create(fulldata_applicant_id=personal_instance, **family_background)
+                TblStudentAcademicBackground.objects.create(fulldata_applicant_id=personal_instance, **academic_background)
+                TblStudentAcademicHistory.objects.create(fulldata_applicant_id=personal_instance, **academic_history)
+
+        except Exception as e:
+            raise serializers.ValidationError(f"Failed to create student data: {str(e)}")
 
         return {
             "personal_data": TblStudentPersonalDataSerializer(personal_instance).data,
@@ -146,5 +154,3 @@ class StudentFullDataSerializer(serializers.Serializer):
             "academic_background": TblStudentAcademicBackgroundSerializer(academic_background).data,
             "academic_history": TblStudentAcademicHistorySerializer(academic_history).data,
         }
-    def validate(self, data):
-        return data

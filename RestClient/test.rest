@@ -3,10 +3,10 @@
 # #GET basic student
 # basic student same as before
 # as usual we can use ?filter=fieldname=fieldvalue
-# for example: http://127.0.0.1:8000/api/stdntbasicinfo/?filter=first_name=Lucy
-# can also use ?latest=true to get the most latest data http://127.0.0.1:8000/api/stdntbasicinfo/?latest=true
-# can nest ?latest=true to filter to get the latest data that is filtered http://127.0.0.1:8000/api/stdntbasicinfo/?latest=true&filter=first_name=Lucy
-GET http://127.0.0.1:8000/api/stdntbasicinfo/
+# for example: https://afknon.pythonanywhere.com/api/stdntbasicinfo/?filter=first_name=Lucy
+# can also use ?latest=true to get the most latest data https://afknon.pythonanywhere.com/api/stdntbasicinfo/?latest=true
+# can nest ?latest=true to filter to get the latest data that is filtered https://afknon.pythonanywhere.com/api/stdntbasicinfo/?latest=true&filter=first_name=Lucy
+GET https://afknon.pythonanywhere.com/api/stdntbasicinfo/
 
 ### GET Full student
 ## can use filter but in a more comprehensive way
@@ -25,17 +25,20 @@ GET http://127.0.0.1:8000/api/stdntbasicinfo/
 
 
 
-GET http://127.0.0.1:8000/api/full-student-data/?filter=personal_data=fulldata_applicant_id=1
+GET https://afknon.pythonanywhere.com/api/full-student-data/?filter=personal_data
 
-### GET campus
-GET http://127.0.0.1:8000/api/students/campus/2
+### GET campus to get all the students detail on that campus use ?filter=campus=1
+### to get the students data(personaldata, family background, acadmemic background etc)
+### choices are personal_data, add_personal_data, family_background, academic_background, academic_history
+### use ?filter=campus=personal_data=1
+GET https://afknon.pythonanywhere.com/api/full-student-data/?filter=campus=1
 
 
 
 
 
 ### POST basic student
-POST http://127.0.0.1:8000/api/stdntbasicinfo/
+POST https://afknon.pythonanywhere.com/api/stdntbasicinfo/
 Content-Type: application/json
 
 {
@@ -54,12 +57,11 @@ Content-Type: application/json
 }
 
 ### POST Full student
-POST http://127.0.0.1:8000/api/full-student-data/
+POST https://afknon.pythonanywhere.com/api/full-student-data/
 Content-Type: application/json
 
 {
     "personal_data": {
-        "basicdata_applicant_id": 14,
         "f_name": "Pablot",
         "m_name": "Esco",
         "suffix": "Bar",
@@ -139,7 +141,7 @@ Content-Type: application/json
 }
 
 ### POST additional personal data student
-POST http://127.0.0.1:8000/api/add-personal-data/
+POST https://afknon.pythonanywhere.com/api/add-personal-data/
 Content-Type: application/json
 
 {
@@ -152,7 +154,7 @@ Content-Type: application/json
     "citizenship": "American"
 }
 ### POST Official student
-POST http://127.0.0.1:8000/api/official-student-data/
+POST https://afknon.pythonanywhere.com/api/official-student-data/
 Content-Type: application/json
 
 {

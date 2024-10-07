@@ -158,6 +158,7 @@ class TblStudentPersonalData(models.Model):
         ('officially enrolled', 'Officially Enrolled'),
         ('pending', 'Pending'),
         ('rejected', 'Rejected'),
+        ('initially enrolled', 'Initially Enrolled')
     ]
     fulldata_applicant_id = models.AutoField(primary_key=True)
     f_name = models.CharField(max_length=100)
@@ -262,7 +263,7 @@ class TblStudentAcademicBackground(models.Model):
     fulldata_applicant_id = models.OneToOneField(
         TblStudentPersonalData, 
         on_delete=models.CASCADE,
-        related_name='related_acedemicbackground_data'
+        related_name='related_academicbackground_data'
         )
     program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
     
