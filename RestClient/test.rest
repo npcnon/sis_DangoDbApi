@@ -168,7 +168,7 @@ Content-Type: application/json
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT http://127.0.0.1:8000/api/deactivate_or_modify_personal-student-data/1/False
+PUT https://afknon.pythonanywhere.com/api/deactivate_or_modify_personal-student-data/1/False
 Content-Type: application/json
 
 {
