@@ -31,7 +31,7 @@ GET https://afknon.pythonanywhere.com/api/full-student-data/?filter=personal_dat
 ### to get the students data(personaldata, family background, acadmemic background etc)
 ### choices are personal_data, add_personal_data, family_background, academic_background, academic_history
 ### use ?filter=campus=personal_data=1
-GET https://afknon.pythonanywhere.com/api/full-student-data/?filter=campus=1
+GET https://afknon.pythonanywhere.com/api/full-student-data/?filter=campus=personal_data=1
 
 
 
@@ -164,3 +164,13 @@ Content-Type: application/json
     "fulldata_applicant_id": 2
 }
 
+
+### PUT personal data(for editing student status)
+# choices are pending, initially enrolled, rejected, officially enrolled
+
+PUT http://127.0.0.1:8000/api/deactivate_or_modify_personal-student-data/1/False
+Content-Type: application/json
+
+{
+    "status": "pending"
+}

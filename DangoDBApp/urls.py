@@ -39,7 +39,7 @@ urlpatterns = [
     path('emailapi', EmailVerificationAPIView.as_view(), name = 'email-verification'),
 
 
-    path('stdntpersonal/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
+    path('personal-student-data/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
     path('add-personal-data/',StudentAddPersonalDataAPIView.as_view(),name = 'add-personal-data'),
     path('stdntfamily/',StudentFamilyAPIView.as_view(),name = 'student-family-list'),
     path('stdntacademicbackground/',StudentAcademicBackgroundAPIView.as_view(),name = 'student-academicbackground-list'),
@@ -57,7 +57,7 @@ urlpatterns = [
     path('deactivate_or_modify_student/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_student'),
     path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_addstdntinfo'),    
     
-    path('deactivate_or_modify_stdntpersonal/<str:id_or_offercode>/str:deactivate',StudentPersonalDataAPIView.as_view(),name = 'dm-student-personal'),
+    path('deactivate_or_modify_personal-student-data/<str:id_or_offercode>/<str:deactivate>',StudentPersonalDataAPIView.as_view(),name = 'deactivate_or_modify_personal-student-data'),
     path('deactivate_or_modify_stdntfamily/<str:id_or_offercode>/str:deactivate',StudentFamilyAPIView.as_view(),name = 'dm-student-family'),
     path('deactivate_or_modify_stdntacademicbackground/<str:id_or_offercode>/str:deactivate',StudentAcademicBackgroundAPIView.as_view(),name = 'dm-student-academic-background'),
     path('deactivate_or_modify_stdntacademichistory/<str:id_or_offercode>/str:deactivate',StudentAcademicHistoryAPIView.as_view(),name = 'dm-student-academic-history'),
