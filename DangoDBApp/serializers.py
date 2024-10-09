@@ -154,3 +154,6 @@ class StudentFullDataSerializer(serializers.Serializer):
                 "academic_background": TblStudentAcademicBackgroundSerializer(academic_background).data,
                 "academic_history": TblStudentAcademicHistorySerializer(academic_history).data,
             }
+
+
+            
