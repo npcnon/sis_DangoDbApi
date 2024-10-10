@@ -39,7 +39,6 @@ class RegisterView(APIView):
         return Response(serializer.data)
 
 
-# views.py
 
 class LoginView(APIView):
     def post(self, request):
@@ -76,7 +75,6 @@ class LoginView(APIView):
 
 
 
-# In your views
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -97,22 +95,19 @@ class UserView(APIView):
         except AuthenticationFailed:
             raise AuthenticationFailed('Not Authenticated')
 
-        # Fetch the user
         user_profile = User.objects.get(id=user.id)
 
-        # Fetch the student's info using the student_id
         student_info = TblStudentBasicInfo.objects.filter(email=user_profile.email).first()
+        print("Student Info:", student_info)
 
-        # If student info exists, serialize it
         if student_info:
             student_info_serialized = TblStudentBasicInfoSerializer(student_info).data
         else:
             student_info_serialized = None
 
-        # Serialize the user's profile along with the student info
         user_data = UserSerializer(user_profile).data
         user_data['profile']['student_info'] = student_info_serialized
-
+        print("User Data:",user_data)
         return Response(user_data)
 
 
