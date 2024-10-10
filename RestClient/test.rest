@@ -158,10 +158,10 @@ POST http://127.0.0.1:8000/api/official-student-data/
 Content-Type: application/json
 
 {
-    "student_id": "2024-00001",
-    "campus": 2,
+    "student_id": "2024-00004",
+    "campus": 1,
     "password": "default pass or can be blank",
-    "fulldata_applicant_id": 1
+    "fulldata_applicant_id": 7
 }
 
 

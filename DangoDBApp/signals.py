@@ -12,12 +12,14 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         print('Signal is running for TblStudentOfficialInfo')
         try:
-            # Creating a new user based on the official student information
+
+            personal_data = instance.fulldata_applicant_id
+
             user = User.objects.create(
-                student_id=instance.student_id,
-                name=f"{instance.first_name} {instance.middle_name or ''} {instance.last_name}".strip(),
-                email=instance.email,
-                password=make_password(instance.pswrd)  
+                student_id= instance.student_id,
+                name= f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip(),
+                email= personal_data.email,
+                password= make_password(instance.password)  
             )
             print(user)
             Profile.objects.create(user=user)
