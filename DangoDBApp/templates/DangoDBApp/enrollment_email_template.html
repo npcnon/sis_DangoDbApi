@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Application</title>
+    <style>
+        .email-container {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+        }
+        .password-box {
+            font-family: monospace;
+            font-size: 18px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2>Enrollment Application Verified</h2>
+        <p>Your Enrollment Application has been verified.</p>
+        <p>You can now log in to our student portal by clicking the link below:</p>
+        <a href="{{ portal_link }}" class="button">Log In to Student Portal</a>
+        <p>Use your email: <strong>{{ email }}</strong> for logging in.</p>
+        <p>Your password is enclosed below:</p>
+        <div class="password-box">
+            {{ generated_password }}
+        </div>
+        <p>Please change your password upon first login for security reasons.</p>
+    </div>
+</body>
+</html>

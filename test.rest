@@ -8,7 +8,7 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/api/login 
 Content-Type: application/json
 
-{ "student_id": "2024-01-0999", "password": "default123123" }
+{ "identifier": "afkmhafric@gmail.com", "password": "^7x|525UC~UT" }
 
 
 ###

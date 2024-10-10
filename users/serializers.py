@@ -1,18 +1,20 @@
+#users.serializers
+
 from rest_framework import serializers
 from .models import User, Profile
 from DangoDBApp.models import TblStudentBasicInfo, TblStudentBasicInfo
 
-class TblStudentBasicInfoApplicationsSerializer(serializers.ModelSerializer):
+class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TblStudentBasicInfo
-        fields = ['first_name', 'middle_name', 'last_name','suffix','is_transferee','contact_number' ,'email', 'year_level', 'program', 'campus', 'status','sex','birth_date', 'address']
+        fields = ['first_name', 'middle_name', 'last_name','suffix','is_transferee','contact_number' ,'email', 'year_level', 'program', 'campus','sex','birth_date', 'address']
 
 class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
-    applicant_details = TblStudentBasicInfoApplicationsSerializer(source='applicant_id', read_only=True)
+    applicant_details = TblStudentBasicInfoSerializer(source='basicdata_applicant_id', read_only=True)
 
     class Meta:
         model = TblStudentBasicInfo
-        fields = ['student_id', 'applicant_details']
+        fields = ['basicdata_applicant_id', 'applicant_details']
 
 class ProfileSerializer(serializers.ModelSerializer):
     student_info = serializers.SerializerMethodField()
@@ -22,15 +24,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['student_info']
 
     def get_student_info(self, obj):
-        # Get the student_id from the related user
+        # Get the email or student_id from the related user
+        email = obj.user.email
         student_id = obj.user.student_id
-        # Retrieve TblStudentBasicInfo based on student_id
-        student_info = TblStudentBasicInfo.objects.filter(student_id=student_id).first()
+        
+        # You can retrieve student info based on email or student_id
+        student_info = TblStudentBasicInfo.objects.filter(email=email).first() or TblStudentBasicInfo.objects.filter(student_id=student_id).first()
+        
         # Serialize it using TblStudentBasicInfoSerializer
         if student_info:
             return TblStudentBasicInfoSerializer(student_info).data
         return None
-
 
 
 class UserSerializer(serializers.ModelSerializer):

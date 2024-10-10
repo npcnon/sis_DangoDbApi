@@ -2,7 +2,7 @@
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from DangoDBApp.models import TblStudentBasicInfo
+from DangoDBApp.models import TblStudentBasicInfo,TblStudentOfficialInfo
 from .models import User, Profile
 from .serializers import TblStudentBasicInfoSerializer, UserSerializer
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
@@ -14,15 +14,22 @@ from rest_framework_simplejwt.views import TokenRefreshView
 class RegisterView(APIView):
     def post(self, request):
         student_id = request.data.get('student_id')
-        
+        email = request.data.get('get')
         # Check if student_id exists in TblStudentBasicInfo
-        if not TblStudentBasicInfo.objects.filter(student_id=student_id).exists():
-            raise ValidationError('Student ID does not exist in TblStudentBasicInfo.')
-
+        # if not TblStudentOfficialInfo.objects.filter(student_id=student_id).exists():
+        #     raise ValidationError('Student ID does not exist in TblStudentBasicInfo.')
+        
+        # if not TblStudentBasicInfo.objects.filter(email=email).exists():
+        #     raise ValidationError('Student Email does not exist in TblStudentBasicInfo.')
+        
         # Check if student_id is already used by another User
+        
         if User.objects.filter(student_id=student_id).exists():
             raise ValidationError('Student ID is already registered.')
 
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('Student Email is already registered.')
+        
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -32,15 +39,22 @@ class RegisterView(APIView):
         return Response(serializer.data)
 
 
+# views.py
+
 class LoginView(APIView):
     def post(self, request):
-        student_id = request.data.get('student_id')
+        print(request.data)
+        identifier = request.data.get('identifier') 
         password = request.data.get('password')
 
-        if not student_id or not password:
-            raise AuthenticationFailed('Student ID and password are required')
+        if not identifier or not password:
+            raise AuthenticationFailed('Identifier and password are required')
 
-        user = User.objects.filter(student_id=student_id).first()
+        
+        user = User.objects.filter(student_id=identifier).first()
+
+        if user is None:
+            user = User.objects.filter(email=identifier).first()
 
         if user is None:
             raise AuthenticationFailed('User not found')
@@ -57,6 +71,7 @@ class LoginView(APIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         })
+
 
 
 
@@ -86,7 +101,7 @@ class UserView(APIView):
         user_profile = User.objects.get(id=user.id)
 
         # Fetch the student's info using the student_id
-        student_info = TblStudentBasicInfo.objects.filter(student_id=user_profile.student_id).first()
+        student_info = TblStudentBasicInfo.objects.filter(email=user_profile.email).first()
 
         # If student info exists, serialize it
         if student_info:
@@ -117,5 +132,6 @@ class LogoutView(APIView):
 
 class RefreshTokenView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
+        print(request.data)
         # This view handles refreshing the access token using the refresh token
         return super().post(request, *args, **kwargs)
