@@ -1,3 +1,4 @@
+#DangoDBApp.models_V2.semester_model
 from django.db import models
 from ..models import(
     TblCampus

@@ -1,13 +1,12 @@
+#DangoDBApp.models_V2.employee_model
+
 from django.db import models
-from ..models import(
-    TblCampus,
-    TblDepartment
-)
+
 
 
 class TblEmployee(models.Model):
-    campus = models.ForeignKey(TblCampus, on_delete=models.SET_NULL, null=True)
-    department = models.ForeignKey(TblDepartment, on_delete=models.SET_NULL, null=True)
+    campus = models.ForeignKey('DangoDBApp.TblCampus', on_delete=models.SET_NULL, null=True)
+    department = models.ForeignKey('DangoDBApp.TblDepartment', on_delete=models.SET_NULL, null=True)
     role = models.CharField(max_length=255)
     title = models.CharField(max_length=255, null=True)
     first_name = models.CharField(max_length=255)

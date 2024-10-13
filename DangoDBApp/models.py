@@ -1,4 +1,6 @@
 from django.db import models
+from .models_V2.employee_model import TblEmployee
+
 
 '''
     note: if a primary key is not defined in django models
@@ -38,7 +40,7 @@ class TblDepartment(models.Model):
     name = models.CharField(max_length=255)
     campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     code = models.CharField(max_length=255)
-    dean = models.CharField(max_length=255)
+    dean = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
