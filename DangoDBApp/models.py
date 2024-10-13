@@ -1,5 +1,6 @@
+#DangoDBApp.models
+
 from django.db import models
-from .models_V2.employee_model import TblEmployee
 
 
 '''
@@ -7,8 +8,7 @@ from .models_V2.employee_model import TblEmployee
     then django will automaticaly create a field `id` in migration
     and use it as a primary key 
 '''
-
-
+#Email
 class EmailVerification(models.Model):
     email = models.EmailField(unique=True)
     verification_code = models.CharField(max_length=8)
@@ -20,7 +20,7 @@ class EmailVerification(models.Model):
         return f"{self.email} - {'Verified' if self.is_verified else 'Not Verified'}"
 
 
-
+#Campus
 class TblCampus(models.Model):
     name = models.CharField(max_length=225)
     address = models.CharField(max_length=225)
@@ -32,15 +32,20 @@ class TblCampus(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return str(self.id)
 
-    
 
+
+'''
+    Departments: remove the dean, 
+    as you can just add role to the employee `dean`
+    and access it using reverse relationships
+'''
+#department
 class TblDepartment(models.Model):
     name = models.CharField(max_length=255)
     campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     code = models.CharField(max_length=255)
-    dean = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
@@ -49,9 +54,10 @@ class TblDepartment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together=('name', 'campus_id', 'code', 'dean')
+        unique_together=('name', 'campus_id', 'code')
 
 
+#Program
 class TblProgram(models.Model):
     code = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
@@ -67,7 +73,55 @@ class TblProgram(models.Model):
         unique_together=('description', 'department_id', )
 
 
+#Employee
+class TblEmployee(models.Model):
+    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
+    role = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, null=True)
+    first_name = models.CharField(max_length=255)
+    middle_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255)
+    qualifications = models.JSONField(null=True)
+    gender = models.CharField(max_length=10)
+    address = models.CharField(max_length=95)
+    birth_date = models.DateField()
+    contact_number = models.CharField(max_length=15)
 
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+#Semester
+class TblSemester(models.Model):
+    campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    semester_name = models.CharField(max_length=20)
+    school_year = models.CharField(max_length=9)
+
+
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+#Class
+class TblClass(models.Model):
+    name = models.CharField(max_length=100)
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
+    semester = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
+    employee = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
+    schedule = models.TextField()
+
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
@@ -311,8 +365,6 @@ class TblStudentAcademicHistory(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
 
 
 
