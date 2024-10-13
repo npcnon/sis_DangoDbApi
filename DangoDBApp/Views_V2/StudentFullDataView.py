@@ -74,7 +74,7 @@ class StudentDataAPIView(APIView):
             elif len(filter_parts) == 3:
                 filter_table, filter_field, filter_value = filter_parts
                 filter_value = filter_value.strip().replace("'", "")
-                filter_condition = Q(**{filter_field: filter_value, 'active': True})
+                filter_condition = Q(**{filter_field: filter_value, 'is_active': True})
                 if filter_table == 'campus':
                     
                     if filter_field == 'personal_data':
@@ -109,7 +109,7 @@ class StudentDataAPIView(APIView):
             else:
                 return Response({"error": "Invalid filter format"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            data = self.get_all_data(Q(active=True))
+            data = self.get_all_data(Q(is_active=True))
 
         if data:
             return Response(data)
@@ -130,7 +130,7 @@ class StudentDataAPIView(APIView):
             return {"error": f"Invalid table: {table}"}
 
         model, serializer = model_map[table]
-        queryset = model.objects.filter(active=True)
+        queryset = model.objects.filter(is_active=True)
 
         if latest:
             queryset = queryset.order_by('-created_at')
@@ -156,7 +156,7 @@ class StudentDataAPIView(APIView):
         all_data = {}
         for table_name, (model, serializer) in model_map.items():
             if filter_field in [f.name for f in model._meta.get_fields()]:
-                queryset = model.objects.filter(**{filter_field: filter_value, 'active': True})
+                queryset = model.objects.filter(**{filter_field: filter_value, 'is_active': True})
                 if latest:
                     queryset = queryset.order_by('-created_at')
                     latest_entry = queryset.first()

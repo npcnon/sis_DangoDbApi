@@ -16,3 +16,867 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/api/user
 Content-Type: application/json 
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI2NDE0NDQ3LCJpYXQiOjE3MjY0MTQxNDcsImp0aSI6Ijk3YzhhYWJkNjhmMzRjN2Y5ZTcxOGExMTEzZWRhZDIzIiwidXNlcl9pZCI6Mn0.XrT0GZw8tILOSGsrokPHi6daAgWnT-GRcCmPTa4DPtY
+
+
+
+📦MariaDB 11.5
+ ┣ 📂bin
+ ┃ ┣ 📜aria_chk.exe
+ ┃ ┣ 📜aria_dump_log.exe
+ ┃ ┣ 📜aria_ftdump.exe
+ ┃ ┣ 📜aria_pack.exe
+ ┃ ┣ 📜aria_read_log.exe
+ ┃ ┣ 📜innochecksum.exe
+ ┃ ┣ 📜mariabackup.exe
+ ┃ ┣ 📜mariadb-admin.exe
+ ┃ ┣ 📜mariadb-backup.exe
+ ┃ ┣ 📜mariadb-binlog.exe
+ ┃ ┣ 📜mariadb-check.exe
+ ┃ ┣ 📜mariadb-conv.exe
+ ┃ ┣ 📜mariadb-dump.exe
+ ┃ ┣ 📜mariadb-import.exe
+ ┃ ┣ 📜mariadb-install-db.exe
+ ┃ ┣ 📜mariadb-ldb.exe
+ ┃ ┣ 📜mariadb-plugin.exe
+ ┃ ┣ 📜mariadb-show.exe
+ ┃ ┣ 📜mariadb-slap.exe
+ ┃ ┣ 📜mariadb-tzinfo-to-sql.exe
+ ┃ ┣ 📜mariadb-upgrade-service.exe
+ ┃ ┣ 📜mariadb-upgrade-wizard.exe
+ ┃ ┣ 📜mariadb-upgrade.exe
+ ┃ ┣ 📜mariadb.exe
+ ┃ ┣ 📜mariadbd.exe
+ ┃ ┣ 📜mariadbd.pdb
+ ┃ ┣ 📜mbstream.exe
+ ┃ ┣ 📜myisamchk.exe
+ ┃ ┣ 📜myisamlog.exe
+ ┃ ┣ 📜myisampack.exe
+ ┃ ┣ 📜myisam_ftdump.exe
+ ┃ ┣ 📜myrocks_hotbackup
+ ┃ ┣ 📜mysql.exe
+ ┃ ┣ 📜mysqladmin.exe
+ ┃ ┣ 📜mysqlbinlog.exe
+ ┃ ┣ 📜mysqlcheck.exe
+ ┃ ┣ 📜mysqld.exe
+ ┃ ┣ 📜mysqldump.exe
+ ┃ ┣ 📜mysqlimport.exe
+ ┃ ┣ 📜mysqlshow.exe
+ ┃ ┣ 📜mysqlslap.exe
+ ┃ ┣ 📜mysql_config.pl
+ ┃ ┣ 📜mysql_install_db.exe
+ ┃ ┣ 📜mysql_ldb.exe
+ ┃ ┣ 📜mysql_plugin.exe
+ ┃ ┣ 📜mysql_tzinfo_to_sql.exe
+ ┃ ┣ 📜mysql_upgrade.exe
+ ┃ ┣ 📜mysql_upgrade_service.exe
+ ┃ ┣ 📜mysql_upgrade_wizard.exe
+ ┃ ┣ 📜my_print_defaults.exe
+ ┃ ┣ 📜perror.exe
+ ┃ ┣ 📜replace.exe
+ ┃ ┣ 📜server.dll
+ ┃ ┣ 📜server.lib
+ ┃ ┣ 📜server.pdb
+ ┃ ┗ 📜sst_dump.exe
+ ┣ 📂data
+ ┃ ┣ 📂mysql
+ ┃ ┃ ┣ 📜columns_priv.frm
+ ┃ ┃ ┣ 📜columns_priv.MAD
+ ┃ ┃ ┣ 📜columns_priv.MAI
+ ┃ ┃ ┣ 📜column_stats.frm
+ ┃ ┃ ┣ 📜column_stats.MAD
+ ┃ ┃ ┣ 📜column_stats.MAI
+ ┃ ┃ ┣ 📜db.frm
+ ┃ ┃ ┣ 📜db.MAD
+ ┃ ┃ ┣ 📜db.MAI
+ ┃ ┃ ┣ 📜db.opt
+ ┃ ┃ ┣ 📜event.frm
+ ┃ ┃ ┣ 📜event.MAD
+ ┃ ┃ ┣ 📜event.MAI
+ ┃ ┃ ┣ 📜func.frm
+ ┃ ┃ ┣ 📜func.MAD
+ ┃ ┃ ┣ 📜func.MAI
+ ┃ ┃ ┣ 📜general_log.CSM
+ ┃ ┃ ┣ 📜general_log.CSV
+ ┃ ┃ ┣ 📜general_log.frm
+ ┃ ┃ ┣ 📜global_priv.frm
+ ┃ ┃ ┣ 📜global_priv.MAD
+ ┃ ┃ ┣ 📜global_priv.MAI
+ ┃ ┃ ┣ 📜gtid_slave_pos.frm
+ ┃ ┃ ┣ 📜gtid_slave_pos.ibd
+ ┃ ┃ ┣ 📜help_category.frm
+ ┃ ┃ ┣ 📜help_category.MAD
+ ┃ ┃ ┣ 📜help_category.MAI
+ ┃ ┃ ┣ 📜help_keyword.frm
+ ┃ ┃ ┣ 📜help_keyword.MAD
+ ┃ ┃ ┣ 📜help_keyword.MAI
+ ┃ ┃ ┣ 📜help_relation.frm
+ ┃ ┃ ┣ 📜help_relation.MAD
+ ┃ ┃ ┣ 📜help_relation.MAI
+ ┃ ┃ ┣ 📜help_topic.frm
+ ┃ ┃ ┣ 📜help_topic.MAD
+ ┃ ┃ ┣ 📜help_topic.MAI
+ ┃ ┃ ┣ 📜index_stats.frm
+ ┃ ┃ ┣ 📜index_stats.MAD
+ ┃ ┃ ┣ 📜index_stats.MAI
+ ┃ ┃ ┣ 📜innodb_index_stats.frm
+ ┃ ┃ ┣ 📜innodb_index_stats.ibd
+ ┃ ┃ ┣ 📜innodb_table_stats.frm
+ ┃ ┃ ┣ 📜innodb_table_stats.ibd
+ ┃ ┃ ┣ 📜plugin.frm
+ ┃ ┃ ┣ 📜plugin.MAD
+ ┃ ┃ ┣ 📜plugin.MAI
+ ┃ ┃ ┣ 📜proc.frm
+ ┃ ┃ ┣ 📜proc.MAD
+ ┃ ┃ ┣ 📜proc.MAI
+ ┃ ┃ ┣ 📜procs_priv.frm
+ ┃ ┃ ┣ 📜procs_priv.MAD
+ ┃ ┃ ┣ 📜procs_priv.MAI
+ ┃ ┃ ┣ 📜proxies_priv.frm
+ ┃ ┃ ┣ 📜proxies_priv.MAD
+ ┃ ┃ ┣ 📜proxies_priv.MAI
+ ┃ ┃ ┣ 📜roles_mapping.frm
+ ┃ ┃ ┣ 📜roles_mapping.MAD
+ ┃ ┃ ┣ 📜roles_mapping.MAI
+ ┃ ┃ ┣ 📜servers.frm
+ ┃ ┃ ┣ 📜servers.MAD
+ ┃ ┃ ┣ 📜servers.MAI
+ ┃ ┃ ┣ 📜slow_log.CSM
+ ┃ ┃ ┣ 📜slow_log.CSV
+ ┃ ┃ ┣ 📜slow_log.frm
+ ┃ ┃ ┣ 📜tables_priv.frm
+ ┃ ┃ ┣ 📜tables_priv.MAD
+ ┃ ┃ ┣ 📜tables_priv.MAI
+ ┃ ┃ ┣ 📜table_stats.frm
+ ┃ ┃ ┣ 📜table_stats.MAD
+ ┃ ┃ ┣ 📜table_stats.MAI
+ ┃ ┃ ┣ 📜time_zone.frm
+ ┃ ┃ ┣ 📜time_zone.MAD
+ ┃ ┃ ┣ 📜time_zone.MAI
+ ┃ ┃ ┣ 📜time_zone_leap_second.frm
+ ┃ ┃ ┣ 📜time_zone_leap_second.MAD
+ ┃ ┃ ┣ 📜time_zone_leap_second.MAI
+ ┃ ┃ ┣ 📜time_zone_name.frm
+ ┃ ┃ ┣ 📜time_zone_name.MAD
+ ┃ ┃ ┣ 📜time_zone_name.MAI
+ ┃ ┃ ┣ 📜time_zone_transition.frm
+ ┃ ┃ ┣ 📜time_zone_transition.MAD
+ ┃ ┃ ┣ 📜time_zone_transition.MAI
+ ┃ ┃ ┣ 📜time_zone_transition_type.frm
+ ┃ ┃ ┣ 📜time_zone_transition_type.MAD
+ ┃ ┃ ┣ 📜time_zone_transition_type.MAI
+ ┃ ┃ ┣ 📜transaction_registry.frm
+ ┃ ┃ ┣ 📜transaction_registry.ibd
+ ┃ ┃ ┗ 📜user.frm
+ ┃ ┣ 📂performance_schema
+ ┃ ┃ ┗ 📜db.opt
+ ┃ ┣ 📂sys
+ ┃ ┃ ┣ 📜db.opt
+ ┃ ┃ ┣ 📜host_summary.frm
+ ┃ ┃ ┣ 📜host_summary_by_file_io.frm
+ ┃ ┃ ┣ 📜host_summary_by_file_io_type.frm
+ ┃ ┃ ┣ 📜host_summary_by_stages.frm
+ ┃ ┃ ┣ 📜host_summary_by_statement_latency.frm
+ ┃ ┃ ┣ 📜host_summary_by_statement_type.frm
+ ┃ ┃ ┣ 📜innodb_buffer_stats_by_schema.frm
+ ┃ ┃ ┣ 📜innodb_buffer_stats_by_table.frm
+ ┃ ┃ ┣ 📜innodb_lock_waits.frm
+ ┃ ┃ ┣ 📜io_by_thread_by_latency.frm
+ ┃ ┃ ┣ 📜io_global_by_file_by_bytes.frm
+ ┃ ┃ ┣ 📜io_global_by_file_by_latency.frm
+ ┃ ┃ ┣ 📜io_global_by_wait_by_bytes.frm
+ ┃ ┃ ┣ 📜io_global_by_wait_by_latency.frm
+ ┃ ┃ ┣ 📜latest_file_io.frm
+ ┃ ┃ ┣ 📜memory_by_host_by_current_bytes.frm
+ ┃ ┃ ┣ 📜memory_by_thread_by_current_bytes.frm
+ ┃ ┃ ┣ 📜memory_by_user_by_current_bytes.frm
+ ┃ ┃ ┣ 📜memory_global_by_current_bytes.frm
+ ┃ ┃ ┣ 📜memory_global_total.frm
+ ┃ ┃ ┣ 📜metrics.frm
+ ┃ ┃ ┣ 📜privileges_by_table_by_level.frm
+ ┃ ┃ ┣ 📜processlist.frm
+ ┃ ┃ ┣ 📜ps_check_lost_instrumentation.frm
+ ┃ ┃ ┣ 📜schema_auto_increment_columns.frm
+ ┃ ┃ ┣ 📜schema_index_statistics.frm
+ ┃ ┃ ┣ 📜schema_object_overview.frm
+ ┃ ┃ ┣ 📜schema_redundant_indexes.frm
+ ┃ ┃ ┣ 📜schema_tables_with_full_table_scans.frm
+ ┃ ┃ ┣ 📜schema_table_lock_waits.frm
+ ┃ ┃ ┣ 📜schema_table_statistics.frm
+ ┃ ┃ ┣ 📜schema_table_statistics_with_buffer.frm
+ ┃ ┃ ┣ 📜schema_unused_indexes.frm
+ ┃ ┃ ┣ 📜session.frm
+ ┃ ┃ ┣ 📜session_ssl_status.frm
+ ┃ ┃ ┣ 📜statements_with_errors_or_warnings.frm
+ ┃ ┃ ┣ 📜statements_with_full_table_scans.frm
+ ┃ ┃ ┣ 📜statements_with_runtimes_in_95th_percentile.frm
+ ┃ ┃ ┣ 📜statements_with_sorting.frm
+ ┃ ┃ ┣ 📜statements_with_temp_tables.frm
+ ┃ ┃ ┣ 📜statement_analysis.frm
+ ┃ ┃ ┣ 📜sys_config.frm
+ ┃ ┃ ┣ 📜sys_config.MAD
+ ┃ ┃ ┣ 📜sys_config.MAI
+ ┃ ┃ ┣ 📜user_summary.frm
+ ┃ ┃ ┣ 📜user_summary_by_file_io.frm
+ ┃ ┃ ┣ 📜user_summary_by_file_io_type.frm
+ ┃ ┃ ┣ 📜user_summary_by_stages.frm
+ ┃ ┃ ┣ 📜user_summary_by_statement_latency.frm
+ ┃ ┃ ┣ 📜user_summary_by_statement_type.frm
+ ┃ ┃ ┣ 📜version.frm
+ ┃ ┃ ┣ 📜waits_by_host_by_latency.frm
+ ┃ ┃ ┣ 📜waits_by_user_by_latency.frm
+ ┃ ┃ ┣ 📜waits_global_by_latency.frm
+ ┃ ┃ ┣ 📜wait_classes_global_by_avg_latency.frm
+ ┃ ┃ ┣ 📜wait_classes_global_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024host_summary.frm
+ ┃ ┃ ┣ 📜x@0024host_summary_by_file_io.frm
+ ┃ ┃ ┣ 📜x@0024host_summary_by_file_io_type.frm
+ ┃ ┃ ┣ 📜x@0024host_summary_by_stages.frm
+ ┃ ┃ ┣ 📜x@0024host_summary_by_statement_latency.frm
+ ┃ ┃ ┣ 📜x@0024host_summary_by_statement_type.frm
+ ┃ ┃ ┣ 📜x@0024innodb_buffer_stats_by_schema.frm
+ ┃ ┃ ┣ 📜x@0024innodb_buffer_stats_by_table.frm
+ ┃ ┃ ┣ 📜x@0024innodb_lock_waits.frm
+ ┃ ┃ ┣ 📜x@0024io_by_thread_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024io_global_by_file_by_bytes.frm
+ ┃ ┃ ┣ 📜x@0024io_global_by_file_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024io_global_by_wait_by_bytes.frm
+ ┃ ┃ ┣ 📜x@0024io_global_by_wait_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024latest_file_io.frm
+ ┃ ┃ ┣ 📜x@0024memory_by_host_by_current_bytes.frm
+ ┃ ┃ ┣ 📜x@0024memory_by_thread_by_current_bytes.frm
+ ┃ ┃ ┣ 📜x@0024memory_by_user_by_current_bytes.frm
+ ┃ ┃ ┣ 📜x@0024memory_global_by_current_bytes.frm
+ ┃ ┃ ┣ 📜x@0024memory_global_total.frm
+ ┃ ┃ ┣ 📜x@0024processlist.frm
+ ┃ ┃ ┣ 📜x@0024ps_digest_95th_percentile_by_avg_us.frm
+ ┃ ┃ ┣ 📜x@0024ps_digest_avg_latency_distribution.frm
+ ┃ ┃ ┣ 📜x@0024ps_schema_table_statistics_io.frm
+ ┃ ┃ ┣ 📜x@0024schema_flattened_keys.frm
+ ┃ ┃ ┣ 📜x@0024schema_index_statistics.frm
+ ┃ ┃ ┣ 📜x@0024schema_tables_with_full_table_scans.frm
+ ┃ ┃ ┣ 📜x@0024schema_table_lock_waits.frm
+ ┃ ┃ ┣ 📜x@0024schema_table_statistics.frm
+ ┃ ┃ ┣ 📜x@0024schema_table_statistics_with_buffer.frm
+ ┃ ┃ ┣ 📜x@0024session.frm
+ ┃ ┃ ┣ 📜x@0024statements_with_errors_or_warnings.frm
+ ┃ ┃ ┣ 📜x@0024statements_with_full_table_scans.frm
+ ┃ ┃ ┣ 📜x@0024statements_with_runtimes_in_95th_percentile.frm
+ ┃ ┃ ┣ 📜x@0024statements_with_sorting.frm
+ ┃ ┃ ┣ 📜x@0024statements_with_temp_tables.frm
+ ┃ ┃ ┣ 📜x@0024statement_analysis.frm
+ ┃ ┃ ┣ 📜x@0024user_summary.frm
+ ┃ ┃ ┣ 📜x@0024user_summary_by_file_io.frm
+ ┃ ┃ ┣ 📜x@0024user_summary_by_file_io_type.frm
+ ┃ ┃ ┣ 📜x@0024user_summary_by_stages.frm
+ ┃ ┃ ┣ 📜x@0024user_summary_by_statement_latency.frm
+ ┃ ┃ ┣ 📜x@0024user_summary_by_statement_type.frm
+ ┃ ┃ ┣ 📜x@0024waits_by_host_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024waits_by_user_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024waits_global_by_latency.frm
+ ┃ ┃ ┣ 📜x@0024wait_classes_global_by_avg_latency.frm
+ ┃ ┃ ┗ 📜x@0024wait_classes_global_by_latency.frm
+ ┃ ┣ 📜aria_log.00000001
+ ┃ ┣ 📜aria_log_control
+ ┃ ┣ 📜ddl_recovery.log
+ ┃ ┣ 📜DESKTOP-7UN33SA.err
+ ┃ ┣ 📜DESKTOP-7UN33SA.pid
+ ┃ ┣ 📜ibdata1
+ ┃ ┣ 📜ibtmp1
+ ┃ ┣ 📜ib_buffer_pool
+ ┃ ┣ 📜ib_logfile0
+ ┃ ┣ 📜multi-master.info
+ ┃ ┣ 📜my.ini
+ ┃ ┣ 📜tc.log
+ ┃ ┣ 📜undo001
+ ┃ ┣ 📜undo002
+ ┃ ┗ 📜undo003
+ ┣ 📂include
+ ┃ ┗ 📂mysql
+ ┃ ┃ ┣ 📂mariadb
+ ┃ ┃ ┃ ┗ 📜ma_io.h
+ ┃ ┃ ┣ 📂mysql
+ ┃ ┃ ┃ ┣ 📜client_plugin.h
+ ┃ ┃ ┃ ┗ 📜plugin_auth.h
+ ┃ ┃ ┣ 📂server
+ ┃ ┃ ┃ ┣ 📂mysql
+ ┃ ┃ ┃ ┃ ┣ 📂psi
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_file.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_idle.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_mdl.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_memory.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_ps.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_socket.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_sp.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_stage.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_statement.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_table.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_thread.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜mysql_transaction.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜psi.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜psi_abi_v0.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜psi_abi_v1.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜psi_abi_v2.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜psi_base.h
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜psi_memory.h
+ ┃ ┃ ┃ ┃ ┣ 📜auth_dialog_client.h
+ ┃ ┃ ┃ ┃ ┣ 📜client_plugin.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_audit.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_auth.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_auth_common.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_data_type.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_encryption.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_ftparser.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_function.h
+ ┃ ┃ ┃ ┃ ┣ 📜plugin_password_validation.h
+ ┃ ┃ ┃ ┃ ┣ 📜services.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_base64.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_debug_sync.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_encryption.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_encryption_scheme.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_json.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_kill_statement.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_logger.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_md5.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_my_crypt.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_my_print_error.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_my_snprintf.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_print_check_msg.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_progress_report.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_sha1.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_sha2.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_sql.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_alloc.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_autoinc.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_error_context.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_mdl.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_rnd.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_specifics.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_thd_timezone.h
+ ┃ ┃ ┃ ┃ ┗ 📜service_thd_wait.h
+ ┃ ┃ ┃ ┣ 📂private
+ ┃ ┃ ┃ ┃ ┣ 📂atomic
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜gcc_builtins.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜generic-msvc.h
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜solaris.h
+ ┃ ┃ ┃ ┃ ┣ 📂providers
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂lzo
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜lzo1x.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜bzlib.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜lz4.h
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜lzma.h
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜snappy-c.h
+ ┃ ┃ ┃ ┃ ┣ 📜aligned.h
+ ┃ ┃ ┃ ┃ ┣ 📜aria_backup.h
+ ┃ ┃ ┃ ┃ ┣ 📜assume_aligned.h
+ ┃ ┃ ┃ ┃ ┣ 📜authors.h
+ ┃ ┃ ┃ ┃ ┣ 📜backup.h
+ ┃ ┃ ┃ ┃ ┣ 📜bounded_queue.h
+ ┃ ┃ ┃ ┃ ┣ 📜charset_collations.h
+ ┃ ┃ ┃ ┃ ┣ 📜char_buffer.h
+ ┃ ┃ ┃ ┃ ┣ 📜client_settings.h
+ ┃ ┃ ┃ ┃ ┣ 📜compat56.h
+ ┃ ┃ ┃ ┃ ┣ 📜config.h
+ ┃ ┃ ┃ ┃ ┣ 📜contributors.h
+ ┃ ┃ ┃ ┃ ┣ 📜create_options.h
+ ┃ ┃ ┃ ┃ ┣ 📜create_tmp_table.h
+ ┃ ┃ ┃ ┃ ┣ 📜cset_narrowing.h
+ ┃ ┃ ┃ ┃ ┣ 📜custom_conf.h
+ ┃ ┃ ┃ ┃ ┣ 📜datadict.h
+ ┃ ┃ ┃ ┃ ┣ 📜ddl_log.h
+ ┃ ┃ ┃ ┃ ┣ 📜debug.h
+ ┃ ┃ ┃ ┃ ┣ 📜debug_sync.h
+ ┃ ┃ ┃ ┃ ┣ 📜deprecation.h
+ ┃ ┃ ┃ ┃ ┣ 📜derived_handler.h
+ ┃ ┃ ┃ ┃ ┣ 📜derror.h
+ ┃ ┃ ┃ ┃ ┣ 📜des_key_file.h
+ ┃ ┃ ┃ ┃ ┣ 📜discover.h
+ ┃ ┃ ┃ ┃ ┣ 📜dur_prop.h
+ ┃ ┃ ┃ ┃ ┣ 📜events.h
+ ┃ ┃ ┃ ┃ ┣ 📜event_data_objects.h
+ ┃ ┃ ┃ ┃ ┣ 📜event_db_repository.h
+ ┃ ┃ ┃ ┃ ┣ 📜event_parse_data.h
+ ┃ ┃ ┃ ┃ ┣ 📜event_queue.h
+ ┃ ┃ ┃ ┃ ┣ 📜event_scheduler.h
+ ┃ ┃ ┃ ┃ ┣ 📜field.h
+ ┃ ┃ ┃ ┃ ┣ 📜field_comp.h
+ ┃ ┃ ┃ ┃ ┣ 📜filesort.h
+ ┃ ┃ ┃ ┃ ┣ 📜filesort_utils.h
+ ┃ ┃ ┃ ┃ ┣ 📜ft_global.h
+ ┃ ┃ ┃ ┃ ┣ 📜gcalc_slicescan.h
+ ┃ ┃ ┃ ┃ ┣ 📜gcalc_tools.h
+ ┃ ┃ ┃ ┃ ┣ 📜grant.h
+ ┃ ┃ ┃ ┃ ┣ 📜group_by_handler.h
+ ┃ ┃ ┃ ┃ ┣ 📜gstream.h
+ ┃ ┃ ┃ ┃ ┣ 📜gtid_index.h
+ ┃ ┃ ┃ ┃ ┣ 📜handler.h
+ ┃ ┃ ┃ ┃ ┣ 📜handle_connections_win.h
+ ┃ ┃ ┃ ┃ ┣ 📜hash.h
+ ┃ ┃ ┃ ┃ ┣ 📜hash_filo.h
+ ┃ ┃ ┃ ┃ ┣ 📜ha_handler_stats.h
+ ┃ ┃ ┃ ┃ ┣ 📜ha_partition.h
+ ┃ ┃ ┃ ┃ ┣ 📜ha_sequence.h
+ ┃ ┃ ┃ ┃ ┣ 📜heap.h
+ ┃ ┃ ┃ ┃ ┣ 📜hostname.h
+ ┃ ┃ ┃ ┃ ┣ 📜ilist.h
+ ┃ ┃ ┃ ┃ ┣ 📜init.h
+ ┃ ┃ ┃ ┃ ┣ 📜innodb_priv.h
+ ┃ ┃ ┃ ┃ ┣ 📜item.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_cmpfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_create.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_func.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_geofunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_jsonfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_row.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_strfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_subselect.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_sum.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_timefunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_vers.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_windowfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜item_xmlfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜json_schema.h
+ ┃ ┃ ┃ ┃ ┣ 📜json_schema_helper.h
+ ┃ ┃ ┃ ┃ ┣ 📜json_table.h
+ ┃ ┃ ┃ ┃ ┣ 📜key.h
+ ┃ ┃ ┃ ┃ ┣ 📜keycaches.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_charset.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_ident.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_ident_cli.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_ident_sys.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_string.h
+ ┃ ┃ ┃ ┃ ┣ 📜lex_symbol.h
+ ┃ ┃ ┃ ┃ ┣ 📜lf.h
+ ┃ ┃ ┃ ┃ ┣ 📜lock.h
+ ┃ ┃ ┃ ┃ ┣ 📜log.h
+ ┃ ┃ ┃ ┃ ┣ 📜log_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜log_event.h
+ ┃ ┃ ┃ ┃ ┣ 📜log_event_data_type.h
+ ┃ ┃ ┃ ┃ ┣ 📜log_slow.h
+ ┃ ┃ ┃ ┃ ┣ 📜maria.h
+ ┃ ┃ ┃ ┃ ┣ 📜mariadb.h
+ ┃ ┃ ┃ ┃ ┣ 📜mdl.h
+ ┃ ┃ ┃ ┃ ┣ 📜mem_root_array.h
+ ┃ ┃ ┃ ┃ ┣ 📜message.h
+ ┃ ┃ ┃ ┃ ┣ 📜multi_range_read.h
+ ┃ ┃ ┃ ┃ ┣ 📜myisam.h
+ ┃ ┃ ┃ ┃ ┣ 📜myisamchk.h
+ ┃ ┃ ┃ ┃ ┣ 📜myisammrg.h
+ ┃ ┃ ┃ ┃ ┣ 📜myisampack.h
+ ┃ ┃ ┃ ┃ ┣ 📜mysqld.h
+ ┃ ┃ ┃ ┃ ┣ 📜mysqld_default_groups.h
+ ┃ ┃ ┃ ┃ ┣ 📜mysqld_suffix.h
+ ┃ ┃ ┃ ┃ ┣ 📜mysys_err.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_apc.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_atomic.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_atomic_wrapper.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_base.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_bit.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_bitmap.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_check_opt.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_compare.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_counter.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_cpu.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_crypt.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_decimal.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_default.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_handler_errors.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_json_writer.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_libwrap.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_md5.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_minidump.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_nosys.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_rdtsc.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_rnd.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_service_manager.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_stacktrace.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_stack_alloc.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_time.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_tracker.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_tree.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_uctype.h
+ ┃ ┃ ┃ ┃ ┣ 📜my_user.h
+ ┃ ┃ ┃ ┃ ┣ 📜optimizer_costs.h
+ ┃ ┃ ┃ ┃ ┣ 📜optimizer_defaults.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_histogram_json.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_range.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_rewrite_date_cmp.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_subselect.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_trace.h
+ ┃ ┃ ┃ ┃ ┣ 📜opt_trace_context.h
+ ┃ ┃ ┃ ┃ ┣ 📜parse_file.h
+ ┃ ┃ ┃ ┃ ┣ 📜partition_element.h
+ ┃ ┃ ┃ ┃ ┣ 📜partition_info.h
+ ┃ ┃ ┃ ┃ ┣ 📜password.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_file_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_idle_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_memory_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_metadata_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_socket_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_stage_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_statement_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_table_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_thread_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜pfs_transaction_provider.h
+ ┃ ┃ ┃ ┃ ┣ 📜privilege.h
+ ┃ ┃ ┃ ┃ ┣ 📜probes_mysql.h
+ ┃ ┃ ┃ ┃ ┣ 📜probes_mysql_nodtrace.h
+ ┃ ┃ ┃ ┃ ┣ 📜procedure.h
+ ┃ ┃ ┃ ┃ ┣ 📜protocol.h
+ ┃ ┃ ┃ ┃ ┣ 📜proxy_protocol.h
+ ┃ ┃ ┃ ┃ ┣ 📜queues.h
+ ┃ ┃ ┃ ┃ ┣ 📜records.h
+ ┃ ┃ ┃ ┃ ┣ 📜replication.h
+ ┃ ┃ ┃ ┃ ┣ 📜repl_failsafe.h
+ ┃ ┃ ┃ ┃ ┣ 📜rijndael.h
+ ┃ ┃ ┃ ┃ ┣ 📜rowid_filter.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_constants.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_filter.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_gtid.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_injector.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_mi.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_parallel.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_record.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_reporting.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_rli.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_tblmap.h
+ ┃ ┃ ┃ ┃ ┣ 📜rpl_utility.h
+ ┃ ┃ ┃ ┃ ┣ 📜scheduler.h
+ ┃ ┃ ┃ ┃ ┣ 📜scope.h
+ ┃ ┃ ┃ ┃ ┣ 📜select_handler.h
+ ┃ ┃ ┃ ┃ ┣ 📜semisync.h
+ ┃ ┃ ┃ ┃ ┣ 📜semisync_master.h
+ ┃ ┃ ┃ ┃ ┣ 📜semisync_master_ack_receiver.h
+ ┃ ┃ ┃ ┃ ┣ 📜semisync_slave.h
+ ┃ ┃ ┃ ┃ ┣ 📜service_versions.h
+ ┃ ┃ ┃ ┃ ┣ 📜session_tracker.h
+ ┃ ┃ ┃ ┃ ┣ 📜set_var.h
+ ┃ ┃ ┃ ┃ ┣ 📜simple_tokenizer.h
+ ┃ ┃ ┃ ┃ ┣ 📜slave.h
+ ┃ ┃ ┃ ┃ ┣ 📜socketpair.h
+ ┃ ┃ ┃ ┃ ┣ 📜source_revision.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp.h
+ ┃ ┃ ┃ ┃ ┣ 📜span.h
+ ┃ ┃ ┃ ┃ ┣ 📜spatial.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp_head.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp_instr.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp_pcontext.h
+ ┃ ┃ ┃ ┃ ┣ 📜sp_rcontext.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_acl.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_admin.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_alloc.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_alter.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_analyse.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_analyze_stmt.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_array.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_audit.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_base.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_basic_types.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_binlog.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_bitmap.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_bootstrap.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_callback.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_class.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_cmd.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_connect.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_const.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_crypt.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_cte.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_cursor.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_db.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_debug.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_delete.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_derived.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_digest.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_digest_stream.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_do.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_error.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_explain.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_expression_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_get_diagnostics.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_handler.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_help.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_hset.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_insert.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_i_s.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_join_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_lex.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_lifo_buffer.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_limit.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_list.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_load.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_locale.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_manager.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_mode.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_parse.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_partition.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_partition_admin.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_plist.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_plugin.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_plugin_compat.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_prepare.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_priv.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_profile.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_reload.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_rename.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_repl.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_schema.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_select.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_sequence.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_servers.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_show.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_signal.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_sort.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_statistics.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_string.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_table.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_test.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_time.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_trigger.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_truncate.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_tvc.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_fixedbin.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_fixedbin_storage.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_geom.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_int.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_json.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_real.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_string.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_type_timeofday.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_udf.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_union.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_update.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_used.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_view.h
+ ┃ ┃ ┃ ┃ ┣ 📜sql_window.h
+ ┃ ┃ ┃ ┃ ┣ 📜ssl_compat.h
+ ┃ ┃ ┃ ┃ ┣ 📜strfunc.h
+ ┃ ┃ ┃ ┃ ┣ 📜structs.h
+ ┃ ┃ ┃ ┃ ┣ 📜sys_vars_shared.h
+ ┃ ┃ ┃ ┃ ┣ 📜table.h
+ ┃ ┃ ┃ ┃ ┣ 📜table_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜threadpool.h
+ ┃ ┃ ┃ ┃ ┣ 📜threadpool_generic.h
+ ┃ ┃ ┃ ┃ ┣ 📜threadpool_winsockets.h
+ ┃ ┃ ┃ ┃ ┣ 📜thread_cache.h
+ ┃ ┃ ┃ ┃ ┣ 📜thr_lock.h
+ ┃ ┃ ┃ ┃ ┣ 📜thr_malloc.h
+ ┃ ┃ ┃ ┃ ┣ 📜thr_timer.h
+ ┃ ┃ ┃ ┃ ┣ 📜transaction.h
+ ┃ ┃ ┃ ┃ ┣ 📜tzfile.h
+ ┃ ┃ ┃ ┃ ┣ 📜tztime.h
+ ┃ ┃ ┃ ┃ ┣ 📜t_ctype.h
+ ┃ ┃ ┃ ┃ ┣ 📜uniques.h
+ ┃ ┃ ┃ ┃ ┣ 📜unireg.h
+ ┃ ┃ ┃ ┃ ┣ 📜violite.h
+ ┃ ┃ ┃ ┃ ┣ 📜waiting_threads.h
+ ┃ ┃ ┃ ┃ ┣ 📜welcome_copyright_notice.h
+ ┃ ┃ ┃ ┃ ┣ 📜winservice.h
+ ┃ ┃ ┃ ┃ ┣ 📜wqueue.h
+ ┃ ┃ ┃ ┃ ┣ 📜wsrep.h
+ ┃ ┃ ┃ ┃ ┣ 📜wsrep_on.h
+ ┃ ┃ ┃ ┃ ┗ 📜xa.h
+ ┃ ┃ ┃ ┣ 📜big_endian.h
+ ┃ ┃ ┃ ┣ 📜byte_order_generic.h
+ ┃ ┃ ┃ ┣ 📜byte_order_generic_x86.h
+ ┃ ┃ ┃ ┣ 📜byte_order_generic_x86_64.h
+ ┃ ┃ ┃ ┣ 📜decimal.h
+ ┃ ┃ ┃ ┣ 📜errmsg.h
+ ┃ ┃ ┃ ┣ 📜handler_ername.h
+ ┃ ┃ ┃ ┣ 📜handler_state.h
+ ┃ ┃ ┃ ┣ 📜json_lib.h
+ ┃ ┃ ┃ ┣ 📜keycache.h
+ ┃ ┃ ┃ ┣ 📜little_endian.h
+ ┃ ┃ ┃ ┣ 📜mariadb_capi_rename.h
+ ┃ ┃ ┃ ┣ 📜ma_dyncol.h
+ ┃ ┃ ┃ ┣ 📜mysql.h
+ ┃ ┃ ┃ ┣ 📜mysqld_ername.h
+ ┃ ┃ ┃ ┣ 📜mysqld_error.h
+ ┃ ┃ ┃ ┣ 📜mysql_com.h
+ ┃ ┃ ┃ ┣ 📜mysql_com_server.h
+ ┃ ┃ ┃ ┣ 📜mysql_embed.h
+ ┃ ┃ ┃ ┣ 📜mysql_time.h
+ ┃ ┃ ┃ ┣ 📜mysql_version.h
+ ┃ ┃ ┃ ┣ 📜my_alloc.h
+ ┃ ┃ ┃ ┣ 📜my_alloca.h
+ ┃ ┃ ┃ ┣ 📜my_attribute.h
+ ┃ ┃ ┃ ┣ 📜my_byteorder.h
+ ┃ ┃ ┃ ┣ 📜my_compiler.h
+ ┃ ┃ ┃ ┣ 📜my_config.h
+ ┃ ┃ ┃ ┣ 📜my_dbug.h
+ ┃ ┃ ┃ ┣ 📜my_decimal_limits.h
+ ┃ ┃ ┃ ┣ 📜my_dir.h
+ ┃ ┃ ┃ ┣ 📜my_getopt.h
+ ┃ ┃ ┃ ┣ 📜my_global.h
+ ┃ ┃ ┃ ┣ 📜my_list.h
+ ┃ ┃ ┃ ┣ 📜my_net.h
+ ┃ ┃ ┃ ┣ 📜my_pthread.h
+ ┃ ┃ ┃ ┣ 📜my_sys.h
+ ┃ ┃ ┃ ┣ 📜my_valgrind.h
+ ┃ ┃ ┃ ┣ 📜my_xml.h
+ ┃ ┃ ┃ ┣ 📜m_ctype.h
+ ┃ ┃ ┃ ┣ 📜m_string.h
+ ┃ ┃ ┃ ┣ 📜pack.h
+ ┃ ┃ ┃ ┣ 📜sql_common.h
+ ┃ ┃ ┃ ┣ 📜sql_state.h
+ ┃ ┃ ┃ ┣ 📜sslopt-case.h
+ ┃ ┃ ┃ ┣ 📜sslopt-longopts.h
+ ┃ ┃ ┃ ┣ 📜sslopt-vars.h
+ ┃ ┃ ┃ ┗ 📜typelib.h
+ ┃ ┃ ┣ 📜errmsg.h
+ ┃ ┃ ┣ 📜mariadb_com.h
+ ┃ ┃ ┣ 📜mariadb_ctype.h
+ ┃ ┃ ┣ 📜mariadb_dyncol.h
+ ┃ ┃ ┣ 📜mariadb_rpl.h
+ ┃ ┃ ┣ 📜mariadb_stmt.h
+ ┃ ┃ ┣ 📜mariadb_version.h
+ ┃ ┃ ┣ 📜ma_list.h
+ ┃ ┃ ┣ 📜ma_pvio.h
+ ┃ ┃ ┣ 📜ma_tls.h
+ ┃ ┃ ┣ 📜mysql.h
+ ┃ ┃ ┣ 📜mysqld_error.h
+ ┃ ┃ ┣ 📜mysql_com.h
+ ┃ ┃ ┣ 📜mysql_version.h
+ ┃ ┃ ┣ 📜my_alloca.h
+ ┃ ┃ ┣ 📜my_config.h
+ ┃ ┃ ┣ 📜my_global.h
+ ┃ ┃ ┗ 📜my_sys.h
+ ┣ 📂lib
+ ┃ ┣ 📂plugin
+ ┃ ┃ ┣ 📜authentication_windows_client.dll
+ ┃ ┃ ┣ 📜auth_ed25519.dll
+ ┃ ┃ ┣ 📜auth_gssapi_client.dll
+ ┃ ┃ ┣ 📜auth_named_pipe.dll
+ ┃ ┃ ┣ 📜caching_sha2_password.dll
+ ┃ ┃ ┣ 📜client_ed25519.dll
+ ┃ ┃ ┣ 📜dialog.dll
+ ┃ ┃ ┣ 📜file_key_management.dll
+ ┃ ┃ ┣ 📜ha_archive.dll
+ ┃ ┃ ┣ 📜ha_blackhole.dll
+ ┃ ┃ ┣ 📜ha_connect.dll
+ ┃ ┃ ┣ 📜ha_connect.lib
+ ┃ ┃ ┣ 📜ha_federated.dll
+ ┃ ┃ ┣ 📜ha_federatedx.dll
+ ┃ ┃ ┣ 📜ha_rocksdb.dll
+ ┃ ┃ ┣ 📜ha_sphinx.dll
+ ┃ ┃ ┣ 📜ha_spider.dll
+ ┃ ┃ ┣ 📜locales.dll
+ ┃ ┃ ┣ 📜metadata_lock_info.dll
+ ┃ ┃ ┣ 📜mysql_clear_password.dll
+ ┃ ┃ ┣ 📜password_reuse_check.dll
+ ┃ ┃ ┣ 📜query_cache_info.dll
+ ┃ ┃ ┣ 📜query_response_time.dll
+ ┃ ┃ ┣ 📜server_audit.dll
+ ┃ ┃ ┣ 📜sha256_password.dll
+ ┃ ┃ ┣ 📜simple_password_check.dll
+ ┃ ┃ ┣ 📜sql_errlog.dll
+ ┃ ┃ ┗ 📜type_mysql_json.dll
+ ┃ ┣ 📜libmariadb.dll
+ ┃ ┣ 📜libmariadb.lib
+ ┃ ┣ 📜libmariadb.pdb
+ ┃ ┣ 📜mariadbclient.lib
+ ┃ ┗ 📜mysqlservices.lib
+ ┣ 📂share
+ ┃ ┣ 📂bulgarian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂charsets
+ ┃ ┃ ┣ 📜armscii8.xml
+ ┃ ┃ ┣ 📜ascii.xml
+ ┃ ┃ ┣ 📜cp1250.xml
+ ┃ ┃ ┣ 📜cp1251.xml
+ ┃ ┃ ┣ 📜cp1256.xml
+ ┃ ┃ ┣ 📜cp1257.xml
+ ┃ ┃ ┣ 📜cp850.xml
+ ┃ ┃ ┣ 📜cp852.xml
+ ┃ ┃ ┣ 📜cp866.xml
+ ┃ ┃ ┣ 📜dec8.xml
+ ┃ ┃ ┣ 📜geostd8.xml
+ ┃ ┃ ┣ 📜greek.xml
+ ┃ ┃ ┣ 📜hebrew.xml
+ ┃ ┃ ┣ 📜hp8.xml
+ ┃ ┃ ┣ 📜Index.xml
+ ┃ ┃ ┣ 📜keybcs2.xml
+ ┃ ┃ ┣ 📜koi8r.xml
+ ┃ ┃ ┣ 📜koi8u.xml
+ ┃ ┃ ┣ 📜latin1.xml
+ ┃ ┃ ┣ 📜latin2.xml
+ ┃ ┃ ┣ 📜latin5.xml
+ ┃ ┃ ┣ 📜latin7.xml
+ ┃ ┃ ┣ 📜macce.xml
+ ┃ ┃ ┣ 📜macroman.xml
+ ┃ ┃ ┣ 📜README
+ ┃ ┃ ┗ 📜swe7.xml
+ ┃ ┣ 📂chinese
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂czech
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂danish
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂dutch
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂english
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂estonian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂french
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂georgian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂german
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂greek
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂hindi
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂hungarian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂italian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂japanese
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂korean
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂norwegian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂norwegian-ny
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂polish
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂portuguese
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂romanian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂russian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂serbian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂slovak
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂spanish
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂swahili
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂swedish
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📂ukrainian
+ ┃ ┃ ┗ 📜errmsg.sys
+ ┃ ┣ 📜fill_help_tables.sql
+ ┃ ┣ 📜JdbcInterface.jar
+ ┃ ┣ 📜mariadb_performance_tables.sql
+ ┃ ┣ 📜mariadb_system_tables.sql
+ ┃ ┣ 📜mariadb_system_tables_data.sql
+ ┃ ┣ 📜mariadb_sys_schema.sql
+ ┃ ┣ 📜mariadb_test_data_timezone.sql
+ ┃ ┣ 📜mariadb_test_db.sql
+ ┃ ┣ 📜maria_add_gis_sp.sql
+ ┃ ┣ 📜maria_add_gis_sp_bootstrap.sql
+ ┃ ┣ 📜Mongo2.jar
+ ┃ ┗ 📜Mongo3.jar
+ ┣ 📜COPYING
+ ┣ 📜CREDITS
+ ┣ 📜README.md
+ ┗ 📜THIRDPARTY

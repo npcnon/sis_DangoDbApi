@@ -9,14 +9,14 @@ from users.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
 from .models import (
-    TblRoomInfo, TblProgram, TblDepartment, TblUsers,
+     TblProgram, TblDepartment,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
     TblStudentOfficialInfo,
 )
 from .serializers import (
-    TblRoomInfoSerializer, TblProgramSerializer, TblDepartmentSerializer,TblUsersSerializer,
+     TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
@@ -92,7 +92,7 @@ def create_api_view(model, serializer):
 
 
         def get(self, request):
-            filter_condition = {'active': True}
+            filter_condition = {'is_active': True}
             filter_param = request.GET.get('filter', None)
             if filter_param:
                 filter_parts = filter_param.split('=')
@@ -131,7 +131,7 @@ def create_api_view(model, serializer):
                 validated_data = serializer_data.validated_data
                 logger.info(f"Validated Data: {validated_data}")
 
-                active_value = validated_data.pop('active', None)
+                active_value = validated_data.pop('is_active', None)
                 try:
                     # Sending email for TblStudentAcademicHistory
                     # if model.__name__ in ["TblStudentBasicInfo"]:
@@ -165,14 +165,14 @@ def create_api_view(model, serializer):
                             return Response({"error": "No corresponding email found for the student."}, status=status.HTTP_400_BAD_REQUEST)
 
                     # Check for duplicates
-                    existing_instance = model.objects.filter(**validated_data, active=True).first()
+                    existing_instance = model.objects.filter(**validated_data, is_active=True).first()
                     if existing_instance:
                         logger.error("Duplicate entry detected")
                         raise Exception("Duplicate is not allowed")
                     else:
-                        existing_inactive_instance = model.objects.filter(**validated_data, active=False).first()
+                        existing_inactive_instance = model.objects.filter(**validated_data, is_active=False).first()
                         if existing_inactive_instance:
-                            existing_inactive_instance.active = True
+                            existing_inactive_instance.is_active = True
                             existing_inactive_instance.save()
                             return Response(serializer(existing_inactive_instance).data, status=status.HTTP_200_OK)
                         else:
@@ -203,10 +203,10 @@ def create_api_view(model, serializer):
                     logger.info("Deactivation process activated")
                     try:
                         instance = model.objects.get(**{pk_field: id_or_offercode})
-                        if instance.active:
-                            instance.active = False
+                        if instance.is_active:
+                            instance.is_active = False
                         else:
-                            instance.active = True
+                            instance.is_active = True
                         instance.save()
                         logger.info("Instance deactivated successfully")
                         return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
@@ -261,11 +261,9 @@ def create_api_view(model, serializer):
 
 
 # Instantiate API views
-RoomAPIView = create_api_view(TblRoomInfo, TblRoomInfoSerializer)
 ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
-UsersAPIView = create_api_view(TblUsers, TblUsersSerializer)
 StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
 StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def send_enrollment_email(instance, generated_password):
     subject = "Enrollment Application"
     html_message = render_to_string('DangoDBApp/enrollment_email_template.html', {
-        'portal_link': 'https://vercel.com/signin',
+        'portal_link': 'http://localhost:5173/Sign-in',
         'email': instance.email,
         'generated_password': generated_password,
     })

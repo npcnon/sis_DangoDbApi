@@ -72,7 +72,7 @@ def generate_student_data(first_name, last_name, program, campus, unique_id):
         "sex": random.choice(["Male", "Female"]),
         "email": f"{first_name.lower()}{last_name.lower()}{unique_id}@example.com",  # Ensure uniqueness in email
         "status": random.choice(status_choices),
-        "active": True,
+        "is_active": True,
     }
 
 # Combine both campuses' programs for simplicity
@@ -104,7 +104,7 @@ for data in sample_data:
         sex=data["sex"],
         email=data["email"],
         status=data["status"],
-        active=data["active"],
+        is_active=data["is_active"],
     )
 
 print("1000 records inserted successfully!")

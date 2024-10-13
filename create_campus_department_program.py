@@ -22,7 +22,7 @@ dept1 = TblDepartment.objects.create(
     campus_id=mandaue_campus,
     department_code="CS",
     department_dean="Dr. Alice Smith",
-    active=True
+    is_active=True
 )
 
 dept2 = TblDepartment.objects.create(
@@ -30,7 +30,7 @@ dept2 = TblDepartment.objects.create(
     campus_id=mandaue_campus,
     department_code="BA",
     department_dean="Dr. Bob Johnson",
-    active=True
+    is_active=True
 )
 
 dept3 = TblDepartment.objects.create(
@@ -38,7 +38,7 @@ dept3 = TblDepartment.objects.create(
     campus_id=cebu_campus,
     department_code="ENG",
     department_dean="Dr. Charlie Davis",
-    active=True
+    is_active=True
 )
 
 dept4 = TblDepartment.objects.create(
@@ -46,21 +46,21 @@ dept4 = TblDepartment.objects.create(
     campus_id=cebu_campus,
     department_code="IT",
     department_dean="Dr. Diana Clark",
-    active=True
+    is_active=True
 )
 
 # Creating programs
-TblProgram.objects.create(program="BS Computer Science", department_id=TblDepartment.objects.get(id=1), active=True)
-TblProgram.objects.create(program="BS Information Systems", department_id=TblDepartment.objects.get(id=1), active=True)
+TblProgram.objects.create(program="BS Computer Science", department_id=TblDepartment.objects.get(id=1), is_active=True)
+TblProgram.objects.create(program="BS Information Systems", department_id=TblDepartment.objects.get(id=1), is_active=True)
 
-TblProgram.objects.create(program="BS Business Administration", department_id=TblDepartment.objects.get(id=2), active=True)
-TblProgram.objects.create(program="BS Accountancy", department_id=TblDepartment.objects.get(id=2), active=True)
+TblProgram.objects.create(program="BS Business Administration", department_id=TblDepartment.objects.get(id=2), is_active=True)
+TblProgram.objects.create(program="BS Accountancy", department_id=TblDepartment.objects.get(id=2), is_active=True)
 
-TblProgram.objects.create(program="BS Civil Engineering", department_id=TblDepartment.objects.get(id=3), active=True)
-TblProgram.objects.create(program="BS Electrical Engineering", department_id=TblDepartment.objects.get(id=3), active=True)
+TblProgram.objects.create(program="BS Civil Engineering", department_id=TblDepartment.objects.get(id=3), is_active=True)
+TblProgram.objects.create(program="BS Electrical Engineering", department_id=TblDepartment.objects.get(id=3), is_active=True)
 
-TblProgram.objects.create(program="BS Information Technology", department_id=TblDepartment.objects.get(id=4), active=True)
-TblProgram.objects.create(program="BS Software Engineering", department_id=TblDepartment.objects.get(id=4), active=True)
+TblProgram.objects.create(program="BS Information Technology", department_id=TblDepartment.objects.get(id=4), is_active=True)
+TblProgram.objects.create(program="BS Software Engineering", department_id=TblDepartment.objects.get(id=4), is_active=True)
 
 # Check
 for department in TblDepartment.objects.all():

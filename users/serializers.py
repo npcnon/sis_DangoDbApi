@@ -5,7 +5,7 @@ from DangoDBApp.models import TblStudentBasicInfo
 class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TblStudentBasicInfo
-        fields = ['first_name', 'middle_name', 'last_name', 'suffix', 'is_transferee', 
+        fields = ['basicdata_applicant_id','first_name', 'middle_name', 'last_name', 'suffix', 'is_transferee', 
                   'contact_number', 'email', 'year_level', 'program', 'campus', 'sex', 
                   'birth_date', 'address']
 

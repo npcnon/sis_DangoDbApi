@@ -2,7 +2,6 @@
 
 from django.urls import path
 from .views import (
-    RoomAPIView,
     ProgramAPIView,
     DepartmentAPIView, 
     StdntInfoAPIView,
@@ -31,7 +30,6 @@ urlpatterns = [
     
     
     #path('apimymodel/', TblProgramAPIView.as_view(), name='mymodel-list'),
-    path('room/', RoomAPIView.as_view(), name='room-list'),
     path('program/', ProgramAPIView.as_view(), name = 'program-list'),
     path('department/',DepartmentAPIView.as_view(), name = 'department-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
@@ -53,8 +51,6 @@ urlpatterns = [
     path('stdntofficialmod/<str:id_or_offercode>/<str:deactivate>',StudentBasicInfoAPIView.as_view(),name = 'student-official-info-mod'),
     path('deactivate_or_modify_program/<str:id_or_offercode>/<str:deactivate>', ProgramAPIView.as_view(), name='deactivate_modify_program-active'),
     path('deactivate_or_modify_department/<str:id_or_offercode>/<str:deactivate>', DepartmentAPIView.as_view(), name = 'deactivate_modify_department-active'),
-    path('deactivate_or_modify_room/<str:id_or_offercode>/<str:deactivate>',RoomAPIView.as_view(), name="deactivate_modify_room"),
-    path('deactivate_or_modify_student/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_student'),
     path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_addstdntinfo'),    
     
     path('deactivate_or_modify_personal-student-data/<str:id_or_offercode>/<str:deactivate>',StudentPersonalDataAPIView.as_view(),name = 'deactivate_or_modify_personal-student-data'),

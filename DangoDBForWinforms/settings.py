@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': 'u286307273_portal',
         'USER': 'u286307273_portal',
         'PASSWORD': 'W5Cn6Q>+:l',
-        'HOST':'153.92.15.26',
+        'HOST':'srv1417.hstgr.io',
         'PORT':'3306',
     },
      'secondary': { 

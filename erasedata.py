@@ -10,13 +10,7 @@ django.setup()
 # Import your models after configuring Django
 from DangoDBApp.models import (
     TblDepartment, 
-    TblSubjInfo, 
-    TblRoomInfo, 
-    TblStaffInfo, 
     TblProgram, 
-    TblAddStaffInfo, 
-    TblSchedule, 
-    TblUsers,
     TblStudentPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,

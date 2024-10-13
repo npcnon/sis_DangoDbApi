@@ -5,10 +5,8 @@ from django.db import transaction
 import re
 from rest_framework import serializers
 from .models import (
-    TblRoomInfo,
     TblProgram,
     TblDepartment,
-    TblUsers,
     TblStudentPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
@@ -95,10 +93,8 @@ def create_fullstudentdata_serializer(model_class):
 
 
 # model serializers with generalized date serialization
-TblRoomInfoSerializer = create_serializer(TblRoomInfo)
 TblProgramSerializer = create_serializer(TblProgram)
 TblDepartmentSerializer = create_serializer(TblDepartment)
-TblUsersSerializer = create_serializer(TblUsers)
 
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
