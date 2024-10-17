@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_cron',
     'rest_framework',
     'users',
     'DangoDBApp',
+
 ]
 
 MIDDLEWARE = [
@@ -125,6 +127,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+CRON_CLASSES = [
+    "DangoDBApp.cron.FetchAPIDataCronJob",
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
