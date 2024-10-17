@@ -1,32 +1,13 @@
 #DangoDBForWinforms.urls
 
-"""
-URL configuration for DangoDBForWinforms project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
-#DangoDBForWinforms.urls
 from django.contrib import admin
-from django.urls import path
 from django.urls import path, include
-from .views import display_student_data
-from .views import display_bugs
+from .views import display_all_data
+
 urlpatterns = [
-    path('', display_student_data, name='student_data'),
-    path('bugs', display_bugs, name='student_data'),
+    path('', display_all_data, name='all_data'),
     path('admin/', admin.site.urls),
     path('api/', include('DangoDBApp.urls')),
     path('api/', include('users.urls')),
 ]
+

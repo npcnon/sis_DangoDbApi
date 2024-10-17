@@ -94,32 +94,32 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'u286307273_portal',
-        'USER': 'u286307273_portal',
-        'PASSWORD': 'W5Cn6Q>+:l',
-        'HOST':'srv1417.hstgr.io',
-        'PORT':'3306',
-    },
-     'secondary': { 
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AnotherDatabase',
-        'USER': 'root',
-        'PASSWORD': 'qwerty',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    },
-}
-
-#SQLite
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'u286307273_portal',
+#         'USER': 'u286307273_portal',
+#         'PASSWORD': 'W5Cn6Q>+:l',
+#         'HOST':'srv1417.hstgr.io',
+#         'PORT':'3306',
+#     },
+#      'secondary': { 
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'AnotherDatabase',
+#         'USER': 'root',
+#         'PASSWORD': 'qwerty',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     },
 # }
+
+#SQLite
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 REST_FRAMEWORK = {
@@ -174,7 +174,9 @@ CORS_ALLOW_HEADERS = [
 # Optionally specify allowed origins if CORS_ORIGIN_ALLOW_ALL is False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
-    'https://mu-isystem.vercel.app', 
+    'https://mu-isystem.vercel.app',
+    'https://node-mysql-signup-verification-api.onrender.com',
+    'https://misbenedictocollege.netlify.app',
 ]
 
 MEDIA_URL = '/media/'
