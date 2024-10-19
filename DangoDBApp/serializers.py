@@ -7,6 +7,7 @@ from rest_framework import serializers
 from .models import (
     TblProgram,
     TblDepartment,
+    TblSemester,
     TblStudentPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
@@ -15,6 +16,7 @@ from .models import (
     TblStudentBasicInfo,
     TblBugReport,
     TblStudentOfficialInfo,
+    TblCampus
 )
 
 # Generalized DateField that handles date parsing/validation
@@ -93,6 +95,8 @@ def create_fullstudentdata_serializer(model_class):
 
 
 # model serializers with generalized date serialization
+TblCampusSerializer = create_serializer(TblCampus)
+TblSemesterSerializer = create_serializer(TblSemester)
 TblProgramSerializer = create_serializer(TblProgram)
 TblDepartmentSerializer = create_serializer(TblDepartment)
 

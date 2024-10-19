@@ -3,7 +3,6 @@ import django
 import random
 from django.db import transaction
 from django.utils import timezone
-from datetime import timedelta
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
@@ -53,7 +52,7 @@ def generate_student_basic_info(program, campus):
         "contact_number": f"09{random.randint(100000000, 999999999)}",
         "address": f"{random.randint(100, 999)} {random.choice(['Main', 'Oak', 'Pine', 'Maple'])} St, {random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])}",
         "campus": campus,
-        "program": program.description,
+        "program": program,
         "birth_date": generate_date(1995, 2005),
         "sex": random.choice(sex_choices),
         "email": f"{first_name.lower()}.{last_name.lower()}{random.randint(1, 999)}@example.com"
@@ -108,13 +107,13 @@ def generate_student_family_background(personal_data):
         "mother_company": f"{random.choice(['PQR', 'LMN', 'JKL'])} Inc."
     }
 
-def generate_student_academic_background(personal_data, program):
+def generate_student_academic_background(personal_data, program, semester):
     year_entry = random.randint(2018, 2022)
     return {
         "fulldata_applicant_id": personal_data,
-        "program": program,
+        "program": program,  
         "student_type": random.choice(student_types),
-        "semester_entry": random.choice(["First Semester", "Second Semester"]),
+        "semester_entry": semester,
         "year_entry": year_entry,
         "year_level": random.choice(["1st year", "2nd year", "3rd year", "4th year"]),
         "year_graduate": year_entry + random.randint(4, 6),
@@ -142,8 +141,7 @@ def create_sample_students(num_students=10):
     for _ in range(num_students):
         department = random.choice(departments)
         program = random.choice(TblProgram.objects.filter(department_id=department))
-        campus = department.campus_id
-
+        campus = department.campus_id  # Adjusted to directly reference campus object
         # Create BasicInfo
         basic_info_data = generate_student_basic_info(program, campus)
         basic_info = TblStudentBasicInfo.objects.create(**basic_info_data)
@@ -169,4 +167,4 @@ def create_sample_students(num_students=10):
         TblStudentAcademicHistory.objects.create(**academic_history)
 
 if __name__ == "__main__":
-    create_sample_students()
+    create_sample_students(20)  # Change the number of students to create here

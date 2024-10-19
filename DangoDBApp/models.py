@@ -22,14 +22,15 @@ class EmailVerification(models.Model):
 
 #Campus
 class TblCampus(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=225)
     address = models.CharField(max_length=225)
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.CharField(max_length=225)
+    updated_at = models.CharField(max_length=225)
 
     def __str__(self):
         return str(self.id)
@@ -43,6 +44,7 @@ class TblCampus(models.Model):
 '''
 #department
 class TblDepartment(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     code = models.CharField(max_length=255)
@@ -50,8 +52,8 @@ class TblDepartment(models.Model):
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.CharField(max_length=225)
+    updated_at = models.CharField(max_length=225)
 
     class Meta:
         unique_together=('name', 'campus_id', 'code')
@@ -59,6 +61,7 @@ class TblDepartment(models.Model):
 
 #Program
 class TblProgram(models.Model):
+    id = models.IntegerField(primary_key=True)
     code = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     department_id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
@@ -66,8 +69,8 @@ class TblProgram(models.Model):
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.CharField(max_length=225)
+    updated_at = models.CharField(max_length=225)
 
     class Meta:
         unique_together=('description', 'department_id', )
@@ -97,6 +100,7 @@ class TblEmployee(models.Model):
 
 #Semester
 class TblSemester(models.Model):
+    id = models.IntegerField(primary_key=True)
     campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
     semester_name = models.CharField(max_length=20)
     school_year = models.CharField(max_length=9)
@@ -105,8 +109,8 @@ class TblSemester(models.Model):
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.CharField(max_length=225)
+    updated_at = models.CharField(max_length=225)
 
 
 #Class
@@ -138,7 +142,7 @@ class TblStudentBasicInfo(models.Model):
     contact_number = models.CharField(max_length=11)
     address = models.TextField()
     campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
-    program = models.CharField(max_length=225)
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
     birth_date = models.DateField()
     sex = models.CharField(max_length=10)
     email = models.EmailField(unique=True)
@@ -250,6 +254,7 @@ class TblStudentOfficialInfo(models.Model):
     additional date for fields that can have more than 1 value
     example: address, contact number, etc.
 '''
+
 #student additional data
 class TblStudentAddPersonalData(models.Model):
     fulldata_applicant_id = models.ForeignKey(
@@ -324,7 +329,7 @@ class TblStudentAcademicBackground(models.Model):
     
     major_in = models.TextField(null=True)
     student_type = models.CharField(max_length=30)  
-    semester_entry = models.CharField(max_length=20)
+    semester_entry = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     year_entry = models.IntegerField()
     year_level = models.CharField(max_length=8)
     year_graduate = models.IntegerField()
