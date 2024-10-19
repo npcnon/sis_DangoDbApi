@@ -39,6 +39,7 @@ class StudentDataAPIView(APIView):
         
         filter_param = request.GET.get('filter', None)
         latest = request.GET.get('latest', 'false').lower() == 'true'
+        data = None
         def GetRelatedPersonalCampus(campus_id):
             return TblStudentPersonalData.objects.filter(
                 basicdata_applicant_id__campus_id=campus_id,
