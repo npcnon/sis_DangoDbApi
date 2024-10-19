@@ -11,7 +11,7 @@ class FetchAPIDataCronJob(CronJobBase):
     def do(self):
         print(f"Cron job running at {timezone.now()}")
         # Simulating API fetch
-        response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
+        response = requests.get('https://node-mysql-signup-verification-api.onrender.com/external/get-campus-active')
         if response.status_code == 200:
             data = response.json()
             print(f"Fetched data: {data}")

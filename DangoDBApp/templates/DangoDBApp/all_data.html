@@ -70,7 +70,16 @@
                     {% for item in model_data.data %}
                         <tr>
                             {% for field in model_data.fields %}
-                                <td>{{ item|getattribute:field }}</td>
+                                <td>
+                                    {# Check if field is a foreign key and retrieve specific attributes #}
+                                    {% if item|getattribute:field and item|getattribute:field.basicdata_applicant_id %}
+                                        {{ item|getattribute:field|getattribute:"basicdata_applicant_id" }}
+                                    {% elif item|getattribute:field and item|getattribute:field.fulldata_applicant_id %}
+                                        {{ item|getattribute:field|getattribute:"fulldata_applicant_id" }}
+                                    {% else %}
+                                        {{ item|getattribute:field }}
+                                    {% endif %}
+                                </td>
                             {% endfor %}
                         </tr>
                     {% endfor %}

@@ -149,6 +149,8 @@ class TblStudentBasicInfo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.basicdata_applicant_id}"
 
 
 
@@ -216,6 +218,8 @@ class TblStudentPersonalData(models.Model):
             'religion', 'country', 'email', 'acr', 'status'
         )
 
+    def __str__(self):
+        return f"{self.fulldata_applicant_id}"
 
 '''
     if a full_applicant_id(full student data) is inserted here
