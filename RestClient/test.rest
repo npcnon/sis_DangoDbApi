@@ -23,14 +23,13 @@ GET http://127.0.0.1:8000/api/stdntbasicinfo/
 ## you can use `?filter=personal_data=f_name=Jane` with this you can get all the data in personal_data with the
 ## first name `Jane`
 
-GET http://127.0.0.1:8000/api/full-student-data/?filter=personal_data
+GET http://127.0.0.1:8000/api/full-student-data/?filter=persona_data
 
 ### GET campus to get all the students detail on that campus use ?filter=campus=1
 ### to get the students data(personaldata, family background, acadmemic background etc)
 ### choices are personal_data, add_personal_data, family_background, academic_background, academic_history
-### use ?filter=campus=personal_data=
-GET http://127.0.0.1:8000/api/full-student-data/?filter=campus=1
-
+### use ?filter=campus=personal_data=1 to get all personaldata at campus 1
+GET http://127.0.0.1:8000/api/full-student-data/?filter=campus=academic_background=1
 
 
 
@@ -48,7 +47,7 @@ Content-Type: application/json
     "year_level": "2nd Year",
     "address": "Somewhere around the earth",
     "campus": 1,
-    "program": "BSIT",
+    "program": 1,
     "birth_date": "2000-01-01",
     "sex": "Male",
     "email": "shinygluttontuna@gmail.com"
@@ -111,7 +110,7 @@ Content-Type: application/json
         "program": 1,
         "major_in": "Computer Science",
         "student_type": "Full-time",
-        "semester_entry": "1st Semester",
+        "semester_entry": 1,
         "year_level":"1st Year",
         "year_entry": 2023,
         "year_graduate": 2027,

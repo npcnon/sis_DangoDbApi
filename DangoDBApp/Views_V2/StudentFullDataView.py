@@ -40,16 +40,15 @@ class StudentDataAPIView(APIView):
         filter_param = request.GET.get('filter', None)
         latest = request.GET.get('latest', 'false').lower() == 'true'
         def GetRelatedPersonalCampus(campus_id):
-
             return TblStudentPersonalData.objects.filter(
-            related_academicbackground_data__program__department_id__campus_id=campus_id,
-            related_academicbackground_data__active=True
+                basicdata_applicant_id__campus_id=campus_id,
+                basicdata_applicant_id__is_active=True
             )
 
         def GetRelatedCampus(table, campus_id):
             personal_data_ids = GetRelatedPersonalCampus(campus_id).values_list('fulldata_applicant_id', flat=True)
-            return table.objects.filter(fulldata_applicant_id__in=personal_data_ids)
-
+            return table.objects.filter(fulldata_applicant_id__in=personal_data_ids)     
+           
         if filter_param:
             filter_parts = filter_param.split('=')
             if len(filter_parts) == 1:
@@ -59,14 +58,12 @@ class StudentDataAPIView(APIView):
                 filter_field, filter_value = filter_parts
                 filter_value = filter_value.strip().replace("'", "")
                 if filter_field == 'campus':
-                        
                     data = {
                         'personal_data': TblStudentPersonalDataSerializer(GetRelatedPersonalCampus(filter_value), many=True).data,
                         'add_personal_data': TblStudentAddPersonalDataSerializer(GetRelatedCampus(TblStudentAddPersonalData, filter_value), many=True).data,
                         'family_background': TblStudentFamilyBackgroundSerializer(GetRelatedCampus(TblStudentFamilyBackground, filter_value), many=True).data,
                         'academic_background': TblStudentAcademicBackgroundSerializer(GetRelatedCampus(TblStudentAcademicBackground, filter_value), many=True).data,
                         'academic_history': TblStudentAcademicHistorySerializer(GetRelatedCampus(TblStudentAcademicHistory, filter_value), many=True).data,
-
                     }
                 if not data:
                     data = self.get_filtered_data_all_tables(filter_field, filter_value, latest)
