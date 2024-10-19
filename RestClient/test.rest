@@ -19,11 +19,9 @@ GET http://127.0.0.1:8000/api/stdntbasicinfo/
 ## you can use `?filter=personal_data` to get all the data in `personal_data` model
 
 
-#####example3 filter: using2 filter argument which is the `model` and the `id`
+#####example3 filter: using 2 filter argument which is the `model` and the `id`
 ## you can use `?filter=personal_data=f_name=Jane` with this you can get all the data in personal_data with the
 ## first name `Jane`
-
-
 
 GET http://127.0.0.1:8000/api/full-student-data/?filter=personal_data
 

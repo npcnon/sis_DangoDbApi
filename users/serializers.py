@@ -7,7 +7,7 @@ class TblStudentBasicInfoSerializer(serializers.ModelSerializer):
         model = TblStudentBasicInfo
         fields = ['basicdata_applicant_id','first_name', 'middle_name', 'last_name', 'suffix', 'is_transferee', 
                   'contact_number', 'email', 'year_level', 'program', 'campus', 'sex', 
-                  'birth_date', 'address']
+                  'birth_date', 'address','created_at']
 
 class TblStudentBasicInfoWithDetailsSerializer(serializers.ModelSerializer):
     applicant_details = TblStudentBasicInfoSerializer(source='basicdata_applicant_id', read_only=True)
