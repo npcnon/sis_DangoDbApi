@@ -14,7 +14,7 @@ from DangoDBApp.serializers import (
     TblProgramSerializer,
     TblSemesterSerializer
 )
-
+import traceback
 def run_cron_job(fetched_data, model_class, serializer_class, unique_field):
     for item in fetched_data:
         try:
@@ -26,12 +26,17 @@ def run_cron_job(fetched_data, model_class, serializer_class, unique_field):
                 action = "Updated" if existing_item else "Created"
                 print(f"{action} {model_class.__name__}: {item[unique_field]}")
             else:
-                print(f"Failed to {'update' if existing_item else 'create'} {model_class.__name__} {item[unique_field]}: {serializer.errors}")
+                print(f"Validation error for {model_class.__name__} {item[unique_field]}:")
+                for field, errors in serializer.errors.items():
+                    print(f"  {field}: {', '.join(errors)}")
 
         except IntegrityError as e:
-            print(f"Database error occurred: {str(e)}")
+            print(f"Database integrity error for {model_class.__name__} {item[unique_field]}:")
+            print(f"  {str(e)}")
         except Exception as e:
-            print(f"An error occurred: {str(e)}")
+            print(f"Unexpected error for {model_class.__name__} {item[unique_field]}:")
+            print(f"  {str(e)}")
+            print(f"  {traceback.format_exc()}")
 
 def map_data(fetched_data, model_name):
     mapped_data = []
@@ -97,11 +102,20 @@ class FetchAPIDataCronJob(CronJobBase):
         }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():
-            response = requests.get(url)
-            if response.status_code == 200:
+            try:
+                response = requests.get(url)
+                response.raise_for_status()  # This will raise an exception for bad status codes
                 data = response.json()
                 mapped_data = map_data(data, model_name)
                 run_cron_job(mapped_data, model_class, serializer_class, 'id')
-                print(f"Fetched and mapped data for {model_name}: {mapped_data}")
-            else:
-                print(f"Failed to fetch {model_name} data: {response.status_code}")
+                print(f"Successfully processed data for {model_name}")
+            except requests.RequestException as e:
+                print(f"HTTP Request error for {model_name}:")
+                print(f"  {str(e)}")
+            except ValueError as e:
+                print(f"JSON decoding error for {model_name}:")
+                print(f"  {str(e)}")
+            except Exception as e:
+                print(f"Unexpected error processing {model_name}:")
+                print(f"  {str(e)}")
+                print(f"  {traceback.format_exc()}")

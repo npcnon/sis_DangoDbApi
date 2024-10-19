@@ -28,8 +28,8 @@ GET http://127.0.0.1:8000/api/full-student-data/?filter=personal_data
 ### GET campus to get all the students detail on that campus use ?filter=campus=1
 ### to get the students data(personaldata, family background, acadmemic background etc)
 ### choices are personal_data, add_personal_data, family_background, academic_background, academic_history
-### use ?filter=campus=personal_data=1
-GET http://127.0.0.1:8000/api/full-student-data/?filter=campus=personal_data=1
+### use ?filter=campus=personal_data=
+GET http://127.0.0.1:8000/api/full-student-data/?filter=campus=1
 
 
 
