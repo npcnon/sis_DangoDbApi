@@ -16,7 +16,8 @@ from DangoDBApp.models import (
     TblStudentAcademicHistory,
     TblDepartment,
     TblProgram,
-    TblCampus
+    TblCampus,
+    TblSemester  # Added TblSemester
 )
 
 # Sample data pools (unchanged)
@@ -142,6 +143,8 @@ def create_sample_students(num_students=10):
         department = random.choice(departments)
         program = random.choice(TblProgram.objects.filter(department_id=department))
         campus = department.campus_id  # Adjusted to directly reference campus object
+        semester = random.choice(TblSemester.objects.filter(campus_id=campus))  # Added semester logic
+
         # Create BasicInfo
         basic_info_data = generate_student_basic_info(program, campus)
         basic_info = TblStudentBasicInfo.objects.create(**basic_info_data)
@@ -159,12 +162,12 @@ def create_sample_students(num_students=10):
         TblStudentFamilyBackground.objects.create(**family_data)
         
         # Create AcademicBackground
-        academic_background = generate_student_academic_background(personal_info, program)
-        TblStudentAcademicBackground.objects.create(**academic_background)
+        academic_background_data = generate_student_academic_background(personal_info, program, semester)
+        TblStudentAcademicBackground.objects.create(**academic_background_data)
         
         # Create AcademicHistory
-        academic_history = generate_student_academic_history(personal_info)
-        TblStudentAcademicHistory.objects.create(**academic_history)
+        academic_history_data = generate_student_academic_history(personal_info)
+        TblStudentAcademicHistory.objects.create(**academic_history_data)
 
 if __name__ == "__main__":
-    create_sample_students(20)  # Change the number of students to create here
+    create_sample_students(10)
