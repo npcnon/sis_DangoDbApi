@@ -1,19 +1,18 @@
 from django.utils import timezone
 from datetime import datetime, date
 import json
-import os
 import random
+import string
+from django.db import transaction
+import os
 import django
-from django.db import transaction, IntegrityError
-import re
+from django.contrib.auth.hashers import make_password
 
+# Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 from DangoDBApp.models import (
-    TblCampus,
-    TblProgram,
-    TblSemester,
     TblStudentBasicInfo,
     TblStudentPersonalData,
     TblStudentAddPersonalData,
@@ -21,205 +20,194 @@ from DangoDBApp.models import (
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
     TblStudentOfficialInfo,
+    TblProgram,
+    TblCampus,
+    TblSemester,
+    TblDepartment
 )
+from users.models import User, Profile
 
-def is_valid_email(email):
-    # Use a regex pattern to check for valid email formats
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return re.match(pattern, email)
+# Data pools
+from django.utils import timezone
+from datetime import datetime, timedelta
+import random
 
-def create_basic_students():
-    # Get existing programs and campuses
-    program_bscs = TblProgram.objects.get(code="BSCS")
-    program_bsit = TblProgram.objects.get(code="BSIT")
-    mandaue_campus = TblCampus.objects.get(name="Mandaue Campus")
-    cebu_campus = TblCampus.objects.get(name="Cebu City Campus")
-
-    first_names = ["Juan", "Maria", "Carlos", "Sofia", "Jose", "Ana", "Pedro", "Luisa", "Luis", "Clara"]
-    last_names = ["Dela Cruz", "Santos", "Gonzales", "Reyes", "Garcia", "Martinez", "Flores", "Lopez", "Pérez", "Torres"]
-
-    created_students = []
+def generate_unique_data(index):
+    # List of possible values to create more realistic and varied data
+    first_names = [
+        "John", "Emma", "Michael", "Sophia", "William", "Isabella", "James",
+        "Olivia", "Alexander", "Ava", "Daniel", "Mia", "David", "Charlotte",
+        "Joseph", "Amelia", "Matthew", "Emily", "Andrew", "Elizabeth"
+    ]
     
-    for i in range(20):
-        while True:  # Loop until a valid unique email is found
-            email = f"{random.choice(first_names).lower()}.{random.choice(last_names).lower()}@example.com"
-            if is_valid_email(email) and not TblStudentBasicInfo.objects.filter(email=email).exists():
-                break  # Valid and unique email found
-
-        student_data = {
-            "first_name": random.choice(first_names),
-            "middle_name": random.choice(last_names),
-            "last_name": random.choice(last_names),
-            "is_transferee": random.choice([True, False]),
-            "year_level": f"{random.randint(1, 4)}th Year",
-            "contact_number": f"09{random.randint(10000000, 99999999)}",
-            "address": f"{random.randint(1, 999)} Sample St., Mandaue City",
-            "campus": mandaue_campus if i % 2 == 0 else cebu_campus,
-            "program": program_bscs if i % 2 == 0 else program_bsit,
-            "birth_date": date(random.randint(2000, 2005), random.randint(1, 12), random.randint(1, 28)),
-            "sex": random.choice(["Male", "Female"]),
-            "email": email
-        }
-        
-        # Create student and handle exceptions
-        try:
-            student = TblStudentBasicInfo.objects.create(**student_data)
-            created_students.append(student)
-        except IntegrityError as e:
-            print(f"Error creating student: {str(e)}")
+    middle_names = [
+        "Robert", "Mae", "James", "Rose", "John", "Marie", "William",
+        "Grace", "Joseph", "Anne", "Edward", "Louise", "Thomas", "Faith",
+        "Michael", "Joy", "David", "Hope", "Peter", "Claire"
+    ]
     
-    return created_students
-
-def create_full_students():
-    # Get references to existing data
-    program_bscs = TblProgram.objects.get(code="BSCS")
-    mandaue_campus = TblCampus.objects.get(name="Mandaue Campus")
-    first_sem = TblSemester.objects.get(semester_name="1st Semester")
-
-    full_students = []
+    last_names = [
+        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller",
+        "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez",
+        "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"
+    ]
     
-    for i in range(20):
-        while True:  # Loop until a valid unique email is found
-            email = f"student{i}@example.com"
-            if is_valid_email(email) and not TblStudentPersonalData.objects.filter(email=email).exists():
-                break  # Valid and unique email found
-
-        personal_data = {
-            "f_name": f"First{i}",
-            "m_name": f"Middle{i}",
-            "l_name": f"Last{i}",
-            "sex": random.choice(["Male", "Female"]),
-            "birth_date": date(random.randint(2000, 2005), random.randint(1, 12), random.randint(1, 28)),
-            "birth_place": "Cebu City",
-            "marital_status": "Single",
-            "religion": "Catholic",
-            "country": "Philippines",
-            "email": email,
-            "status": "pending"
-        }
-
-        add_personal_data = {
-            "city_address": f"{random.randint(1, 999)} City St., Mandaue City",
-            "province_address": f"{random.randint(1, 999)} Province Rd., Cebu",
-            "contact_number": f"09{random.randint(10000000, 99999999)}",
-            "city_contact_number": f"09{random.randint(10000000, 99999999)}",
-            "province_contact_number": f"09{random.randint(10000000, 99999999)}",
-            "citizenship": "Filipino"
-        }
-
-        family_background = {
-            "father_fname": f"Father{i}",
-            "father_mname": f"FathersM{i}",
-            "father_lname": f"Gonzales",
-            "father_contact_number": f"09{random.randint(10000000, 99999999)}",
-            "father_email": f"father{i}@example.com",
-            "father_occupation": "Engineer",
-            "father_income": random.randint(40000, 80000),
-            "father_company": "Tech Corp",
-            "mother_fname": f"Mother{i}",
-            "mother_mname": f"MothersM{i}",
-            "mother_lname": f"Gonzales",
-            "mother_contact_number": f"09{random.randint(10000000, 99999999)}",
-            "mother_email": f"mother{i}@example.com",
-            "mother_occupation": "Teacher",
-            "mother_income": random.randint(30000, 60000),
-            "mother_company": "Public School"
-        }
-
-        academic_background = {
-            "program": program_bscs,
-            "student_type": "Regular",
-            "semester_entry": first_sem,
-            "year_entry": 2024,
-            "year_level": f"{random.randint(1, 4)}th Year",
-            "year_graduate": datetime.now().year + (4 - int(personal_data["year_level"].split()[0])) if personal_data["year_level"].split()[0].isdigit() else 2027,
-            "application_type": "New"
-        }
-
-        academic_history = {
-            "elementary_school": f"Elementary School {i}",
-            "elementary_address": "Mandaue City",
-            "elementary_honors": "With Honors",
-            "elementary_graduate": 2015,
-            "junior_highschool": f"Junior High {i}",
-            "junior_address": "Mandaue City",
-            "junior_honors": "With High Honors",
-            "junior_graduate": 2019,
-            "senior_highschool": f"Senior High {i}",
-            "senior_address": "Mandaue City",
-            "senior_honors": "With Highest Honors",
-            "senior_graduate": 2021,
-            "ncae_grade": str(random.randint(80, 100)),
-            "ncae_year_taken": 2021
-        }
-
-        full_students.append({
-            "personal_data": personal_data,
-            "add_personal_data": add_personal_data,
-            "family_background": family_background,
-            "academic_background": academic_background,
-            "academic_history": academic_history
-        })
-
-    created_students = []
+    religions = ["Catholic", "Protestant", "Islam", "Buddhism", "Hindu"]
+    citizenships = ["Filipino", "American", "Canadian", "Australian", "British"]
     
-    for student in full_students:
-        try:
-            # Create personal data first
-            personal_data = TblStudentPersonalData.objects.create(**student["personal_data"])
-            
-            # Create related records
-            TblStudentAddPersonalData.objects.create(
-                fulldata_applicant_id=personal_data,
-                **student["add_personal_data"]
-            )
-            
-            TblStudentFamilyBackground.objects.create(
-                fulldata_applicant_id=personal_data,
-                **student["family_background"]
-            )
-            
-            TblStudentAcademicBackground.objects.create(
-                fulldata_applicant_id=personal_data,
-                **student["academic_background"]
-            )
-            
-            TblStudentAcademicHistory.objects.create(
-                fulldata_applicant_id=personal_data,
-                **student["academic_history"]
-            )
-            
-            # Create official student record (optional)
-            student_id = f"{datetime.now().year}-{str(personal_data.fulldata_applicant_id).zfill(5)}"
-            TblStudentOfficialInfo.objects.create(
-                fulldata_applicant_id=personal_data,
-                student_id=student_id,
-                campus=mandaue_campus
-            )
-            
-            created_students.append(personal_data)
-            
-        except IntegrityError as e:
-            print(f"Error creating student: {str(e)}")
-            continue
-    
-    return created_students
+    # Generate unique values using index to ensure uniqueness
+    return {
+        "first_name": first_names[index],
+        "middle_name": middle_names[index],
+        "last_name": last_names[index],
+        "email": f"{first_names[index].lower()}.{last_names[index].lower()}{index}@example.com",
+        "contact_number": f"0912{str(index).zfill(7)}",
+        "birth_date": datetime(2000 + (index % 5), ((index % 12) + 1), ((index % 28) + 1)),
+        "religion": random.choice(religions),
+        "citizenship": random.choice(citizenships)
+    }
 
-@transaction.atomic
-def populate_student_data():
+def create_students():
     try:
-        print("Creating basic student records...")
-        basic_students = create_basic_students()
-        print(f"Created {len(basic_students)} basic student records")
-        
-        print("\nCreating full student records...")
-        full_students = create_full_students()
-        print(f"Created {len(full_students)} full student records")
-        
-        print("\nStudent data population completed successfully!")
-        
-    except Exception as e:
-        print(f"An error occurred during population: {str(e)}")
+        # Get or create prerequisite objects
+        campus = TblCampus.objects.first()
+        if not campus:
+            campus = TblCampus.objects.create(
+                id=1,
+                name="Main Campus",
+                address="123 University Ave",
+                created_at=timezone.now().isoformat(),
+                updated_at=timezone.now().isoformat()
+            )
 
+        department = TblDepartment.objects.first()
+        if not department:
+            department = TblDepartment.objects.create(
+                id=1,
+                name="Computer Science Department",
+                campus_id=campus,
+                code="CSD",
+                created_at=timezone.now().isoformat(),
+                updated_at=timezone.now().isoformat()
+            )
+
+        program = TblProgram.objects.first()
+        if not program:
+            program = TblProgram.objects.create(
+                id=1,
+                code="BSCS",
+                description="Bachelor of Science in Computer Science",
+                department_id=department,
+                created_at=timezone.now().isoformat(),
+                updated_at=timezone.now().isoformat()
+            )
+
+        semester = TblSemester.objects.first()
+        if not semester:
+            semester = TblSemester.objects.create(
+                id=1,
+                campus_id=campus,
+                semester_name="First Semester",
+                school_year="2024-2025",
+                created_at=timezone.now().isoformat(),
+                updated_at=timezone.now().isoformat()
+            )
+
+        # Create 20 students
+        for i in range(1):
+            unique_data = generate_unique_data(i)
+            
+            # Create BasicInfo
+            basic_info = TblStudentBasicInfo.objects.create(
+                first_name=unique_data["first_name"],
+                middle_name=unique_data["middle_name"],
+                last_name=unique_data["last_name"],
+                suffix=None,
+                is_transferee=False,
+                year_level="1st Year",
+                contact_number=unique_data["contact_number"],
+                address=f"{i+100} Student Street, City",
+                campus=campus,
+                program=program,
+                birth_date=unique_data["birth_date"],
+                sex="Male" if i % 2 == 0 else "Female",
+                email=unique_data["email"]
+            )
+
+            # Create PersonalData
+            personal_data = TblStudentPersonalData.objects.create(
+                basicdata_applicant_id=basic_info,
+                f_name=unique_data["first_name"],
+                m_name=unique_data["middle_name"],
+                l_name=unique_data["last_name"],
+                sex="Male" if i % 2 == 0 else "Female",
+                birth_date=unique_data["birth_date"],
+                birth_place=f"City Hospital {i+1}",
+                marital_status="Single",
+                religion=unique_data["religion"],
+                country="Philippines",
+                email=unique_data["email"],
+                status="pending"
+            )
+
+            # Create AddPersonalData
+            add_personal_data = TblStudentAddPersonalData.objects.create(
+                fulldata_applicant_id=personal_data,
+                city_address=f"{i+100} City Street",
+                province_address=f"{i+100} Province Road",
+                contact_number=unique_data["contact_number"],
+                city_contact_number=f"0913{str(i).zfill(7)}",
+                province_contact_number=f"0914{str(i).zfill(7)}",
+                citizenship=unique_data["citizenship"]
+            )
+
+            # Create FamilyBackground
+            family_background = TblStudentFamilyBackground.objects.create(
+                fulldata_applicant_id=personal_data,
+                father_fname=f"Father{i}",
+                father_lname=unique_data["last_name"],
+                father_contact_number=f"0915{str(i).zfill(7)}",
+                father_email=f"father.{unique_data['last_name'].lower()}{i}@example.com",
+                mother_fname=f"Mother{i}",
+                mother_lname=f"Mother{unique_data['last_name']}",
+                mother_contact_number=f"0916{str(i).zfill(7)}",
+                mother_email=f"mother.{unique_data['last_name'].lower()}{i}@example.com"
+            )
+
+            # Create AcademicBackground
+            academic_background = TblStudentAcademicBackground.objects.create(
+                fulldata_applicant_id=personal_data,
+                program=program,
+                student_type="Regular",
+                semester_entry=semester,
+                year_entry=2024,
+                year_level="1st Year",
+                year_graduate=2028,
+                application_type="New"
+            )
+
+            # Create AcademicHistory
+            academic_history = TblStudentAcademicHistory.objects.create(
+                fulldata_applicant_id=personal_data,
+                elementary_school=f"Elementary School {i+1}",
+                elementary_address=f"Elementary Address {i+1}",
+                elementary_graduate=2018,
+                junior_highschool=f"Junior High School {i+1}",
+                junior_address=f"Junior High Address {i+1}",
+                junior_graduate=2020,
+                senior_highschool=f"Senior High School {i+1}",
+                senior_address=f"Senior High Address {i+1}",
+                senior_graduate=2022
+            )
+
+            print(f"Successfully created student {i+1} of 20")
+
+        print("Successfully created all 20 students")
+
+    except Exception as e:
+        print(f"Error creating students: {str(e)}")
+        raise
+
+# Run the function
 if __name__ == "__main__":
-    populate_student_data()
+    create_students()

@@ -331,7 +331,7 @@ class TblStudentAcademicBackground(models.Model):
     student_type = models.CharField(max_length=30)  
     semester_entry = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     year_entry = models.IntegerField()
-    year_level = models.CharField(max_length=8)
+    year_level = models.CharField(max_length=50)
     year_graduate = models.IntegerField()
     application_type = models.CharField(max_length=15)
 
