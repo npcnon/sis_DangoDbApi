@@ -23,41 +23,6 @@ from DangoDBApp.models import (
     TblStudentOfficialInfo,
 )
 
-def create_basic_students():
-    # Get existing programs and campuses
-    program_bscs = TblProgram.objects.get(code="BSCS")
-    program_bsit = TblProgram.objects.get(code="BSIT")
-    mandaue_campus = TblCampus.objects.get(name="Mandaue Campus")
-    cebu_campus = TblCampus.objects.get(name="Cebu City Campus")
-
-    first_names = ["Juan", "Maria", "Carlos", "Sofia", "Jose", "Ana", "Pedro", "Luisa", "Luis", "Clara"]
-    last_names = ["Dela Cruz", "Santos", "Gonzales", "Reyes", "Garcia", "Martinez", "Flores", "Lopez", "Pérez", "Torres"]
-
-    created_students = []
-    
-    for i in range(20):
-        student_data = {
-            "first_name": random.choice(first_names),
-            "middle_name": random.choice(last_names),
-            "last_name": random.choice(last_names),
-            "is_transferee": random.choice([True, False]),
-            "year_level": f"{random.randint(1, 4)}th Year",
-            "contact_number": f"09{random.randint(10000000, 99999999)}",
-            "address": f"{random.randint(1, 999)} Sample St., Mandaue City",
-            "campus": mandaue_campus if i % 2 == 0 else cebu_campus,
-            "program": program_bscs if i % 2 == 0 else program_bsit,
-            "birth_date": date(random.randint(2000, 2005), random.randint(1, 12), random.randint(1, 28)),
-            "sex": random.choice(["Male", "Female"]),
-            "email": f"{random.choice(first_names).lower()}.{random.choice(last_names).lower()}@example.com"
-        }
-        
-        # Check for duplicates before creating
-        if not TblStudentBasicInfo.objects.filter(email=student_data['email']).exists():
-            student = TblStudentBasicInfo.objects.create(**student_data)
-            created_students.append(student)
-
-    return created_students
-
 def is_valid_email(email):
     # Use a regex pattern to check for valid email formats
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -73,7 +38,7 @@ def create_basic_students():
     first_names = ["Juan", "Maria", "Carlos", "Sofia", "Jose", "Ana", "Pedro", "Luisa", "Luis", "Clara"]
     last_names = ["Dela Cruz", "Santos", "Gonzales", "Reyes", "Garcia", "Martinez", "Flores", "Lopez", "Pérez", "Torres"]
 
-    basic_students = []
+    created_students = []
     
     for i in range(20):
         while True:  # Loop until a valid unique email is found
@@ -95,14 +60,12 @@ def create_basic_students():
             "sex": random.choice(["Male", "Female"]),
             "email": email
         }
-        basic_students.append(student_data)
-
-    created_students = []
-    for student_data in basic_students:
+        
+        # Create student and handle exceptions
         try:
             student = TblStudentBasicInfo.objects.create(**student_data)
             created_students.append(student)
-        except Exception as e:
+        except IntegrityError as e:
             print(f"Error creating student: {str(e)}")
     
     return created_students
@@ -236,7 +199,7 @@ def create_full_students():
             
             created_students.append(personal_data)
             
-        except Exception as e:
+        except IntegrityError as e:
             print(f"Error creating student: {str(e)}")
             continue
     
@@ -256,7 +219,7 @@ def populate_student_data():
         print("\nStudent data population completed successfully!")
         
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(f"An error occurred during population: {str(e)}")
 
 if __name__ == "__main__":
     populate_student_data()
