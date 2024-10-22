@@ -1,173 +1,211 @@
-import os
-import django
-import random
-from django.db import transaction
 from django.utils import timezone
+from datetime import datetime, date
+import json
+import os
+import random
+import django
+from django.db import transaction
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 from DangoDBApp.models import (
+    TblCampus,
+    TblDepartment,
+    TblProgram,
+    TblSemester,
+    TblClass,
+    TblEmployee,
     TblStudentBasicInfo,
     TblStudentPersonalData,
     TblStudentAddPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
     TblStudentAcademicHistory,
-    TblDepartment,
-    TblProgram,
-    TblCampus,
-    TblSemester  # Added TblSemester
+    TblStudentOfficialInfo,
 )
 
-# Sample data pools (unchanged)
-first_names = ["John", "Jane", "Chris", "Emily", "Tom", "Lucy", "Michael", "Sarah", "David", "Emma"]
-last_names = ["Doe", "Smith", "Johnson", "Lee", "Brown", "Taylor", "Wilson", "Clark", "Walker", "Hall"]
-middle_names = ["A.", "B.", "C.", "D.", "E.", None]
-suffixes = ["Jr.", "Sr.", "III", "IV", None]
-sex_choices = ["Male", "Female"]
-marital_status_choices = ["Single", "Married", "Widowed"]
-citizenship_choices = ["Filipino", "American", "Japanese", "Chinese", "Korean"]
-religions = ["Catholic", "Protestant", "Muslim", "Buddhist", "Hindu"]
-student_types = ["Regular", "Irregular", "Transferee"]
-application_types = ["Freshmen", "Transferee", "Cross Enrollee", "Returnee"]
-school_names = ["Central High", "Westview Academy", "Eastside School", "Northern Institute", "Southern College"]
+def create_basic_students():
+    # Get existing programs and campuses
+    program_bscs = TblProgram.objects.get(code="BSCS")
+    program_bsit = TblProgram.objects.get(code="BSIT")
+    mandaue_campus = TblCampus.objects.get(name="Mandaue Campus")
+    cebu_campus = TblCampus.objects.get(name="Cebu City Campus")
 
-def generate_date(start_year, end_year):
-    year = random.randint(start_year, end_year)
-    month = random.randint(1, 12)
-    day = random.randint(1, 28)  # Simplifying to avoid month-specific day ranges
-    return f"{year}-{month:02d}-{day:02d}"
+    first_names = ["Juan", "Maria", "Carlos", "Sofia", "Jose", "Ana", "Pedro", "Luisa", "Luis", "Clara"]
+    last_names = ["Dela Cruz", "Santos", "Gonzales", "Reyes", "Garcia", "Martinez", "Flores", "Lopez", "Pérez", "Torres"]
 
-def generate_student_basic_info(program, campus):
-    year_level = random.choice(["1st year", "2nd year", "3rd year", "4th year"])
-    first_name = random.choice(first_names)
-    last_name = random.choice(last_names)
-    return {
-        "first_name": first_name,
-        "middle_name": random.choice(middle_names),
-        "last_name": last_name,
-        "suffix": random.choice(suffixes),
-        "is_transferee": random.choice([True, False]),
-        "year_level": year_level,
-        "contact_number": f"09{random.randint(100000000, 999999999)}",
-        "address": f"{random.randint(100, 999)} {random.choice(['Main', 'Oak', 'Pine', 'Maple'])} St, {random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])}",
-        "campus": campus,
-        "program": program,
-        "birth_date": generate_date(1995, 2005),
-        "sex": random.choice(sex_choices),
-        "email": f"{first_name.lower()}.{last_name.lower()}{random.randint(1, 999)}@example.com"
-    }
+    basic_students = []
+    
+    for i in range(20):
+        student_data = {
+            "first_name": random.choice(first_names),
+            "middle_name": random.choice(last_names),
+            "last_name": random.choice(last_names),
+            "is_transferee": random.choice([True, False]),
+            "year_level": f"{random.randint(1, 4)}th Year",
+            "contact_number": f"09{random.randint(10000000, 99999999)}",
+            "address": f"{random.randint(1, 999)} Sample St., Mandaue City",
+            "campus": mandaue_campus if i % 2 == 0 else cebu_campus,
+            "program": program_bscs if i % 2 == 0 else program_bsit,
+            "birth_date": date(random.randint(2000, 2005), random.randint(1, 12), random.randint(1, 28)),
+            "sex": random.choice(["Male", "Female"]),
+            "email": f"{random.choice(first_names).lower()}.{random.choice(last_names).lower()}@example.com"
+        }
+        basic_students.append(student_data)
 
-def generate_student_personal_data(basic_info):
-    return {
-        "basicdata_applicant_id": basic_info,
-        "f_name": basic_info.first_name,
-        "m_name": basic_info.middle_name,
-        "l_name": basic_info.last_name,
-        "suffix": basic_info.suffix,
-        "sex": basic_info.sex,
-        "birth_date": basic_info.birth_date,
-        "birth_place": f"{random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])} City",
-        "marital_status": random.choice(marital_status_choices),
-        "religion": random.choice(religions),
-        "country": "Philippines",
-        "email": basic_info.email,
-        "status": random.choice(["officially enrolled", "pending", "rejected", "initially enrolled"])
-    }
+    created_students = []
+    for student_data in basic_students:
+        student = TblStudentBasicInfo.objects.create(**student_data)
+        created_students.append(student)
 
-def generate_student_add_personal_data(personal_data):
-    return {
-        "fulldata_applicant_id": personal_data,
-        "city_address": f"{random.randint(100, 999)} {random.choice(['City', 'Urban', 'Metro'])} St, {random.choice(['Makati', 'Taguig', 'Pasig', 'Mandaluyong'])}",
-        "province_address": f"{random.randint(100, 999)} {random.choice(['Rural', 'Provincial', 'Country'])} Rd, {random.choice(['Batangas', 'Laguna', 'Cavite', 'Bulacan'])}",
-        "contact_number": f"09{random.randint(100000000, 999999999)}",
-        "city_contact_number": f"02{random.randint(10000000, 99999999)}",
-        "province_contact_number": f"04{random.randint(10000000, 99999999)}",
-        "citizenship": random.choice(citizenship_choices)
-    }
+    return created_students
 
-def generate_student_family_background(personal_data):
-    return {
-        "fulldata_applicant_id": personal_data,
-        "father_fname": random.choice(first_names),
-        "father_mname": random.choice(middle_names),
-        "father_lname": random.choice(last_names),
-        "father_contact_number": f"09{random.randint(100000000, 999999999)}",
-        "father_email": f"father{random.randint(1, 999)}@example.com",
-        "father_occupation": random.choice(["Engineer", "Teacher", "Doctor", "Businessman", "Lawyer"]),
-        "father_income": random.randint(300000, 1000000),
-        "father_company": f"{random.choice(['ABC', 'XYZ', 'DEF'])} Corporation",
-        "mother_fname": random.choice(first_names),
-        "mother_mname": random.choice(middle_names),
-        "mother_lname": random.choice(last_names),
-        "mother_contact_number": f"09{random.randint(100000000, 999999999)}",
-        "mother_email": f"mother{random.randint(1, 999)}@example.com",
-        "mother_occupation": random.choice(["Nurse", "Accountant", "Manager", "Artist", "Entrepreneur"]),
-        "mother_income": str(random.randint(300000, 1000000)),
-        "mother_company": f"{random.choice(['PQR', 'LMN', 'JKL'])} Inc."
-    }
+def create_full_students():
+    # Get references to existing data
+    program_bscs = TblProgram.objects.get(code="BSCS")
+    mandaue_campus = TblCampus.objects.get(name="Mandaue Campus")
+    first_sem = TblSemester.objects.get(semester_name="1st Semester")
 
-def generate_student_academic_background(personal_data, program, semester):
-    year_entry = random.randint(2018, 2022)
-    return {
-        "fulldata_applicant_id": personal_data,
-        "program": program,  
-        "student_type": random.choice(student_types),
-        "semester_entry": semester,
-        "year_entry": year_entry,
-        "year_level": random.choice(["1st year", "2nd year", "3rd year", "4th year"]),
-        "year_graduate": year_entry + random.randint(4, 6),
-        "application_type": random.choice(application_types)
-    }
+    full_students = []
+    
+    for i in range(20):
+        personal_data = {
+            "f_name": f"First{i}",
+            "m_name": f"Middle{i}",
+            "l_name": f"Last{i}",
+            "sex": random.choice(["Male", "Female"]),
+            "birth_date": date(random.randint(2000, 2005), random.randint(1, 12), random.randint(1, 28)),
+            "birth_place": "Cebu City",
+            "marital_status": "Single",
+            "religion": "Catholic",
+            "country": "Philippines",
+            "email": f"student{i}@example.com",
+            "status": "pending"
+        }
 
-def generate_student_academic_history(personal_data):
-    return {
-        "fulldata_applicant_id": personal_data,
-        "elementary_school": f"{random.choice(school_names)} Elementary",
-        "elementary_address": f"{random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])}",
-        "elementary_graduate": random.randint(2010, 2015),
-        "junior_highschool": f"{random.choice(school_names)} Junior High",
-        "junior_address": f"{random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])}",
-        "junior_graduate": random.randint(2015, 2019),
-        "senior_highschool": f"{random.choice(school_names)} Senior High",
-        "senior_address": f"{random.choice(['Metro Manila', 'Cebu', 'Davao', 'Iloilo'])}",
-        "senior_graduate": random.randint(2020, 2022)
-    }
+        add_personal_data = {
+            "city_address": f"{random.randint(1, 999)} City St., Mandaue City",
+            "province_address": f"{random.randint(1, 999)} Province Rd., Cebu",
+            "contact_number": f"09{random.randint(10000000, 99999999)}",
+            "city_contact_number": f"09{random.randint(10000000, 99999999)}",
+            "province_contact_number": f"09{random.randint(10000000, 99999999)}",
+            "citizenship": "Filipino"
+        }
+
+        family_background = {
+            "father_fname": f"Father{i}",
+            "father_mname": f"FathersM{i}",
+            "father_lname": f"Gonzales",
+            "father_contact_number": f"09{random.randint(10000000, 99999999)}",
+            "father_email": f"father{i}@example.com",
+            "father_occupation": "Engineer",
+            "father_income": random.randint(40000, 80000),
+            "father_company": "Tech Corp",
+            "mother_fname": f"Mother{i}",
+            "mother_mname": f"MothersM{i}",
+            "mother_lname": f"Gonzales",
+            "mother_contact_number": f"09{random.randint(10000000, 99999999)}",
+            "mother_email": f"mother{i}@example.com",
+            "mother_occupation": "Teacher",
+            "mother_income": random.randint(30000, 60000),
+            "mother_company": "Public School"
+        }
+
+        academic_background = {
+            "program": program_bscs,
+            "student_type": "Regular",
+            "semester_entry": first_sem,
+            "year_entry": 2023,
+            "year_level": f"{random.randint(1, 4)}th Year",
+            "year_graduate": datetime.now().year + (4 - int(personal_data["year_level"].split()[0])) if personal_data["year_level"].split()[0].isdigit() else 2027,
+            "application_type": "New"
+        }
+
+        academic_history = {
+            "elementary_school": f"Elementary School {i}",
+            "elementary_address": "Mandaue City",
+            "elementary_honors": "With Honors",
+            "elementary_graduate": 2015,
+            "junior_highschool": f"Junior High {i}",
+            "junior_address": "Mandaue City",
+            "junior_honors": "With High Honors",
+            "junior_graduate": 2019,
+            "senior_highschool": f"Senior High {i}",
+            "senior_address": "Mandaue City",
+            "senior_honors": "With Highest Honors",
+            "senior_graduate": 2021,
+            "ncae_grade": str(random.randint(80, 100)),
+            "ncae_year_taken": 2021
+        }
+
+        full_students.append({
+            "personal_data": personal_data,
+            "add_personal_data": add_personal_data,
+            "family_background": family_background,
+            "academic_background": academic_background,
+            "academic_history": academic_history
+        })
+
+    created_students = []
+    
+    for student in full_students:
+        try:
+            # Create personal data first
+            personal_data = TblStudentPersonalData.objects.create(**student["personal_data"])
+            
+            # Create related records
+            TblStudentAddPersonalData.objects.create(
+                fulldata_applicant_id=personal_data,
+                **student["add_personal_data"]
+            )
+            
+            TblStudentFamilyBackground.objects.create(
+                fulldata_applicant_id=personal_data,
+                **student["family_background"]
+            )
+            
+            TblStudentAcademicBackground.objects.create(
+                fulldata_applicant_id=personal_data,
+                **student["academic_background"]
+            )
+            
+            TblStudentAcademicHistory.objects.create(
+                fulldata_applicant_id=personal_data,
+                **student["academic_history"]
+            )
+            
+            # Create official student record (optional)
+            student_id = f"{datetime.now().year}-{str(personal_data.fulldata_applicant_id).zfill(5)}"
+            TblStudentOfficialInfo.objects.create(
+                fulldata_applicant_id=personal_data,
+                student_id=student_id,
+                campus=mandaue_campus
+            )
+            
+            created_students.append(personal_data)
+            
+        except Exception as e:
+            print(f"Error creating student: {str(e)}")
+            continue
+    
+    return created_students
 
 @transaction.atomic
-def create_sample_students(num_students=10):
-    departments = list(TblDepartment.objects.all())
-    
-    for _ in range(num_students):
-        department = random.choice(departments)
-        program = random.choice(TblProgram.objects.filter(department_id=department))
-        campus = department.campus_id  # Adjusted to directly reference campus object
-        semester = random.choice(TblSemester.objects.filter(campus_id=campus))  # Added semester logic
-
-        # Create BasicInfo
-        basic_info_data = generate_student_basic_info(program, campus)
-        basic_info = TblStudentBasicInfo.objects.create(**basic_info_data)
+def populate_student_data():
+    try:
+        print("Creating basic student records...")
+        basic_students = create_basic_students()
+        print(f"Created {len(basic_students)} basic student records")
         
-        # Create PersonalData
-        personal_data = generate_student_personal_data(basic_info)
-        personal_info = TblStudentPersonalData.objects.create(**personal_data)
+        print("\nCreating full student records...")
+        full_students = create_full_students()
+        print(f"Created {len(full_students)} full student records")
         
-        # Create AddPersonalData
-        add_personal_data = generate_student_add_personal_data(personal_info)
-        TblStudentAddPersonalData.objects.create(**add_personal_data)
+        print("\nStudent data population completed successfully!")
         
-        # Create FamilyBackground
-        family_data = generate_student_family_background(personal_info)
-        TblStudentFamilyBackground.objects.create(**family_data)
-        
-        # Create AcademicBackground
-        academic_background_data = generate_student_academic_background(personal_info, program, semester)
-        TblStudentAcademicBackground.objects.create(**academic_background_data)
-        
-        # Create AcademicHistory
-        academic_history_data = generate_student_academic_history(personal_info)
-        TblStudentAcademicHistory.objects.create(**academic_history_data)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
-    create_sample_students(10)
+    populate_student_data()

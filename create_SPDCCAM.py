@@ -9,128 +9,182 @@ django.setup()
 
 from DangoDBApp.models import TblCampus, TblDepartment, TblProgram, TblSemester, TblClass, TblEmployee
 
-def create_campuses():
-    campuses = [
-        {"name": "Mandaue Campus", "address": "Mandaue City, Cebu"},
-        {"name": "Cebu Campus", "address": "Cebu City, Cebu"}
-    ]
-    return [TblCampus.objects.get_or_create(**campus)[0] for campus in campuses]
+from django.utils import timezone
+from datetime import datetime, date
+import json
 
-def create_departments(campuses):
-    departments_data = [
-        {"name": "Computer Science", "code": "CS", "campus_id": campuses[0]},
-        {"name": "Business Administration", "code": "BA", "campus_id": campuses[0]},
-        {"name": "Engineering", "code": "ENG", "campus_id": campuses[1]},
-        {"name": "Information Technology", "code": "IT", "campus_id": campuses[1]}
-    ]
-    
-    departments = []
-    for dept in departments_data:
-        department = TblDepartment.objects.create(**dept, is_active=True)
-        departments.append(department)
-    return departments
-
-def create_programs(departments):
-    programs_data = [
-        {"code": "BSCS", "description": "Bachelor of Science in Computer Science", "department_id": departments[0]},
-        {"code": "BIS", "description": "Bachelor of Science in Information Systems", "department_id": departments[0]},
-        {"code": "BBA", "description": "Bachelor of Business Administration", "department_id": departments[1]},
-        {"code": "BAcc", "description": "Bachelor of Accountancy", "department_id": departments[1]},
-        {"code": "BCE", "description": "Bachelor of Civil Engineering", "department_id": departments[2]},
-        {"code": "BEE", "description": "Bachelor of Electrical Engineering", "department_id": departments[2]},
-        {"code": "BIT", "description": "Bachelor of Information Technology", "department_id": departments[3]},
-        {"code": "BSE", "description": "Bachelor of Software Engineering", "department_id": departments[3]},
-    ]
-    return [TblProgram.objects.create(**program, is_active=True) for program in programs_data]
-
-def create_semesters(campus):
-    semesters_data = [
-        {"semester_name": "First Semester", "school_year": "2024-2025"},
-        {"semester_name": "Second Semester", "school_year": "2024-2025"},
-    ]
-    return [TblSemester.objects.create(campus_id=campus, **semester, is_active=True) for semester in semesters_data]
-
-def create_employees(campuses, departments):
-    employees_data = [
-        {"first_name": "Alice", "last_name": "Johnson", "campus": campuses[0], "department": departments[0]},
-        {"first_name": "Bob", "last_name": "Smith", "campus": campuses[0], "department": departments[1]},
-        {"first_name": "Charlie", "last_name": "Brown", "campus": campuses[1], "department": departments[2]},
-        {"first_name": "Diana", "last_name": "Lee", "campus": campuses[1], "department": departments[3]}
-    ]
-    
-    employees = []
-    for emp in employees_data:
-        employee = TblEmployee.objects.create(
-            first_name=emp["first_name"],
-            last_name=emp["last_name"],
-            middle_name="",
-            campus=emp["campus"],
-            department=emp["department"],
-            role="Professor",
-            title="Dr.",
-            qualifications={"degree": "Ph.D."},
-            gender="Female" if emp["first_name"] in ["Alice", "Diana"] else "Male",
-            address=f"{emp['first_name']}'s Address, {emp['campus'].name}",
-            birth_date="1980-01-01",
-            contact_number="09123456789"
-        )
-        employees.append(employee)
-    return employees
-
-def create_classes(programs, semesters, employees):
-    classes_data = [
-        {
-            "name": "CS101",
-            "program": next(p for p in programs if p.code == "BSCS"),
-            "semester": semesters[0],
-            "employee": employees[0],
-            "schedule": "Mon, Wed, Fri 8:00 AM - 9:30 AM",
-        },
-        {
-            "name": "BA101",
-            "program": next(p for p in programs if p.code == "BBA"),
-            "semester": semesters[1],
-            "employee": employees[1],
-            "schedule": "Tue, Thu 10:00 AM - 11:30 AM",
-        },
-    ]
-    return [TblClass.objects.create(**class_info) for class_info in classes_data]
-
-@transaction.atomic
 def populate_database():
-    try:
-        campuses = create_campuses()
-        departments = create_departments(campuses)
-        programs = create_programs(departments)
-        semesters = create_semesters(campuses[0])
-        employees = create_employees(campuses, departments)
-        classes = create_classes(programs, semesters, employees)
-        
-        print("Database populated successfully!")
-        return True
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return False
+    # Create Campuses
+    campuses = {
+        1: TblCampus.objects.create(
+            id=1,
+            name="Mandaue Campus",
+            address="Mandaue City, Cebu",
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        2: TblCampus.objects.create(
+            id=2,
+            name="Cebu City Campus",
+            address="Cebu City, Cebu",
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        )
+    }
 
-def display_data():
-    print("\n--- Departments and Programs ---")
-    for department in TblDepartment.objects.all():
-        print(f"Department: {department.name}")
-        for program in TblProgram.objects.filter(department_id=department):
-            print(f"  - Program: {program.description}")
+    # Create Departments
+    departments = {
+        1: TblDepartment.objects.create(
+            id=1,
+            name="College of Computer Studies",
+            campus_id=campuses[1],
+            code="CCS",
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        2: TblDepartment.objects.create(
+            id=2,
+            name="College of Engineering",
+            campus_id=campuses[1],
+            code="COE",
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        3: TblDepartment.objects.create(
+            id=3,
+            name="College of Business",
+            campus_id=campuses[2],
+            code="COB",
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        )
+    }
 
-    print("\n--- Employees ---")
-    for employee in TblEmployee.objects.all():
-        print(f"Employee: {employee.first_name} {employee.last_name}, Department: {employee.department.name}")
+    # Create Programs
+    programs = {
+        1: TblProgram.objects.create(
+            id=1,
+            code="BSCS",
+            description="Bachelor of Science in Computer Science",
+            department_id=departments[1],
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        2: TblProgram.objects.create(
+            id=2,
+            code="BSIT",
+            description="Bachelor of Science in Information Technology",
+            department_id=departments[1],
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        3: TblProgram.objects.create(
+            id=3,
+            code="BSCE",
+            description="Bachelor of Science in Civil Engineering",
+            department_id=departments[2],
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        )
+    }
 
-    print("\n--- Semesters ---")
-    for semester in TblSemester.objects.all():
-        print(f"Semester: {semester.semester_name} ({semester.school_year})")
+    # Create Semesters
+    current_year = "2023-2024"
+    semesters = {
+        1: TblSemester.objects.create(
+            id=1,
+            campus_id=campuses[1],
+            semester_name="1st Semester",
+            school_year=current_year,
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        2: TblSemester.objects.create(
+            id=2,
+            campus_id=campuses[1],
+            semester_name="2nd Semester",
+            school_year=current_year,
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        ),
+        3: TblSemester.objects.create(
+            id=3,
+            campus_id=campuses[1],
+            semester_name="Summer",
+            school_year=current_year,
+            created_at=timezone.now().isoformat(),
+            updated_at=timezone.now().isoformat()
+        )
+    }
 
-    print("\n--- Classes ---")
-    for class_ in TblClass.objects.all():
-        print(f"Class: {class_.name}, Program: {class_.program.description}, Semester: {class_.semester.semester_name}, Instructor: {class_.employee.first_name} {class_.employee.last_name}, Schedule: {class_.schedule}")
+    # Create Employees (Faculty)
+    employees = {
+        1: TblEmployee.objects.create(
+            campus=campuses[1],
+            department=departments[1],
+            role="Professor",
+            title="PhD",
+            first_name="John",
+            middle_name="Michael",
+            last_name="Smith",
+            qualifications=json.dumps({
+                "education": ["PhD in Computer Science", "MS in Information Technology"],
+                "certifications": ["Oracle Certified Professional", "AWS Certified Solutions Architect"]
+            }),
+            gender="Male",
+            address="123 Faculty Street, Mandaue City",
+            birth_date=date(1980, 5, 15),
+            contact_number="09123456789"
+        ),
+        2: TblEmployee.objects.create(
+            campus=campuses[1],
+            department=departments[1],
+            role="Dean",
+            title="PhD",
+            first_name="Maria",
+            middle_name="Santos",
+            last_name="Cruz",
+            qualifications=json.dumps({
+                "education": ["PhD in Information Systems", "MS in Computer Science"],
+                "certifications": ["Project Management Professional", "ITIL Master"]
+            }),
+            gender="Female",
+            address="456 Dean Avenue, Mandaue City",
+            birth_date=date(1975, 8, 20),
+            contact_number="09987654321"
+        )
+    }
+
+    # Create Classes
+    classes = [
+        TblClass.objects.create(
+            name="CS101-A",
+            program=programs[1],
+            semester=semesters[1],
+            employee=employees[1],
+            schedule=json.dumps({
+                "day": "Monday,Wednesday",
+                "time": "08:00 AM - 09:30 AM",
+                "room": "Room 301"
+            })
+        ),
+        TblClass.objects.create(
+            name="IT201-B",
+            program=programs[2],
+            semester=semesters[1],
+            employee=employees[2],
+            schedule=json.dumps({
+                "day": "Tuesday,Thursday",
+                "time": "10:00 AM - 11:30 AM",
+                "room": "Room 402"
+            })
+        )
+    ]
+
+    print("Database populated successfully!")
 
 if __name__ == "__main__":
-    if populate_database():
-        display_data()
+    try:
+        populate_database()
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")

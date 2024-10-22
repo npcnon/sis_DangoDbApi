@@ -7,3 +7,4 @@ mysqlclient
 django-cron
 mysql-connector-python
 requests
+faker
