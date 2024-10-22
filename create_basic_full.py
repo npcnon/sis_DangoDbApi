@@ -130,7 +130,7 @@ def create_full_students():
             "program": program_bscs,
             "student_type": "Regular",
             "semester_entry": first_sem,
-            "year_entry": 2023,
+            "year_entry": 2024,
             "year_level": f"{random.randint(1, 4)}th Year",
             "year_graduate": datetime.now().year + (4 - int(personal_data["year_level"].split()[0])) if personal_data["year_level"].split()[0].isdigit() else 2027,
             "application_type": "New"
