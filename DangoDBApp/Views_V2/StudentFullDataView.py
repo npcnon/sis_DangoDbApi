@@ -10,7 +10,7 @@ from ..serializers import (StudentFullDataSerializer,
     TblStudentFamilyBackgroundSerializer, 
     TblStudentPersonalDataSerializer,
     TblStudentAddPersonalDataSerializer
-    )
+)
 from ..models import (
     TblStudentBasicInfo,
     TblStudentPersonalData,
@@ -28,13 +28,75 @@ logger = logging.getLogger(__name__)
 
 
 class StudentDataAPIView(APIView):
-    def post(self, request):
-        serializer = StudentFullDataSerializer(data=request.data)
-        if serializer.is_valid():
-            student_instance = serializer.create(serializer.validated_data)
-            return Response({"success": "Student data created successfully", "data": student_instance}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def format_validation_errors(self, errors):
+        """Format validation errors into a more readable structure."""
+        formatted_errors = []
+        
+        def process_error_dict(error_dict, parent_key=''):
+            for field, error in error_dict.items():
+                if isinstance(error, dict):
+                    process_error_dict(error, f"{parent_key}{field}.")
+                elif isinstance(error, list):
+                    for e in error:
+                        if isinstance(e, dict):
+                            process_error_dict(e, f"{parent_key}{field}.")
+                        else:
+                            field_name = f"{parent_key}{field}" if parent_key else field
+                            formatted_errors.append({
+                                "field": field_name,
+                                "message": str(e)
+                            })
+
+        process_error_dict(errors)
+        return formatted_errors
     
+    def post(self, request):
+        try:
+            print(f'request data: {request.data}')
+            logger.info("Received student data creation request")
+            logger.debug(f"Request data: {request.data}")
+
+            serializer = StudentFullDataSerializer(data=request.data)
+            
+            if not serializer.is_valid():
+                formatted_errors = self.format_validation_errors(serializer.errors)
+                error_response = {
+                    "status": "error",
+                    "message": "Invalid request data",
+                    "errors": formatted_errors,
+                    "error_count": len(formatted_errors)
+                }
+                logger.warning(f"Validation failed: {formatted_errors}")
+                return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
+
+            student_instance = serializer.create(serializer.validated_data)
+            success_response = {
+                "status": "success",
+                "message": "Student data created successfully",
+                "data": student_instance
+            }
+            logger.info("Successfully created student data")
+            return Response(success_response, status=status.HTTP_201_CREATED)
+
+        except DatabaseError as e:
+            error_msg = f"Database error occurred: {str(e)}"
+            logger.error(error_msg)
+            return Response({
+                "status": "error",
+                "message": "Database error occurred",
+                "detail": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        except Exception as e:
+            error_msg = f"Unexpected error occurred: {str(e)}"
+            logger.error(error_msg)
+            return Response({
+                "status": "error",
+                "message": "An unexpected error occurred",
+                "detail": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
     def get(self, request):
         
         filter_param = request.GET.get('filter', None)
@@ -50,6 +112,16 @@ class StudentDataAPIView(APIView):
             personal_data_ids = GetRelatedPersonalCampus(campus_id).values_list('fulldata_applicant_id', flat=True)
             return table.objects.filter(fulldata_applicant_id__in=personal_data_ids)     
            
+        def GetRelatedPersonalBasic(basicdata_applicant_id):
+            return TblStudentPersonalData.objects.filter(
+                basicdata_applicant_id=basicdata_applicant_id,
+                basicdata_applicant_id__is_active=True
+            )
+
+        def GetRelatedBasic(table, basicdata_applicant_id):
+            personal_data_ids = GetRelatedPersonalBasic(basicdata_applicant_id).values_list('fulldata_applicant_id', flat=True)
+            return table.objects.filter(fulldata_applicant_id__in=personal_data_ids)     
+        
         if filter_param:
             filter_parts = filter_param.split('=')
             if len(filter_parts) == 1:
@@ -65,6 +137,14 @@ class StudentDataAPIView(APIView):
                         'family_background': TblStudentFamilyBackgroundSerializer(GetRelatedCampus(TblStudentFamilyBackground, filter_value), many=True).data,
                         'academic_background': TblStudentAcademicBackgroundSerializer(GetRelatedCampus(TblStudentAcademicBackground, filter_value), many=True).data,
                         'academic_history': TblStudentAcademicHistorySerializer(GetRelatedCampus(TblStudentAcademicHistory, filter_value), many=True).data,
+                    }
+                if filter_field == 'basicdata_applicant_id':
+                    data = {
+                        'personal_data': TblStudentPersonalDataSerializer(GetRelatedPersonalBasic(filter_value), many=True).data,
+                        'add_personal_data': TblStudentAddPersonalDataSerializer(GetRelatedBasic(TblStudentAddPersonalData, filter_value), many=True).data,
+                        'family_background': TblStudentFamilyBackgroundSerializer(GetRelatedBasic(TblStudentFamilyBackground, filter_value), many=True).data,
+                        'academic_background': TblStudentAcademicBackgroundSerializer(GetRelatedBasic(TblStudentAcademicBackground, filter_value), many=True).data,
+                        'academic_history': TblStudentAcademicHistorySerializer(GetRelatedBasic(TblStudentAcademicHistory, filter_value), many=True).data,
                     }
                 if not data:
                     data = self.get_filtered_data_all_tables(filter_field, filter_value, latest)

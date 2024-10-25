@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_cron',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'users',
     'DangoDBApp',
 
@@ -177,6 +178,8 @@ CORS_ALLOWED_ORIGINS = [
     'https://mu-isystem.vercel.app',
     'https://node-mysql-signup-verification-api.onrender.com',
     'https://misbenedictocollege.netlify.app',
+    'http://localhost:3000',
+    'http://localhost:5174',
 ]
 
 MEDIA_URL = '/media/'

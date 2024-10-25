@@ -3,6 +3,7 @@ djangorestframework
 django-cors-headers
 mssql-django
 djangorestframework-simplejwt
+djangorestframework-simplejwt[crypto]
 mysqlclient
 django-cron
 mysql-connector-python

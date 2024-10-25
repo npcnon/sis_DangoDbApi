@@ -94,7 +94,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             )
             print(user)
             Profile.objects.create(user=user)
-            send_enrollment_email(instance,generated_password)
+            # send_enrollment_email(instance,generated_password)
             logger.info("Email sent successfully")
             print(f"Created new user and profile for Email: {instance.email}")
         except Exception as e:

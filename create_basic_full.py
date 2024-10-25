@@ -114,7 +114,7 @@ def create_students():
             )
 
         # Create 20 students
-        for i in range(1):
+        for i in range(20):
             unique_data = generate_unique_data(i)
             
             # Create BasicInfo

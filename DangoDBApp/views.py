@@ -40,8 +40,11 @@ logger = logging.getLogger(__name__)
 
 
 class EmailVerificationAPIView(APIView):
+    
     def post(self, request):
+        print(request.data)
         email = request.data.get('email')
+        
         if not email:
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
