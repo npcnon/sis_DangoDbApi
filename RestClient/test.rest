@@ -58,9 +58,8 @@ POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-00001",
+  "student_id": "2024-00003",
   "campus": 1,
-  "fulldata_applicant_id": 2,
   "personal_data": {
     "f_name": "John",
     "m_name": "Michael",
@@ -72,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "john.smith@example.com",
+    "email": "john.smith39@example.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -140,6 +139,8 @@ Content-Type: application/json
     "program": null
   }
 }
+
+
 ### POST Full student
 POST http://127.0.0.1:8000/api/full-student-data/
 Content-Type: application/json

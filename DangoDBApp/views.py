@@ -6,6 +6,7 @@ from rest_framework import status
 from django.core.mail import send_mail
 from users.models import User, Profile
 from users.serializers import UserSerializer
+from django.db import transaction   
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
 from .models import (
@@ -16,7 +17,7 @@ from .models import (
     TblStudentOfficialInfo,
 )
 from .serializers import (
-     CombinedOfficialStudentSerializer, TblProgramSerializer, TblDepartmentSerializer,
+     CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
@@ -281,71 +282,74 @@ StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicIn
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
 
 class OfficialStudentAPIView(APIView):
-    def get(self, request):
-        try:
-            # Get query parameters
-            student_id = request.GET.get('student_id')
-            campus_id = request.GET.get('campus_id')
-            
-            # Build the base queryset
-            queryset = TblStudentOfficialInfo.objects.filter(is_active=True)
-            
-            # Apply filters if provided
-            if student_id:
-                queryset = queryset.filter(student_id=student_id)
-            if campus_id:
-                queryset = queryset.filter(campus_id=campus_id)
-
-            # Check if we want just one record or all
-            if student_id and queryset.count() == 1:
-                # Single record
-                serializer = CombinedOfficialStudentSerializer(queryset.first())
-                return Response({
-                    "status": "success",
-                    "data": serializer.data
-                })
-            else:
-                # Multiple records
-                serializer = CombinedOfficialStudentSerializer(queryset, many=True)
-                return Response({
-                    "status": "success",
-                    "count": len(serializer.data),
-                    "data": serializer.data
-                })
-
-        except Exception as e:
-            return Response({
-                "status": "error",
-                "message": str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     def post(self, request):
         try:
-            # Extract the student data and official info
-            official_data = {
-                'student_id': request.data.get('student_id'),
-                'campus': request.data.get('campus'),
-                'fulldata_applicant_id': request.data.get('fulldata_applicant_id')
-            }
+            with transaction.atomic():
+                # Create a savepoint
+                sid = transaction.savepoint()
 
-            # Validate and create the official student record
-            serializer = TblStudentOfficialInfoSerializer(data=official_data)
-            if serializer.is_valid():
-                official_student = serializer.save()
-                
-                # Return the combined data
-                combined_serializer = CombinedOfficialStudentSerializer(official_student)
-                return Response({
-                    "status": "success",
-                    "message": "Official student record created successfully",
-                    "data": combined_serializer.data
-                }, status=status.HTTP_201_CREATED)
-            else:
-                return Response({
-                    "status": "error",
-                    "message": "Invalid data",
-                    "errors": serializer.errors
-                }, status=status.HTTP_400_BAD_REQUEST)
+                # First validate the full student data
+                student_data = {
+                    'personal_data': request.data.get('personal_data'),
+                    'add_personal_data': request.data.get('add_personal_data'),
+                    'family_background': request.data.get('family_background'),
+                    'academic_background': request.data.get('academic_background'),
+                    'academic_history': request.data.get('academic_history')
+                }
+
+                # Validate full student data
+                full_data_serializer = StudentFullDataSerializer(data=student_data)
+                if not full_data_serializer.is_valid():
+                    return Response({
+                        "status": "error",
+                        "message": "Invalid student data",
+                        "errors": full_data_serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+                try:
+                    # Create the full student data first
+                    full_student_data = full_data_serializer.save()
+                    
+                    # Get the actual TblStudentPersonalData instance
+                    personal_data_instance = TblStudentPersonalData.objects.get(
+                        fulldata_applicant_id=full_student_data['personal_data']['fulldata_applicant_id']
+                    )
+                    
+                    # Prepare official data with the personal data instance
+                    official_data = {
+                        'student_id': request.data.get('student_id'),
+                        'campus': request.data.get('campus'),
+                        'fulldata_applicant_id': personal_data_instance.fulldata_applicant_id
+                    }
+
+                    # Validate and create the official student record
+                    official_serializer = TblStudentOfficialInfoSerializer(data=official_data)
+                    if not official_serializer.is_valid():
+                        # Roll back to savepoint if official data is invalid
+                        transaction.savepoint_rollback(sid)
+                        return Response({
+                            "status": "error",
+                            "message": "Invalid official student data",
+                            "errors": official_serializer.errors
+                        }, status=status.HTTP_400_BAD_REQUEST)
+
+                    official_student = official_serializer.save()
+                    
+                    # If everything succeeds, commit the transaction
+                    transaction.savepoint_commit(sid)
+                    
+                    # Return the combined data
+                    combined_serializer = CombinedOfficialStudentSerializer(official_student)
+                    return Response({
+                        "status": "success",
+                        "message": "Official student record created successfully",
+                        "data": combined_serializer.data
+                    }, status=status.HTTP_201_CREATED)
+
+                except Exception as e:
+                    # Roll back to savepoint if any error occurs during creation
+                    transaction.savepoint_rollback(sid)
+                    raise e
 
         except Exception as e:
             return Response({
