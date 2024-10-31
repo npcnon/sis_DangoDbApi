@@ -156,4 +156,66 @@ class StudentFullDataSerializer(serializers.Serializer):
             }
 
 
-            
+
+class CombinedOfficialStudentSerializer(serializers.ModelSerializer):
+    # Nested serializers for full student data
+    personal_data = TblStudentPersonalDataSerializer(source='fulldata_applicant_id', read_only=True)
+    add_personal_data = serializers.SerializerMethodField()
+    family_background = serializers.SerializerMethodField()
+    academic_background = serializers.SerializerMethodField()
+    academic_history = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TblStudentOfficialInfo
+        fields = [
+            'student_id',
+            'campus',
+            'personal_data',
+            'add_personal_data',
+            'family_background',
+            'academic_background',
+            'academic_history',
+            'is_active',
+            'created_at',
+            'updated_at'
+        ]
+
+    def get_add_personal_data(self, obj):
+        try:
+            data = TblStudentAddPersonalData.objects.get(
+                fulldata_applicant_id=obj.fulldata_applicant_id,
+                is_active=True
+            )
+            return TblStudentAddPersonalDataSerializer(data).data
+        except TblStudentAddPersonalData.DoesNotExist:
+            return None
+
+    def get_family_background(self, obj):
+        try:
+            data = TblStudentFamilyBackground.objects.get(
+                fulldata_applicant_id=obj.fulldata_applicant_id,
+                is_active=True
+            )
+            return TblStudentFamilyBackgroundSerializer(data).data
+        except TblStudentFamilyBackground.DoesNotExist:
+            return None
+
+    def get_academic_background(self, obj):
+        try:
+            data = TblStudentAcademicBackground.objects.get(
+                fulldata_applicant_id=obj.fulldata_applicant_id,
+                is_active=True
+            )
+            return TblStudentAcademicBackgroundSerializer(data).data
+        except TblStudentAcademicBackground.DoesNotExist:
+            return None
+
+    def get_academic_history(self, obj):
+        try:
+            data = TblStudentAcademicHistory.objects.get(
+                fulldata_applicant_id=obj.fulldata_applicant_id,
+                is_active=True
+            )
+            return TblStudentAcademicHistorySerializer(data).data
+        except TblStudentAcademicHistory.DoesNotExist:
+            return None

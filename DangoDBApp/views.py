@@ -16,7 +16,7 @@ from .models import (
     TblStudentOfficialInfo,
 )
 from .serializers import (
-     TblProgramSerializer, TblDepartmentSerializer,
+     CombinedOfficialStudentSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
@@ -279,3 +279,76 @@ StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentO
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
 
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
+
+class OfficialStudentAPIView(APIView):
+    def get(self, request):
+        try:
+            # Get query parameters
+            student_id = request.GET.get('student_id')
+            campus_id = request.GET.get('campus_id')
+            
+            # Build the base queryset
+            queryset = TblStudentOfficialInfo.objects.filter(is_active=True)
+            
+            # Apply filters if provided
+            if student_id:
+                queryset = queryset.filter(student_id=student_id)
+            if campus_id:
+                queryset = queryset.filter(campus_id=campus_id)
+
+            # Check if we want just one record or all
+            if student_id and queryset.count() == 1:
+                # Single record
+                serializer = CombinedOfficialStudentSerializer(queryset.first())
+                return Response({
+                    "status": "success",
+                    "data": serializer.data
+                })
+            else:
+                # Multiple records
+                serializer = CombinedOfficialStudentSerializer(queryset, many=True)
+                return Response({
+                    "status": "success",
+                    "count": len(serializer.data),
+                    "data": serializer.data
+                })
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request):
+        try:
+            # Extract the student data and official info
+            official_data = {
+                'student_id': request.data.get('student_id'),
+                'campus': request.data.get('campus'),
+                'fulldata_applicant_id': request.data.get('fulldata_applicant_id')
+            }
+
+            # Validate and create the official student record
+            serializer = TblStudentOfficialInfoSerializer(data=official_data)
+            if serializer.is_valid():
+                official_student = serializer.save()
+                
+                # Return the combined data
+                combined_serializer = CombinedOfficialStudentSerializer(official_student)
+                return Response({
+                    "status": "success",
+                    "message": "Official student record created successfully",
+                    "data": combined_serializer.data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "status": "error",
+                    "message": "Invalid data",
+                    "errors": serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -2,6 +2,7 @@
 
 from django.urls import path
 from .views import (
+    OfficialStudentAPIView,
     ProgramAPIView,
     DepartmentAPIView, 
     StdntInfoAPIView,
@@ -26,7 +27,9 @@ urlpatterns = [
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
     path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
-    
+    path('onsite-full-student-data/', OfficialStudentAPIView.as_view(), name='official-student-data'),
+    path('onsite-full-student-data', OfficialStudentAPIView.as_view(), name='official-student-data'),
+
     
     
     #path('apimymodel/', TblProgramAPIView.as_view(), name='mymodel-list'),

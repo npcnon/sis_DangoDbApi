@@ -53,6 +53,93 @@ Content-Type: application/json
     "email": "shinygluttontuna@gmail.com"
 }
 
+### POST onsiteFull student
+POST http://127.0.0.1:8000/api/onsite-full-student-data/
+Content-Type: application/json
+
+{
+  "student_id": "2024-00001",
+  "campus": 1,
+  "fulldata_applicant_id": 2,
+  "personal_data": {
+    "f_name": "John",
+    "m_name": "Michael",
+    "l_name": "Smith",
+    "suffix": "Jr",
+    "sex": "Male",
+    "birth_date": "2000-05-15",
+    "birth_place": "New York City",
+    "marital_status": "Single",
+    "religion": "Christian",
+    "country": "USA",
+    "email": "john.smith@example.com",
+    "on_site": true,
+    "acr": "ACR123456",
+    "status": "pending"
+  },
+  "add_personal_data": {
+    "city_address": "123 Main St, Metro City",
+    "province_address": "456 County Road, State Province",
+    "contact_number": "+1234567890",
+    "city_contact_number": "+1234567891",
+    "province_contact_number": "+1234567892",
+    "citizenship": "American"
+  },
+  "family_background": {
+    "father_fname": "Robert",
+    "father_mname": "James",
+    "father_lname": "Smith",
+    "father_contact_number": "+1234567893",
+    "father_email": "robert.smith@example.com",
+    "father_occupation": "Engineer",
+    "father_income": 75000,
+    "father_company": "Tech Corp",
+    "mother_fname": "Mary",
+    "mother_mname": "Anne",
+    "mother_lname": "Smith",
+    "mother_contact_number": "+1234567894",
+    "mother_email": "mary.smith@example.com",
+    "mother_occupation": "Teacher",
+    "mother_income": "65000",
+    "mother_company": "Local School District",
+    "guardian_fname": "William",
+    "guardian_mname": "Henry",
+    "guardian_lname": "Johnson",
+    "guardian_relation": "Uncle",
+    "guardian_contact_number": "+1234567895",
+    "guardian_email": "william.johnson@example.com"
+  },
+  "academic_background": {
+    "program": 1,
+    "major_in": "Computer Science",
+    "student_type": "Regular",
+    "semester_entry": 1,
+    "year_entry": 2024,
+    "year_level": "First Year",
+    "year_graduate": 2028,
+    "application_type": "New"
+  },
+  "academic_history": {
+    "elementary_school": "Springfield Elementary",
+    "elementary_address": "789 Elementary Ave, Springfield",
+    "elementary_honors": "With Honors",
+    "elementary_graduate": 2012,
+    "junior_highschool": "Springfield Junior High",
+    "junior_address": "101 Junior High St, Springfield",
+    "junior_honors": "First Honors",
+    "junior_graduate": 2016,
+    "senior_highschool": "Springfield Senior High",
+    "senior_address": "202 Senior High Rd, Springfield",
+    "senior_honors": "Valedictorian",
+    "senior_graduate": 2022,
+    "ncae_grade": "95",
+    "ncae_year_taken": 2022,
+    "latest_college": null,
+    "college_address": null,
+    "college_honors": null,
+    "program": null
+  }
+}
 ### POST Full student
 POST http://127.0.0.1:8000/api/full-student-data/
 Content-Type: application/json
@@ -60,10 +147,10 @@ Content-Type: application/json
 {
     "personal_data": {
         "basicdata_applicant_id": null,
-        "f_name": "Wisadel",
+        "f_name": "Wisadels",
         "m_name": "",
         "suffix": "",
-        "l_name": "Ark2",
+        "l_name": "Ark",
         "sex": "Male",
         "birth_date": "2000-01-01",
         "birth_place": "New York",

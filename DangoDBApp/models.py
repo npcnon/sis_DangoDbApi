@@ -209,7 +209,7 @@ class TblStudentPersonalData(models.Model):
     marital_status = models.CharField(max_length=7)
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     acr = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
