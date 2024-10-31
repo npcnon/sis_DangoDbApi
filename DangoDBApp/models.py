@@ -194,6 +194,8 @@ class TblStudentPersonalData(models.Model):
         TblStudentBasicInfo,
         on_delete=models.CASCADE,
         related_name='related_basic_data',
+        null=True,
+        blank=True
         )
     fulldata_applicant_id = models.AutoField(primary_key=True)
     f_name = models.CharField(max_length=100)
