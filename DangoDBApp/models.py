@@ -6,7 +6,7 @@ from django.db import models
 '''
     note: if a primary key is not defined in django models
     then django will automaticaly create a field `id` in migration
-    and use it as a primary key 
+    and use it as a primary key
 '''
 #Email
 class EmailVerification(models.Model):
@@ -38,7 +38,7 @@ class TblCampus(models.Model):
 
 
 '''
-    Departments: remove the dean, 
+    Departments: remove the dean,
     as you can just add role to the employee `dean`
     and access it using reverse relationships
 '''
@@ -202,13 +202,14 @@ class TblStudentPersonalData(models.Model):
     m_name = models.CharField(max_length=100, null=True, blank=True)
     suffix = models.CharField(max_length=100, null=True, blank=True)
     l_name = models.CharField(max_length=100)
+    on_site = models.BooleanField(default=False)
     sex = models.CharField(max_length=100)
     birth_date = models.DateField()
     birth_place = models.TextField()
     marital_status = models.CharField(max_length=7)
     religion = models.CharField(max_length=70)
     country = models.CharField(max_length=50)
-    email = models.EmailField() 
+    email = models.EmailField()
     acr = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
@@ -250,7 +251,7 @@ class TblStudentOfficialInfo(models.Model):
 
 
     class Meta:
-        unique_together = (('campus', 'student_id'),)  
+        unique_together = (('campus', 'student_id'),)
 
 
 '''
@@ -286,7 +287,7 @@ class TblStudentFamilyBackground(models.Model):
         on_delete=models.CASCADE,
         related_name='related_family_data',
         )
-    
+
     father_fname = models.CharField(max_length=100, null=True, blank=True)
     father_mname = models.CharField(max_length=100,null=True, blank=True)
     father_lname = models.CharField(max_length=100,null=True, blank=True)
@@ -324,14 +325,14 @@ class TblStudentFamilyBackground(models.Model):
 #Student academic background
 class TblStudentAcademicBackground(models.Model):
     fulldata_applicant_id = models.OneToOneField(
-        TblStudentPersonalData, 
+        TblStudentPersonalData,
         on_delete=models.CASCADE,
         related_name='related_academicbackground_data'
         )
     program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
-    
+
     major_in = models.TextField(null=True)
-    student_type = models.CharField(max_length=30)  
+    student_type = models.CharField(max_length=30)
     semester_entry = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     year_entry = models.IntegerField()
     year_level = models.CharField(max_length=50)
@@ -349,28 +350,28 @@ class TblStudentAcademicBackground(models.Model):
 #student acamdemic history
 class TblStudentAcademicHistory(models.Model):
     fulldata_applicant_id = models.OneToOneField(
-        TblStudentPersonalData, 
+        TblStudentPersonalData,
         on_delete=models.CASCADE,
         related_name='related_academichistory_data',
         )
     elementary_school = models.TextField(default='Not Provided')
     elementary_address = models.TextField(default='Not Provided')
-    elementary_honors = models.TextField(default='None', blank=True, null=True)  
-    elementary_graduate = models.IntegerField(null=True, blank=True) 
+    elementary_honors = models.TextField(default='None', blank=True, null=True)
+    elementary_graduate = models.IntegerField(null=True, blank=True)
     junior_highschool = models.TextField(default='Not Provided')
     junior_address = models.TextField(default='Not Provided')
-    junior_honors = models.TextField(default='None', blank=True, null=True)  
-    junior_graduate = models.IntegerField(null=True, blank=True)  
+    junior_honors = models.TextField(default='None', blank=True, null=True)
+    junior_graduate = models.IntegerField(null=True, blank=True)
     senior_highschool = models.TextField(default='Not Provided')
     senior_address = models.TextField(default='Not Provided')
-    senior_honors = models.TextField(default='None', blank=True, null=True)  
-    senior_graduate = models.IntegerField(null=True, blank=True)  
-    ncae_grade = models.CharField(max_length=50, default='Unknown', blank=True, null=True) 
-    ncae_year_taken = models.IntegerField(null=True, blank=True)  
-    latest_college = models.TextField(default='Not Provided', blank=True, null=True)  
-    college_address = models.TextField(default='Not Provided', blank=True, null=True)  
-    college_honors = models.TextField(default='None', blank=True, null=True) 
-    program = models.TextField(default='Not Specified', blank=True, null=True)  
+    senior_honors = models.TextField(default='None', blank=True, null=True)
+    senior_graduate = models.IntegerField(null=True, blank=True)
+    ncae_grade = models.CharField(max_length=50, default='Unknown', blank=True, null=True)
+    ncae_year_taken = models.IntegerField(null=True, blank=True)
+    latest_college = models.TextField(default='Not Provided', blank=True, null=True)
+    college_address = models.TextField(default='Not Provided', blank=True, null=True)
+    college_honors = models.TextField(default='None', blank=True, null=True)
+    program = models.TextField(default='Not Specified', blank=True, null=True)
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
