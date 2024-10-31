@@ -39,7 +39,7 @@ POST http://127.0.0.1:8000/api/stdntbasicinfo/
 Content-Type: application/json
 
 {
-    "first_name": "wisadel2",
+    "first_name": "wisadel",
     "middle_name": "",
     "last_name": "Ark",
     "is_transferee": "True",

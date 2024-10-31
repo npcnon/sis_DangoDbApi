@@ -84,6 +84,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=TblStudentBasicInfo)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
+        password = None
         print('Signal is running for TblStudentBasicInfo')
         try:
             generated_password = generate_random_password()
@@ -94,7 +95,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             )
             print(user)
             Profile.objects.create(user=user)
-            # send_enrollment_email(instance,generated_password)
+            print(f'password: {password}')
+            send_enrollment_email(instance,generated_password)
             logger.info("Email sent successfully")
             print(f"Created new user and profile for Email: {instance.email}")
         except Exception as e:

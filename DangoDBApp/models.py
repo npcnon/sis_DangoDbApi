@@ -186,6 +186,7 @@ class TblStudentPersonalData(models.Model):
     STATUS_CHOICES = [
         ('officially enrolled', 'Officially Enrolled'),
         ('pending', 'Pending'),
+        ('verified', 'Verified'),
         ('rejected', 'Rejected'),
         ('initially enrolled', 'Initially Enrolled')
     ]
