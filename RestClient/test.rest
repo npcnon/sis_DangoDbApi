@@ -54,15 +54,15 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST http://127.0.0.1:8000/api/onsite-full-student-data/
+POST https://afknon.pythonanywhere.com/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-00003",
+  "student_id": "2024-00900",
   "campus": 1,
   "personal_data": {
     "f_name": "John",
-    "m_name": "Michael",
+    "m_name": "Michaelz",
     "l_name": "Smith",
     "suffix": "Jr",
     "sex": "Male",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "john.smith39@example.com",
+    "email": "john.smith400@example.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"

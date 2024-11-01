@@ -66,7 +66,7 @@ def generate_unique_data(index):
         "religion": random.choice(religions),
         "citizenship": random.choice(citizenships)
     }
-
+year_levels = ["1st Year", "2nd Year", "3rd Year", "4th Year"]  
 def create_students():
     try:
         # Get or create prerequisite objects
@@ -181,7 +181,7 @@ def create_students():
                 student_type="Regular",
                 semester_entry=semester,
                 year_entry=2024,
-                year_level="1st Year",
+                year_level = random.choice(year_levels),
                 year_graduate=2028,
                 application_type="New"
             )

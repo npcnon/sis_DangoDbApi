@@ -78,8 +78,8 @@ class TblProgram(models.Model):
 
 #Employee
 class TblEmployee(models.Model):
-    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
-    department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
+    campus = models.ForeignKey(TblCampus, on_delete=models.CASCADE,null=True)
+    department = models.ForeignKey(TblDepartment, on_delete=models.CASCADE,null=True)
     role = models.CharField(max_length=255)
     title = models.CharField(max_length=255, null=True)
     first_name = models.CharField(max_length=255)
@@ -116,9 +116,10 @@ class TblSemester(models.Model):
 #Class
 class TblClass(models.Model):
     name = models.CharField(max_length=100)
-    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE,null=True)
     semester = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     employee = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=50)
     schedule = models.TextField()
 
     #Status and timestamp fields
@@ -380,4 +381,16 @@ class TblStudentAcademicHistory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
+class TblStudentEnlistedSubjects(models.Model):
+    fulldata_applicant_id = models.ForeignKey(
+        TblStudentPersonalData,
+        on_delete=models.CASCADE,
+        related_name='related_enlistedsubj_data',
+        )
+    class_id = models.ForeignKey(
+        TblClass,
+        on_delete=models.CASCADE,
+        related_name='related_enlisted_subjects',
+    )
+    class Meta:
+        unique_together = (('fulldata_applicant_id', 'class_id'),)

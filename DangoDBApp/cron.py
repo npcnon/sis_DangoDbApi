@@ -3,16 +3,20 @@ import requests
 from django.utils import timezone
 from django.db import IntegrityError
 from DangoDBApp.models import (
+    TblClass,
     TblDepartment,
     TblCampus,
     TblProgram,
-    TblSemester
+    TblSemester,
+    TblEmployee,
 )
 from DangoDBApp.serializers import (
     TblDepartmentSerializer,
     TblCampusSerializer,
     TblProgramSerializer,
-    TblSemesterSerializer
+    TblSemesterSerializer,
+    TblClassSerializer,
+    TblEmployeeSerializer,
 )
 import traceback
 def run_cron_job(fetched_data, model_class, serializer_class, unique_field):
@@ -84,6 +88,39 @@ def map_data(fetched_data, model_name):
             'created_at': item['createdAt'],
             'updated_at': item['updatedAt']
             })
+        elif model_name == "employee":
+                mapped_data.append({
+                'id': item['employee_id'],
+                'campus_id': item['campus_id'],
+                'department_id': item['department_id'],
+                'role': item['role'],
+                'title': item['title'],
+                'first_name': item['firstName'],
+                'middle_name': item['middleName'],
+                'last_name': item['lastName'],
+                'qualifications': item['qualifications'],
+                'gender': item['gender'],
+                'address': item['address'],
+                'birth_date': item['birthDate'],
+                'contact_number': item['contactNumber'],
+                'is_active': item['isActive'],
+                'is_deleted': item['isDeleted'],
+                'created_at': item['createdAt'],
+                'updated_at': item['updatedAt']
+            })
+        elif model_name == "class":
+                mapped_data.append({
+                'id': item['class_id'],
+                'name': item['className'],
+                'subject': item.get('subjectCode'),  # Assuming course_id maps to program_id
+                'semester': item['semester_id'],
+                'employee': item['employee_id'],
+                'schedule': item['schedule'],
+                'created_at': item['createdAt'],
+                'updated_at': item.get('updatedAt', item['createdAt']),  # Fallback to createdAt if updatedAt is not present
+                'is_active': True,  # Since these aren't in the API response, setting defaults
+                'is_deleted': False
+            })
     return mapped_data
 
 class FetchAPIDataCronJob(CronJobBase):
@@ -99,6 +136,8 @@ class FetchAPIDataCronJob(CronJobBase):
             'department': (TblDepartment, TblDepartmentSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-department-active'),
             'program': (TblProgram, TblProgramSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-programs-active'),
             'semester': (TblSemester, TblSemesterSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-all-semesters'),
+            'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
+            'class': (TblClass, TblClassSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-class-active'),
         }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():
