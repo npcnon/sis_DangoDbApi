@@ -392,5 +392,13 @@ class TblStudentEnlistedSubjects(models.Model):
         on_delete=models.CASCADE,
         related_name='related_enlisted_subjects',
     )
+
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         unique_together = (('fulldata_applicant_id', 'class_id'),)
+    

@@ -3,7 +3,7 @@ from DangoDBApp.models import (
     TblStudentBasicInfo, TblStudentPersonalData, TblStudentAddPersonalData,
     TblStudentFamilyBackground, TblStudentAcademicBackground, TblStudentAcademicHistory,
     TblStudentOfficialInfo, TblCampus, TblDepartment, TblProgram, TblEmployee,
-    TblSemester, TblClass, TblBugReport
+    TblSemester, TblClass, TblBugReport,TblStudentEnlistedSubjects
 )
 
 def display_all_data(request):
@@ -11,7 +11,7 @@ def display_all_data(request):
         TblStudentBasicInfo, TblStudentPersonalData, TblStudentAddPersonalData,
         TblStudentFamilyBackground, TblStudentAcademicBackground, TblStudentAcademicHistory,
         TblStudentOfficialInfo, TblCampus, TblDepartment, TblProgram, TblEmployee,
-        TblSemester, TblClass, TblBugReport
+        TblSemester, TblClass, TblBugReport,TblStudentEnlistedSubjects
     ]
 
     context = {}

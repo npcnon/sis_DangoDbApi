@@ -14,14 +14,14 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,
+    TblStudentOfficialInfo,TblStudentEnlistedSubjects
 )
 from .serializers import (
      CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
-    TblBugReportSerializer, TblStudentOfficialInfoSerializer,
+    TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer
 )
 
 import logging
@@ -273,7 +273,7 @@ StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFam
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
-
+StudentEnlistedSubjectsAPIView = create_api_view(TblStudentEnlistedSubjects, TblStudentEnlistedSubjectsSerializer)
 
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
 
