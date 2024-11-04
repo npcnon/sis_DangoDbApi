@@ -1,93 +1,193 @@
 {% load custom_filters %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Data</title>
+    <title>Dango Database</title>
     <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-color: #1c1c1c;
+            --text-color: #f5f5f5;
+            --table-bg: #2b2b2b;
+            --table-border: #3c3c3c;
+            --table-hover: #3e3e3e;
+            --button-bg: #4CAF50;
+            --button-text: #fff;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f5f5f5;
+            --text-color: #1c1c1c;
+            --table-bg: #fff;
+            --table-border: #ddd;
+            --table-hover: #f1f1f1;
+            --button-bg: #4CAF50;
+            --button-text: #fff;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section {
+            background-color: var(--table-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
             padding: 20px;
         }
-        h1, h2 {
-            color: #333;
-        }
-        h2 {
-            margin-top: 40px;
+
+        .section h2 {
+            color: var(--text-color);
             border-bottom: 2px solid #4CAF50;
-            display: inline-block;
-            padding-bottom: 5px;
+            padding-bottom: 10px;
+            margin-top: 0;
         }
+
         table {
-            border-collapse: collapse;
             width: 100%;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-collapse: collapse;
+            background-color: var(--table-bg);
+            max-width: 100%;
+            overflow-x: auto;
+            display: block;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
+
         th {
             background-color: #4CAF50;
-            color: white;
+            color: #fff;
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--table-border);
+        }
+
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: var(--table-hover);
         }
+
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: var(--table-hover);
         }
+
         .no-data {
-            color: #888;
+            color: var(--text-color);
             font-style: italic;
-            padding: 20px 0;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .theme-button {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>All Data</h1>
+    <div class="container">
+        <h1>Dango Database</h1>
 
-    {% for model_name, model_data in models.items %}
-        <h2>{{ model_name }}</h2>
-        {% if model_data.data %}
-            <table>
-                <thead>
-                    <tr>
-                        {% for field in model_data.fields %}
-                            <th>{{ field|title }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in model_data.data %}
-                        <tr>
-                            {% for field in model_data.fields %}
-                                <td>
-                                    {# Check if field is a foreign key and retrieve specific attributes #}
-                                    {% if item|getattribute:field and item|getattribute:field.basicdata_applicant_id %}
-                                        {{ item|getattribute:field|getattribute:"basicdata_applicant_id" }}
-                                    {% elif item|getattribute:field and item|getattribute:field.fulldata_applicant_id %}
-                                        {{ item|getattribute:field|getattribute:"fulldata_applicant_id" }}
-                                    {% else %}
-                                        {{ item|getattribute:field }}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="no-data">No data available for {{ model_name }}.</p>
-        {% endif %}
-    {% endfor %}
+        {% for model_name, model_data in models.items %}
+            <div class="section">
+                <h2>{{ model_name }}</h2>
+                {% if model_data.data %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    {% for field in model_data.fields %}
+                                        <th>{{ field|title }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in model_data.data %}
+                                    <tr>
+                                        {% for field in model_data.fields %}
+                                            <td>
+                                                {# Check if field is a foreign key and retrieve specific attributes #}
+                                                {% if item|getattribute:field and item|getattribute:field.basicdata_applicant_id %}
+                                                    {{ item|getattribute:field|getattribute:"basicdata_applicant_id" }}
+                                                {% elif item|getattribute:field and item|getattribute:field.fulldata_applicant_id %}
+                                                    {{ item|getattribute:field|getattribute:"fulldata_applicant_id" }}
+                                                {% else %}
+                                                    {{ item|getattribute:field }}
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="no-data">No data available for {{ model_name }}.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Toggle dark/light mode
+        const themeToggle = document.documentElement;
+        themeToggle.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+        const toggleTheme = () => {
+            const currentTheme = themeToggle.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            themeToggle.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        };
+
+        // Attach event listener to the theme toggle button
+        const themeButton = document.getElementById('theme-button');
+        themeButton.addEventListener('click', toggleTheme);
+    </script>
 </body>
-</html>
+</html> 

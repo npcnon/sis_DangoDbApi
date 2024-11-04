@@ -54,7 +54,7 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST https://afknon.pythonanywhere.com/api/onsite-full-student-data/
+POST https://dangoportal.onrender.com/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
@@ -142,13 +142,13 @@ Content-Type: application/json
 
 
 ### POST Full student
-POST http://127.0.0.1:8000/api/full-student-data/
+POST https://dangoportal.onrender.com/api/full-student-data/
 Content-Type: application/json
 
 {
     "personal_data": {
-        "basicdata_applicant_id": null,
-        "f_name": "Wisadels",
+        "basicdata_applicant_id": 21,
+        "f_name": "Wisadel",
         "m_name": "",
         "suffix": "",
         "l_name": "Ark",
@@ -158,7 +158,7 @@ Content-Type: application/json
         "marital_status": "Single",
         "religion": "Christian",
         "country": "USA",
-        "email": "john.smith@example.com",
+        "email": "john.z@example.com",
         "acr": "123456",
         "status": "officially enrolled"
     },
