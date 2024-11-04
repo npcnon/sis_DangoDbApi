@@ -1,6 +1,9 @@
 from pathlib import Path
 import os
-
+from cloudinary import config
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,8 +44,26 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'users',
     'DangoDBApp',
-
+    'cloudinary_storage',
+    'cloudinary',
+    'FileApp'
 ]
+# Cloudinary configuration
+cloudinary.config(
+    cloud_name = "dzlzm64uw",
+    api_key = "924195954813372",
+    api_secret = "gz5NskJDOTlWINenW0kJyrpoQK4"
+)
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dzlzm64uw',
+    'API_KEY': '924195954813372',
+    'API_SECRET': 'gz5NskJDOTlWINenW0kJyrpoQK4'
+}
+
+# Add this to see more detailed errors
+CLOUDINARY_URL=f"cloudinary://{CLOUDINARY_STORAGE['API_KEY']}:{CLOUDINARY_STORAGE['API_SECRET']}@{CLOUDINARY_STORAGE['CLOUD_NAME']}"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +95,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
+
+
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -180,6 +204,15 @@ CORS_ALLOWED_ORIGINS = [
     'https://misbenedictocollege.netlify.app',
     'http://localhost:3000',
     'http://localhost:5174',
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
 
 MEDIA_URL = '/media/'

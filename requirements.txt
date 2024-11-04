@@ -8,4 +8,6 @@ mysqlclient
 django-cron
 mysql-connector-python
 requests
-faker
+cloudinary
+django-cloudinary-storage
+python-magic-bin
