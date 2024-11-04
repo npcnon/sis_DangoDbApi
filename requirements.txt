@@ -10,3 +10,4 @@ mysql-connector-python
 requests
 cloudinary
 django-cloudinary-storage
+gunicorn
