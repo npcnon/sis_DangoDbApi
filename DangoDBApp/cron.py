@@ -116,8 +116,8 @@ def map_data(fetched_data, model_name):
                 'semester': item['semester_id'],
                 'employee': item['employee_id'],
                 'schedule': item['schedule'],
-                'created_at': item['createdAt'],
-                'updated_at': item.get('updatedAt', item['createdAt']),  # Fallback to createdAt if updatedAt is not present
+                # 'created_at': item['createdAt'],
+                # 'updated_at': item.get('updatedAt', item['createdAt']),  # Fallback to createdAt if updatedAt is not present
                 'is_active': True,  # Since these aren't in the API response, setting defaults
                 'is_deleted': False
             })

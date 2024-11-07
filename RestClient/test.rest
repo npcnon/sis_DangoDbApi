@@ -54,14 +54,14 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST https://dangoportal.onrender.com/api/onsite-full-student-data/
+POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-00900",
+  "student_id": "2024-00510",
   "campus": 1,
   "personal_data": {
-    "f_name": "John",
+    "f_name": "qwertyzzzzzzz",
     "m_name": "Michaelz",
     "l_name": "Smith",
     "suffix": "Jr",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "john.smith400@example.com",
+    "email": "john.smiasdasd@example.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -243,10 +243,10 @@ POST http://127.0.0.1:8000/api/official-student-data/
 Content-Type: application/json
 
 {
-    "student_id": "2024-00004",
+    "student_id": "2024-00005",
     "campus": 1,
     "password": "default pass or can be blank",
-    "fulldata_applicant_id": 7
+    "fulldata_applicant_id": 21
 }
 
 
@@ -259,3 +259,38 @@ Content-Type: application/json
 {
     "status": "pending"
 }
+
+
+
+### Login to get token (if needed)
+POST http://127.0.0.1:8000/api/login
+Content-Type: application/json
+
+{
+    "identifier": "afkmhafric@gmail.com",
+    "password": "6Bm@<q0ch-%D"
+}
+
+### Delete Single Document
+DELETE http://127.0.0.1:8000/api/documents/123/
+Authorization: Bearer your_jwt_token_here
+Content-Type: application/json
+
+### Delete All Documents for Current User
+DELETE http://127.0.0.1:8000/api/delete/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwODExMzA0LCJpYXQiOjE3MzA4MTEwMDQsImp0aSI6Ijk0NzI4NTM3NTVlOTQwN2M4MjNkZWQzODNkNmMyNDNjIiwidXNlcl9pZCI6MjF9.Pyt2ZeqUt6FMJfubVjF1x4va4Q51YVksacYnG_lJkM8
+Content-Type: application/json
+
+### Example with environment variables (create a .env file)
+@baseUrl = http://127.0.0.1:8000
+@token = your_jwt_token_here
+
+### Delete Single Document (using env variables)
+DELETE {{baseUrl}}/api/documents/123/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Delete All Documents (using env variables)
+DELETE {{baseUrl}}/api/documents/
+Authorization: Bearer {{token}}
+Content-Type: application/json

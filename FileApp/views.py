@@ -25,7 +25,7 @@ class FileUploadView(APIView):
         'image/jpeg': '.jpg',
         'image/png': '.png'
     }
-
+    #TODO: fix pdf viewing
     def generate_signed_url(self, public_id, resource_type="image"):
         """Generate a signed URL for private Cloudinary resources"""
         expiration = datetime.now() + timedelta(hours=1)

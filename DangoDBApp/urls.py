@@ -4,7 +4,8 @@ from django.urls import path
 from .views import (
     OfficialStudentAPIView,
     ProgramAPIView,
-    DepartmentAPIView, 
+    DepartmentAPIView,
+    ProgramFilterAPIView, 
     StdntInfoAPIView,
     StudentPersonalDataAPIView,
     StudentFamilyAPIView,
@@ -37,7 +38,7 @@ urlpatterns = [
     
     
     #path('apimymodel/', TblProgramAPIView.as_view(), name='mymodel-list'),
-    path('program/', ProgramAPIView.as_view(), name = 'program-list'),
+    path('program/', ProgramFilterAPIView.as_view(), name = 'program-list'),
     path('department/',DepartmentAPIView.as_view(), name = 'department-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),
 

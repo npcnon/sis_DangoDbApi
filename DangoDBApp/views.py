@@ -356,3 +356,59 @@ class OfficialStudentAPIView(APIView):
                 "status": "error",
                 "message": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class ProgramFilterAPIView(APIView):
+    """
+    API View for filtering programs based on department and campus.
+    Supports filtering programs by:
+    - department_id
+    - campus_id (via department's campus relationship)
+    """
+    
+    def get(self, request):
+        try:
+            # Get query parameters
+            department_id = request.GET.get('department_id')
+            campus_id = request.GET.get('campus_id')
+            
+            # Start with all active programs
+            queryset = TblProgram.objects.filter(is_active=True)
+            
+            # Filter by department if provided
+            if department_id:
+                queryset = queryset.filter(department_id=department_id)
+            
+            # Filter by campus if provided
+            if campus_id:
+                # Filter programs where their department belongs to the specified campus
+                queryset = queryset.filter(department_id__campus_id=campus_id)
+            
+            # If both filters are empty, return bad request
+            if not (department_id or campus_id):
+                return Response(
+                    {"error": "Please provide either department_id or campus_id parameter"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Serialize and return the filtered programs
+            serializer = TblProgramSerializer(queryset, many=True)
+            
+            return Response({
+                "count": len(serializer.data),
+                "results": serializer.data
+            }, status=status.HTTP_200_OK)
+            
+        except TblDepartment.DoesNotExist:
+            logger.error(f"Department with id {department_id} does not exist")
+            return Response(
+                {"error": f"Department with id {department_id} does not exist"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            logger.error(f"Error filtering programs: {str(e)}")
+            return Response(
+                {"error": f"An error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
