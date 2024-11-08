@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def send_enrollment_email(instance, generated_password):
     subject = "Enrollment Application"
     html_message = render_to_string('DangoDBApp/enrollment_email_template.html', {
-        'portal_link': 'http://localhost:5173/Sign-in',
+        'portal_link': 'http://localhost:3000/login',
         'email': instance.email,
         'generated_password': generated_password,
     })
@@ -96,7 +96,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             print(user)
             Profile.objects.create(user=user)
             # print(f'password: {generated_password}')
-            # send_enrollment_email(instance,generated_password)
+            send_enrollment_email(instance,generated_password)
             logger.info("Email sent successfully")
             print(f"Created new user and profile for Email: {instance.email}")
         except Exception as e:

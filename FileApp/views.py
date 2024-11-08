@@ -194,7 +194,9 @@ class FileUploadView(APIView):
 
     def get(self, request, document_id=None):
         try:
+            
             if document_id is None:
+                print(f"request: {request.query_params}")
                 documents = Document.objects.filter(user=request.user)
                 response_data = []
                 
@@ -256,5 +258,68 @@ class FileUploadView(APIView):
             print(f"Error retrieving document: {str(e)}")
             return Response(
                 {'error': 'Failed to retrieve document'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+class AdminDocumentView(APIView):
+    """Admin view to retrieve all user documents without authentication."""
+    
+    def generate_signed_url(self, public_id, resource_type="image"):
+        """Generate a signed URL for private Cloudinary resources."""
+        expiration = datetime.now() + timedelta(hours=1)
+        try:
+            signed_url = cloudinary.utils.cloudinary_url(
+                public_id,
+                type="private",
+                resource_type=resource_type,
+                secure=True,
+                sign_url=True,
+                expires_at=int(expiration.timestamp())
+            )[0]
+            return signed_url, expiration
+        except Exception as e:
+            print(f"Error generating signed URL for {public_id}: {str(e)}")
+            return None, None
+
+    def get(self, request):
+        try:
+            # Retrieve all document records from the database
+            documents = Document.objects.all()
+            response_data = []
+
+            for doc in documents:
+                doc_data = {
+                    'id': doc.id,
+                    'user_id': doc.user.id,  # Include user ID for admin context
+                    'document_type': doc.get_document_type_display(),
+                    'status': doc.status,
+                    'filename': doc.original_filename,
+                    'uploaded_at': doc.uploaded_at,
+                    'review_notes': doc.review_notes
+                }
+
+                # Determine the resource type based on document type
+                resource_type = "image" if doc.document_type == 'profile' else "raw"
+                
+                # Generate signed URL for document access
+                signed_url, expiration = self.generate_signed_url(
+                    doc.cloudinary_public_id,
+                    resource_type
+                )
+                
+                if signed_url:
+                    doc_data.update({
+                        'temporary_url': signed_url,
+                        'expires_at': expiration.isoformat()
+                    })
+
+                response_data.append(doc_data)
+
+            return Response({'documents': response_data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print(f"Error retrieving documents: {str(e)}")
+            return Response(
+                {'error': 'Failed to retrieve documents'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

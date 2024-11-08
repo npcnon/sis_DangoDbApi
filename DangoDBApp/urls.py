@@ -29,6 +29,7 @@ urlpatterns = [
     path('student-enlist/', StudentEnlistedSubjectsAPIView.as_view(), name='student-enlist'),
     path('student-enlist', StudentEnlistedSubjectsAPIView.as_view(), name='student-enlist'),
 
+
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
     path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
