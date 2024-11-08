@@ -185,11 +185,11 @@ class TblBugReport(models.Model):
 # student personal data
 class TblStudentPersonalData(models.Model):
     STATUS_CHOICES = [
-        ('officially enrolled', 'Officially Enrolled'),
-        ('pending', 'Pending'),
-        ('verified', 'Verified'),
-        ('rejected', 'Rejected'),
-        ('initially enrolled', 'Initially Enrolled')
+        ('officially enrolled', 'officially enrolled'),
+        ('pending', 'pending'),
+        ('verified', 'verified'),
+        ('rejected', 'rejected'),
+        ('initially enrolled', 'initially enrolled')
     ]
     basicdata_applicant_id = models.OneToOneField(
         TblStudentBasicInfo,
@@ -392,7 +392,7 @@ class TblStudentEnlistedSubjects(models.Model):
         on_delete=models.CASCADE,
         related_name='related_enlisted_subjects',
     )
-
+    status = models.CharField(max_length=50, default="enlisted")
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
