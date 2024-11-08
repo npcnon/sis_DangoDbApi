@@ -14,14 +14,15 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,TblStudentEnlistedSubjects
+    TblStudentOfficialInfo,TblStudentEnlistedSubjects,TblClass
 )
 from .serializers import (
      CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
-    TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer
+    TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer,
+    TblClassSerializer
 )
 
 import logging
@@ -274,21 +275,54 @@ StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground,
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
 StudentEnlistedSubjectsAPIView = create_api_view(TblStudentEnlistedSubjects, TblStudentEnlistedSubjectsSerializer)
-
+TblClassAPIView = create_api_view(TblClass, TblClassSerializer)
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
-
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
-
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
 
 class OfficialStudentAPIView(APIView):
     def post(self, request):
         try:
+            print(request.data)
             with transaction.atomic():
                 # Create a savepoint
                 sid = transaction.savepoint()
+                program_id = request.data.get('academic_background', {}).get('program')
+                if not program_id:
+                    return Response({
+                        "status": "error",
+                        "message": "Program ID is required."
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Now use program_id to get the program and associated campus
+                program = TblProgram.objects.get(id=program_id)
+                campus = program.department_id.campus_id.id
 
+                basic_student_data = {
+                    'first_name': request.data.get('personal_data', {}).get('f_name'),
+                    'middle_name': request.data.get('personal_data', {}).get('m_name'),
+                    'last_name': request.data.get('personal_data', {}).get('l_name'),
+                    'suffix': request.data.get('personal_data', {}).get('suffix'),
+                    'is_transferee': request.data.get('academic_background', {}).get('student_type') == 'Transferee',
+                    'year_level': request.data.get('academic_background', {}).get('year_level'),
+                    'contact_number': request.data.get('add_personal_data', {}).get('contact_number'),
+                    'address': request.data.get('add_personal_data', {}).get('city_address'),
+                    'campus': campus,
+                    'program': program_id,
+                    'birth_date': request.data.get('personal_data', {}).get('birth_date'),
+                    'sex': request.data.get('personal_data', {}).get('sex'),
+                    'email': request.data.get('personal_data', {}).get('email'),
+                }
                 # First validate the full student data
+                basic_data_serializer = TblStudentBasicInfoSerializer(data=basic_student_data)
+                if not basic_data_serializer.is_valid():
+                    return Response({
+                        "status": "error",
+                        "message": "Invalid student data",
+                        "errors": basic_data_serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+
                 student_data = {
                     'personal_data': request.data.get('personal_data'),
                     'add_personal_data': request.data.get('add_personal_data'),
@@ -296,7 +330,7 @@ class OfficialStudentAPIView(APIView):
                     'academic_background': request.data.get('academic_background'),
                     'academic_history': request.data.get('academic_history')
                 }
-
+                
                 # Validate full student data
                 full_data_serializer = StudentFullDataSerializer(data=student_data)
                 if not full_data_serializer.is_valid():
@@ -305,7 +339,9 @@ class OfficialStudentAPIView(APIView):
                         "message": "Invalid student data",
                         "errors": full_data_serializer.errors
                     }, status=status.HTTP_400_BAD_REQUEST)
+                basic_data = basic_data_serializer.save()
 
+                # Modify the request data to include the basicdata_applicant_id
                 try:
                     # Create the full student data first
                     full_student_data = full_data_serializer.save()

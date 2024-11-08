@@ -47,38 +47,38 @@ def generate_random_password(length=12):
 
 
 
-@receiver(post_save, sender=TblStudentOfficialInfo)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        print('Signal is running for TblStudentOfficialInfo')
-        try:
+# @receiver(post_save, sender=TblStudentOfficialInfo)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         print('Signal is running for TblStudentOfficialInfo')
+#         try:
 
-            personal_data = instance.fulldata_applicant_id
+#             personal_data = instance.fulldata_applicant_id
 
-            user = User.objects.create(
-                student_id= instance.student_id,
-                name= f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip(),
-                email= personal_data.email,
-                password= make_password(instance.password)  
-            )
-            print(user)
-            Profile.objects.create(user=user)
+#             user = User.objects.create(
+#                 student_id= instance.student_id,
+#                 name= f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip(),
+#                 email= personal_data.email,
+#                 password= make_password(instance.password)  
+#             )
+#             print(user)
+#             Profile.objects.create(user=user)
 
-            print(f"Created new user and profile for student ID: {instance.student_id}")
-        except Exception as e:
-            print(f"Error creating user and profile for student ID {instance.student_id}: {str(e)}")
-    else:
-        try:
-            user = User.objects.get(student_id=instance.student_id)
-            user.name = f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip()
-            user.email = instance.email
-            user.save()
+#             print(f"Created new user and profile for student ID: {instance.student_id}")
+#         except Exception as e:
+#             print(f"Error creating user and profile for student ID {instance.student_id}: {str(e)}")
+#     else:
+#         try:
+#             user = User.objects.get(student_id=instance.student_id)
+#             user.name = f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip()
+#             user.email = instance.email
+#             user.save()
 
-            logger.info(f"Updated user information for student ID: {instance.student_id}")
-        except User.DoesNotExist:
-            logger.warning(f"No User found for student ID: {instance.student_id}")
-        except Exception as e:
-            logger.error(f"Error updating user information: {str(e)}")
+#             logger.info(f"Updated user information for student ID: {instance.student_id}")
+#         except User.DoesNotExist:
+#             logger.warning(f"No User found for student ID: {instance.student_id}")
+#         except Exception as e:
+#             logger.error(f"Error updating user information: {str(e)}")
 
 
 @receiver(post_save, sender=TblStudentBasicInfo)
@@ -88,15 +88,16 @@ def create_user_profile(sender, instance, created, **kwargs):
         print('Signal is running for TblStudentBasicInfo')
         try:
             generated_password = generate_random_password()
+            password = generated_password
             user = User.objects.create(
                 name= f"{instance.first_name} {instance.middle_name or ''} {instance.last_name}".strip(),
                 email= instance.email,
-                password= make_password(generated_password)  
+                password= make_password(password)  
             )
             print(user)
             Profile.objects.create(user=user)
             # print(f'password: {generated_password}')
-            send_enrollment_email(instance,generated_password)
+            send_enrollment_email(instance,password)
             logger.info("Email sent successfully")
             print(f"Created new user and profile for Email: {instance.email}")
         except Exception as e:

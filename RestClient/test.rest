@@ -50,7 +50,7 @@ Content-Type: application/json
     "program": 1,
     "birth_date": "2000-01-01",
     "sex": "Male",
-    "email": "shinygluttontuna@gmail.com"
+    "email": "shinyglutasdad@gmail.com"
 }
 
 ### POST onsiteFull student
@@ -58,12 +58,12 @@ POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-00510",
+  "student_id": "2024-24651",
   "campus": 1,
   "personal_data": {
-    "f_name": "qwertyzzzzzzz",
-    "m_name": "Michaelz",
-    "l_name": "Smith",
+    "f_name": "qasdadasdasdasddzz",
+    "m_name": "Masdasdasdz",
+    "l_name": "asdasdasdh",
     "suffix": "Jr",
     "sex": "Male",
     "birth_date": "2000-05-15",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "john.smiasdasd@example.com",
+    "email": "grayravenlast@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -111,12 +111,12 @@ Content-Type: application/json
   "academic_background": {
     "program": 1,
     "major_in": "Computer Science",
-    "student_type": "Regular",
+    "student_type": "Transferee",
     "semester_entry": 1,
     "year_entry": 2024,
     "year_level": "First Year",
     "year_graduate": 2028,
-    "application_type": "New"
+    "application_type": "Undergraduate"
   },
   "academic_history": {
     "elementary_school": "Springfield Elementary",
@@ -267,8 +267,8 @@ POST http://127.0.0.1:8000/api/login
 Content-Type: application/json
 
 {
-    "identifier": "afkmhafric@gmail.com",
-    "password": "6Bm@<q0ch-%D"
+    "identifier": "npcshengaoren@gmail.com",
+    "password": "<>nP&7[/5)y^"
 }
 
 ### Delete Single Document

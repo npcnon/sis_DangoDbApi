@@ -12,6 +12,8 @@ from .models import Document
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 import logging
+from DangoDBApp.models import TblStudentPersonalData
+from DangoDBApp.serializers import TblStudentPersonalDataSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -286,17 +288,34 @@ class AdminDocumentView(APIView):
             # Retrieve all document records from the database
             documents = Document.objects.all()
             response_data = []
-
             for doc in documents:
-                doc_data = {
-                    'id': doc.id,
-                    'user_id': doc.user.id,  # Include user ID for admin context
-                    'document_type': doc.get_document_type_display(),
-                    'status': doc.status,
-                    'filename': doc.original_filename,
-                    'uploaded_at': doc.uploaded_at,
-                    'review_notes': doc.review_notes
-                }
+                # Fetching the related student personal data for each document
+                personal_data = TblStudentPersonalData.objects.filter(email=doc.user.email).first()
+                
+                if personal_data:
+                    doc_data = {
+                        'id': doc.id,
+                        # Extract only the `fulldata_applicant_id` from the related personal data
+                        'fulldata_applicant_id': personal_data.fulldata_applicant_id,  # Directly access the ID field
+                        'document_type': doc.get_document_type_display(),
+                        'status': doc.status,
+                        'filename': doc.original_filename,
+                        'uploaded_at': doc.uploaded_at,
+                        'review_notes': doc.review_notes
+                    }
+                else:
+                    # If no related personal data, return only document info
+                    doc_data = {
+                        'id': doc.id,
+                        'fulldata_applicant_id':"Error: no user id",
+                        'document_type': doc.get_document_type_display(),
+                        'status': doc.status,
+                        'filename': doc.original_filename,
+                        'uploaded_at': doc.uploaded_at,
+                        'review_notes': doc.review_notes
+                    }
+        
+
 
                 # Determine the resource type based on document type
                 resource_type = "image" if doc.document_type == 'profile' else "raw"
