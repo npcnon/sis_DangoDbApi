@@ -112,6 +112,21 @@ class TblSemester(models.Model):
     created_at = models.CharField(max_length=225)
     updated_at = models.CharField(max_length=225)
 
+class TblCourse(models.Model):
+    id = models.IntegerField(primary_key=True)
+    campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
+    department_id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
+    code = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=225)
+    units = models.IntegerField()
+
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.CharField(max_length=225)
+    updated_at = models.CharField(max_length=225)
+
+
 
 #Class
 class TblClass(models.Model):
