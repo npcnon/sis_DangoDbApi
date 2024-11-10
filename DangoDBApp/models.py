@@ -114,9 +114,9 @@ class TblSemester(models.Model):
 
 class TblCourse(models.Model):
     id = models.IntegerField(primary_key=True)
-    campus_id = models.ForeignKey(TblCampus, on_delete=models.CASCADE)
-    department_id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE)
-    code = models.CharField(max_length=50, unique=True)
+    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE,null=True, blank=True)
+    department_id = models.ForeignKey(TblDepartment, on_delete=models.CASCADE,null=True, blank=True)
+    code = models.CharField(max_length=50)
     description = models.CharField(max_length=225)
     units = models.IntegerField()
 
@@ -129,13 +129,18 @@ class TblCourse(models.Model):
 
 
 #Class
-class TblClass(models.Model):
-    name = models.CharField(max_length=100)
-    program = models.ForeignKey(TblProgram, on_delete=models.CASCADE,null=True)
-    semester = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
+class TblSchedule(models.Model):
+    id = models.IntegerField(primary_key=True)
     employee = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=50)
-    schedule = models.TextField()
+    course = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
+    room = models.CharField(max_length=50)
+    # program = models.ForeignKey(TblProgram, on_delete=models.CASCADE,null=True)
+    semester = models.ForeignKey(TblSemester, on_delete=models.CASCADE,null=True, blank=True)
+    start_time = models.TimeField()  # Just store 04:30
+    end_time = models.TimeField()    # Just store 05:30
+    day = models.CharField(max_length=50)
+    recurrence_pattern = models.TextField(null=True,blank=True)
+
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
@@ -403,7 +408,7 @@ class TblStudentEnlistedSubjects(models.Model):
         related_name='related_enlistedsubj_data',
         )
     class_id = models.ForeignKey(
-        TblClass,
+        TblSchedule,
         on_delete=models.CASCADE,
         related_name='related_enlisted_subjects',
     )

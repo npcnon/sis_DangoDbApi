@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
-from DangoDBApp.models import TblCampus, TblDepartment, TblProgram, TblSemester, TblClass, TblEmployee
+from DangoDBApp.models import TblCampus, TblDepartment, TblProgram, TblSemester, TblSchedule, TblEmployee
 
 from django.utils import timezone
 from datetime import datetime, date
@@ -157,7 +157,7 @@ def populate_database():
 
     # Create Classes
     classes = [
-        TblClass.objects.create(
+        TblSchedule.objects.create(
             name="CS101-A",
             program=programs[1],
             semester=semesters[1],
@@ -168,7 +168,7 @@ def populate_database():
                 "room": "Room 301"
             })
         ),
-        TblClass.objects.create(
+        TblSchedule.objects.create(
             name="IT201-B",
             program=programs[2],
             semester=semesters[1],

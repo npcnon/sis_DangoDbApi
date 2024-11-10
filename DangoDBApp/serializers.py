@@ -5,7 +5,8 @@ from django.db import transaction
 import re
 from rest_framework import serializers
 from .models import (
-    TblClass,
+    TblCourse,
+    TblSchedule,
     TblEmployee,
     TblProgram,
     TblDepartment,
@@ -103,7 +104,8 @@ TblSemesterSerializer = create_serializer(TblSemester)
 TblProgramSerializer = create_serializer(TblProgram)
 TblDepartmentSerializer = create_serializer(TblDepartment)
 TblEmployeeSerializer = create_serializer(TblEmployee)
-TblClassSerializer = create_serializer(TblClass)
+TblScheduleSerializer = create_serializer(TblSchedule)
+TblCourseSerializer = create_serializer(TblCourse)
 TblStudentEnlistedSubjectsSerializer = create_serializer(TblStudentEnlistedSubjects)
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)

@@ -17,7 +17,8 @@ from .views import (
     BugReportAPIView,
     StudentOfficialInfoAPIView,
     StudentEnlistedSubjectsAPIView,
-    TblClassAPIView
+    TblScheduleAPIView,
+    SemesterFilterAPIView
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
 
@@ -29,7 +30,7 @@ urlpatterns = [
     path('student-enlist/', StudentEnlistedSubjectsAPIView.as_view(), name='student-enlist'),
     path('student-enlist', StudentEnlistedSubjectsAPIView.as_view(), name='student-enlist'),
 
-    path('class-list/', TblClassAPIView.as_view(), name='class-list'),
+    path('class-list/', TblScheduleAPIView.as_view(), name='class-list'),
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
     path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
@@ -38,7 +39,7 @@ urlpatterns = [
 
     
     
-    #path('apimymodel/', TblProgramAPIView.as_view(), name='mymodel-list'),
+    path('semester/', SemesterFilterAPIView.as_view(), name = 'semester-list'),
     path('program/', ProgramFilterAPIView.as_view(), name = 'program-list'),
     path('department/',DepartmentAPIView.as_view(), name = 'department-list'),
     path('student/', StdntInfoAPIView.as_view(), name = 'student-list'),

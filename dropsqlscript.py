@@ -42,7 +42,7 @@ try:
         "DROP TABLE IF EXISTS `django_celery_results_groupresult`;",
         "DROP TABLE IF EXISTS `django_session`;",
         "DROP TABLE IF EXISTS `DangoDBApp_tbldepartment`;",
-        "DROP TABLE IF EXISTS `DangoDBApp_tblclass`;",
+        "DROP TABLE IF EXISTS `DangoDBApp_TblSchedule`;",
         "DROP TABLE IF EXISTS `DangoDBApp_emailverification`;",
         "DROP TABLE IF EXISTS `DangoDBApp_tblcampus`;",
         "DROP TABLE IF EXISTS `DangoDBApp_tblstudentacademicbackground`;",

@@ -14,7 +14,7 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,TblStudentEnlistedSubjects,TblClass
+    TblStudentOfficialInfo,TblStudentEnlistedSubjects,TblSchedule,TblSemester
 )
 from .serializers import (
      CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
@@ -22,7 +22,7 @@ from .serializers import (
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer,
-    TblClassSerializer
+    TblScheduleSerializer,TblSemesterSerializer
 )
 
 import logging
@@ -275,7 +275,7 @@ StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground,
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
 StudentEnlistedSubjectsAPIView = create_api_view(TblStudentEnlistedSubjects, TblStudentEnlistedSubjectsSerializer)
-TblClassAPIView = create_api_view(TblClass, TblClassSerializer)
+TblScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
@@ -444,6 +444,45 @@ class ProgramFilterAPIView(APIView):
             )
         except Exception as e:
             logger.error(f"Error filtering programs: {str(e)}")
+            return Response(
+                {"error": f"An error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+class SemesterFilterAPIView(APIView):
+    """
+    API View for filtering semesters based on campus.
+    Supports filtering semesters by:
+    - campus_id
+    """
+    
+    def get(self, request):
+        try:
+            campus_id = request.GET.get('campus_id')
+            
+            # Start with all active semesters
+            queryset = TblSemester.objects.filter(is_active=True)
+
+            # Filter by campus if provided
+            if campus_id:
+                queryset = queryset.filter(campus_id=campus_id)
+            else:
+                return Response(
+                    {"error": "Please provide campus_id parameter"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Serialize and return the filtered semesters
+            serializer = TblSemesterSerializer(queryset, many=True)
+            
+            return Response({
+                "count": len(serializer.data),
+                "results": serializer.data
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Error filtering semesters: {str(e)}")
             return Response(
                 {"error": f"An error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

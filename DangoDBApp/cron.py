@@ -1,9 +1,12 @@
 from django_cron import CronJobBase, Schedule
 import requests
+from datetime import datetime
+from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.db import IntegrityError
 from DangoDBApp.models import (
-    TblClass,
+    TblCourse,
+    TblSchedule,
     TblDepartment,
     TblCampus,
     TblProgram,
@@ -15,8 +18,9 @@ from DangoDBApp.serializers import (
     TblCampusSerializer,
     TblProgramSerializer,
     TblSemesterSerializer,
-    TblClassSerializer,
+    TblScheduleSerializer,
     TblEmployeeSerializer,
+    TblCourseSerializer
 )
 import traceback
 def run_cron_job(fetched_data, model_class, serializer_class, unique_field):
@@ -108,19 +112,30 @@ def map_data(fetched_data, model_name):
                 'created_at': item['createdAt'],
                 'updated_at': item['updatedAt']
             })
-        elif model_name == "class":
+        elif model_name == "course":
                 mapped_data.append({
-                'id': item['class_id'],
-                'name': item['className'],
-                'subject': item.get('subjectCode'),  # Assuming course_id maps to program_id
-                'semester': item['semester_id'],
-                'employee': item['employee_id'],
-                'schedule': item['schedule'],
-                # 'created_at': item['createdAt'],
-                # 'updated_at': item.get('updatedAt', item['createdAt']),  # Fallback to createdAt if updatedAt is not present
-                'is_active': True,  # Since these aren't in the API response, setting defaults
-                'is_deleted': False
+                'id': item['course_id'],
+                'department_id': item['department_id'],
+                'code': item.get('courseCode'),  # Assuming course_id maps to program_id
+                'description': item['courseDescription'],
+                'units': item['unit'],
+                'is_active': item['isActive'],
+                'is_deleted': item['isDeleted'],
+                'created_at': item['createdAt'],
+                'updated_at': item['updatedAt']
+
             })
+        elif model_name == "schedule":
+                mapped_data.append({
+                    'id': item['id'],
+                    'employee': item['teacher_id'],
+                    'course': item['subject_id'],
+                    'room': item['room'],
+                    'start_time': parse_datetime(item['start']).time(),
+                    'end_time': parse_datetime(item['end']).time(),
+                    'day': item['day'],
+                    'recurrence_pattern': item['recurrencePattern'],
+                })
     return mapped_data
 
 class FetchAPIDataCronJob(CronJobBase):
@@ -136,8 +151,9 @@ class FetchAPIDataCronJob(CronJobBase):
             'department': (TblDepartment, TblDepartmentSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-department-active'),
             'program': (TblProgram, TblProgramSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-programs-active'),
             'semester': (TblSemester, TblSemesterSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-all-semesters'),
+            'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
             'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
-            'class': (TblClass, TblClassSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-class-active'),
+            'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
         }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():

@@ -4,7 +4,7 @@ import os
 import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
-from DangoDBApp.models import TblStudentPersonalData, TblClass, TblStudentEnlistedSubjects
+from DangoDBApp.models import TblStudentPersonalData, TblSchedule, TblStudentEnlistedSubjects
 import random
 from django.db.models import Count
 
@@ -18,7 +18,7 @@ def populate_student_enlisted_subjects(num_entries=20):
         is_active=True,
         is_deleted=False
     ))
-    classes = list(TblClass.objects.filter(
+    classes = list(TblSchedule.objects.filter(
         is_active=True,
         is_deleted=False
     ))
@@ -61,7 +61,7 @@ def populate_student_enlisted_subjects(num_entries=20):
             
             # Get the actual objects
             student = TblStudentPersonalData.objects.get(fulldata_applicant_id=student_id)
-            class_obj = TblClass.objects.get(id=class_id)
+            class_obj = TblSchedule.objects.get(id=class_id)
 
             # Check if student already has too many subjects
             existing_subjects_count = TblStudentEnlistedSubjects.objects.filter(
