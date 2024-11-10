@@ -204,6 +204,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://misbenedictocollege.netlify.app',
     'http://localhost:3000',
     'http://localhost:5174',
+    'https://nextportal-yaxo.vercel.app',
 ]
 
 CORS_ALLOW_METHODS = [
