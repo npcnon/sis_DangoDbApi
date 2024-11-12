@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'jcPDihGiqU5n7LxWruTFj5m6Jjt9d5TDBL6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', 'localhost','dangoportal.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', 'localhost','dangoportal.onrender.com','djangoportal.onrender.com']
 
 
 
@@ -128,17 +128,9 @@ DATABASES = {
         'HOST':'srv1417.hstgr.io',
         'PORT':'3306',
     },
-     'secondary': { 
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AnotherDatabase',
-        'USER': 'root',
-        'PASSWORD': 'qwerty',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    },
 }
 
-#SQLite
+# SQLite
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
