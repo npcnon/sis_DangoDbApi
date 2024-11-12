@@ -119,24 +119,24 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'u286307273_portal',
-        'USER': 'u286307273_portal',
-        'PASSWORD': 'W5Cn6Q>+:l',
-        'HOST':'srv1417.hstgr.io',
-        'PORT':'3306',
-    },
-}
-
-# SQLite
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'u286307273_portal',
+#         'USER': 'u286307273_portal',
+#         'PASSWORD': 'W5Cn6Q>+:l',
+#         'HOST':'srv1417.hstgr.io',
+#         'PORT':'3306',
+#     },
 # }
+
+# SQLite
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 REST_FRAMEWORK = {
