@@ -148,17 +148,17 @@ Content-Type: application/json
 {
     "personal_data": {
         "basicdata_applicant_id": 21,
-        "f_name": "Wisadel",
+        "f_name": "Mhafric",
         "m_name": "",
         "suffix": "",
-        "l_name": "Ark",
+        "l_name": "Magalso",
         "sex": "Male",
         "birth_date": "2000-01-01",
         "birth_place": "New York",
         "marital_status": "Single",
         "religion": "Christian",
         "country": "USA",
-        "email": "john.z@example.com",
+        "email": "afkmhafric @example.com",
         "acr": "123456",
         "status": "officially enrolled"
     },
