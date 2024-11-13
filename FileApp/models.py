@@ -5,8 +5,12 @@ from users.models import User
 class Document(models.Model):
     DOCUMENT_TYPES = [
         ('birth_certificate', 'Birth Certificate'),
+        ('form_137', 'Form 137'),
+        ('transcript_of_records', 'Transcript of Records'),
         ('high_school_diploma', 'High School Diploma'),
         ('good_moral', 'Good Moral Certificate'),
+        ('two_x_two_photo', 'Two by Two Picture'),
+        ('certificate_of_transfer', 'Certificate of Transfer'),
         ('medical_certificate', 'Medical Certificate'),
         ('profile', 'Profile Picture'),
     ]

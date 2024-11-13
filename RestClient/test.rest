@@ -54,11 +54,11 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST https://afknon.pythonanywhere.com/api/onsite-full-student-data/
+POST https://djangoportal-backends.onrender.com/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-24651",
+  "student_id": "2024-21231",
   "campus": 1,
   "personal_data": {
     "f_name": "qzzzzz",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "npcshengaoren@gmail.com",
+    "email": "npcsasdadasdasdn@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -110,7 +110,7 @@ Content-Type: application/json
   },
   "academic_background": {
     "program": 1,
-    "major_in": "Computer Science",
+    "major_in": null,
     "student_type": "Transferee",
     "semester_entry": 1,
     "year_entry": 2024,

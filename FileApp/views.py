@@ -319,17 +319,17 @@ class AdminDocumentView(APIView):
             # Validate required fields
             if 'file' not in request.FILES:
                 return Response({'error': 'No file provided'}, status=400)
-            if 'fulldata_applicant_id' not in request.data:
+            if 'email' not in request.data:
                 return Response({'error': 'Fulldata Applicant ID is required'}, status=400)
             if 'document_type' not in request.data:
                 return Response({'error': 'Document type is required'}, status=400)
 
             file = request.FILES['file']
-            fulldata_applicant_id = request.data['fulldata_applicant_id']
+            email = request.data['email']
             document_type = request.data['document_type']
 
             # Get or create user
-            user, created = User.objects.get_or_create(fulldata_applicant_id=fulldata_applicant_id)
+            user, created = User.objects.get_or_create(email=email)
             
             # Validate document type
             if document_type not in dict(Document.DOCUMENT_TYPES):
@@ -403,7 +403,7 @@ class AdminDocumentView(APIView):
 
             response_data = {
                 'id': document.id,
-                'fulldata_applicant_id': user.fulldata_applicant_id,
+                'email': user.email,
                 'document_type': document.get_document_type_display(),
                 'status': document.status,
                 'filename': document.original_filename,
@@ -433,7 +433,7 @@ class AdminDocumentView(APIView):
             for doc in documents:
                 doc_data = {
                     'id': doc.id,
-                    'fulldata_applicant_id': doc.user.fulldata_applicant_id,
+                    'email': doc.user.email,
                     'document_type': doc.get_document_type_display(),
                     'status': doc.status,
                     'filename': doc.original_filename,

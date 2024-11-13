@@ -83,8 +83,8 @@ def map_data(fetched_data, model_name):
             })
         elif model_name == "semester":
             mapped_data.append({
-            'id': item['semester_id'],  # Assuming 'id' is the primary key field in TblSemester
-            'campus_id': item['campus_id'],  # Foreign key reference to TblCampus
+            'id': item['semester_id'],  
+            'campus_id': item['campus_id'],  
             'semester_name': item['semesterName'],
             'school_year': item['schoolYear'],
             'is_active': item['isActive'],
@@ -116,7 +116,7 @@ def map_data(fetched_data, model_name):
                 mapped_data.append({
                 'id': item['course_id'],
                 'department_id': item['department_id'],
-                'code': item.get('courseCode'),  # Assuming course_id maps to program_id
+                'code': item.get('courseCode'), 
                 'description': item['courseDescription'],
                 'units': item['unit'],
                 'is_active': item['isActive'],
@@ -141,7 +141,7 @@ def map_data(fetched_data, model_name):
 class FetchAPIDataCronJob(CronJobBase):
     RUN_EVERY_MINS = 1  # Run every minute for testing
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = 'DangoDBApp.fetch_api_data'  # A unique code
+    code = 'DangoDBApp.fetch_api_data' 
 
     def do(self):
         print(f"Cron job running at {timezone.now()}")
@@ -159,7 +159,7 @@ class FetchAPIDataCronJob(CronJobBase):
         for model_name, (model_class, serializer_class, url) in endpoints.items():
             try:
                 response = requests.get(url)
-                response.raise_for_status()  # This will raise an exception for bad status codes
+                response.raise_for_status()  
                 data = response.json()
                 mapped_data = map_data(data, model_name)
                 run_cron_job(mapped_data, model_class, serializer_class, 'id')

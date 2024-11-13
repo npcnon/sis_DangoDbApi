@@ -10,19 +10,19 @@ from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
 from .models import (
-     TblProgram, TblDepartment,
+     TblCourse, TblEmployee, TblProgram, TblDepartment,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
     TblStudentOfficialInfo,TblStudentEnlistedSubjects,TblSchedule,TblSemester
 )
 from .serializers import (
-     CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
+     TblCourseSerializer,CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer,
-    TblScheduleSerializer,TblSemesterSerializer
+    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer
 )
 
 import logging
@@ -106,12 +106,11 @@ def create_api_view(model, serializer):
                     filter_value = filter_value.strip().replace("'", "")
                     filter_condition[filter_field] = filter_value
 
-         
             latest = request.GET.get('latest', 'false').lower() == 'true'
-
-            
+            latest_n = request.GET.get('latest_n', None)
 
             queryset = model.objects.filter(**filter_condition)
+            
             if latest:
                 queryset = queryset.order_by('-created_at')
                 latest_entry = queryset.first()
@@ -122,6 +121,17 @@ def create_api_view(model, serializer):
                 else:
                     logger.info(f"Request Error: {latest_entry}")
                     return Response([], status=status.HTTP_200_OK)
+            elif latest_n:
+                try:
+                    n = int(latest_n)
+                    queryset = queryset.order_by('-created_at')[:n]
+                    serializer_data = serializer(queryset, many=True)
+                    return Response(serializer_data.data)
+                except ValueError:
+                    return Response(
+                        {"error": "latest_n must be a valid number"}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
             else:
                 serializer_data = serializer(queryset, many=True)
                 return Response(serializer_data.data)
@@ -279,6 +289,8 @@ TblScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
+CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
+EmployeeAPIView = create_api_view(TblEmployee, TblEmployeeSerializer)
 
 class OfficialStudentAPIView(APIView):
     def post(self, request):

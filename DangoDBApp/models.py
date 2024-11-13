@@ -145,8 +145,8 @@ class TblSchedule(models.Model):
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    # created_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
@@ -352,7 +352,7 @@ class TblStudentAcademicBackground(models.Model):
         )
     program = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
 
-    major_in = models.TextField(null=True)
+    major_in = models.TextField(null=True,blank=True)
     student_type = models.CharField(max_length=30)
     semester_entry = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     year_entry = models.IntegerField()
