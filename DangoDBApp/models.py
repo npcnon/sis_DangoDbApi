@@ -134,7 +134,6 @@ class TblSchedule(models.Model):
     employee = models.ForeignKey(TblEmployee, on_delete=models.CASCADE)
     course = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
     room = models.CharField(max_length=50)
-    # program = models.ForeignKey(TblProgram, on_delete=models.CASCADE,null=True)
     semester = models.ForeignKey(TblSemester, on_delete=models.CASCADE,null=True, blank=True)
     start_time = models.TimeField()  # Just store 04:30
     end_time = models.TimeField()    # Just store 05:30
@@ -207,7 +206,6 @@ class TblStudentPersonalData(models.Model):
     STATUS_CHOICES = [
         ('officially enrolled', 'officially enrolled'),
         ('pending', 'pending'),
-        ('verified', 'verified'),
         ('rejected', 'rejected'),
         ('initially enrolled', 'initially enrolled')
     ]
@@ -345,6 +343,7 @@ class TblStudentFamilyBackground(models.Model):
 
 #Student academic background
 class TblStudentAcademicBackground(models.Model):
+
     fulldata_applicant_id = models.OneToOneField(
         TblStudentPersonalData,
         on_delete=models.CASCADE,

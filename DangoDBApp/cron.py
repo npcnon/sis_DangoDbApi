@@ -131,6 +131,7 @@ def map_data(fetched_data, model_name):
                     'employee': item['teacher_id'],
                     'course': item['subject_id'],
                     'room': item['room'],
+                    'semester': item['semester_id'],
                     'start_time': parse_datetime(item['start']).time(),
                     'end_time': parse_datetime(item['end']).time(),
                     'day': item['day'],
