@@ -8,6 +8,8 @@ import cloudinary.uploader
 import cloudinary.utils
 import magic
 from datetime import datetime, timedelta
+
+from users.models import User
 from .models import Document
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
@@ -264,8 +266,16 @@ class FileUploadView(APIView):
             )
         
 class AdminDocumentView(APIView):
-    """Admin view to retrieve all user documents without authentication."""
+    """Public view to post and retrieve documents without authentication."""
     
+    parser_classes = (MultiPartParser, FormParser)
+
+    ALLOWED_MIME_TYPES = {
+        'application/pdf': '.pdf',
+        'image/jpeg': '.jpg',
+        'image/png': '.png'
+    }
+
     def generate_signed_url(self, public_id, resource_type="image"):
         """Generate a signed URL for private Cloudinary resources."""
         expiration = datetime.now() + timedelta(hours=1)
@@ -280,52 +290,163 @@ class AdminDocumentView(APIView):
             )[0]
             return signed_url, expiration
         except Exception as e:
-            print(f"Error generating signed URL for {public_id}: {str(e)}")
+            logger.error(f"Error generating signed URL for {public_id}: {str(e)}")
             return None, None
+
+    def validate_file_type(self, file):
+        """Validate the uploaded file type."""
+        try:
+            file_magic = magic.Magic(mime=True)
+            file_type = file_magic.from_buffer(file.read(2048))
+            file.seek(0)
+            return file_type
+        except Exception as e:
+            logger.error(f"Error validating file type: {str(e)}")
+            raise
+
+    def get_resource_type(self, file_type, document_type):
+        """Determine Cloudinary resource type based on file and document type."""
+        if document_type == 'profile':
+            return 'image'
+        if file_type.startswith('image/'):
+            return 'image'
+        return 'raw'
+
+    def post(self, request):
+        try:
+            logger.info("Starting public file upload process")
+            
+            # Validate required fields
+            if 'file' not in request.FILES:
+                return Response({'error': 'No file provided'}, status=400)
+            if 'fulldata_applicant_id' not in request.data:
+                return Response({'error': 'Fulldata Applicant ID is required'}, status=400)
+            if 'document_type' not in request.data:
+                return Response({'error': 'Document type is required'}, status=400)
+
+            file = request.FILES['file']
+            fulldata_applicant_id = request.data['fulldata_applicant_id']
+            document_type = request.data['document_type']
+
+            # Get or create user
+            user, created = User.objects.get_or_create(fulldata_applicant_id=fulldata_applicant_id)
+            
+            # Validate document type
+            if document_type not in dict(Document.DOCUMENT_TYPES):
+                return Response({
+                    'error': 'Invalid document type',
+                    'valid_types': dict(Document.DOCUMENT_TYPES)
+                }, status=400)
+
+            # Check existing document
+            existing_doc = Document.objects.filter(
+                user=user,
+                document_type=document_type
+            ).first()
+
+            if existing_doc:
+                return Response({
+                    'error': 'Document already exists for this user',
+                    'status': existing_doc.status,
+                    'uploaded_at': existing_doc.uploaded_at
+                }, status=400)
+
+            # Validate file type
+            file_type = self.validate_file_type(file)
+            if file_type not in self.ALLOWED_MIME_TYPES:
+                return Response({
+                    'error': 'Invalid file type',
+                    'allowed_types': list(self.ALLOWED_MIME_TYPES.keys())
+                }, status=400)
+
+            # Validate file size (10MB limit)
+            if file.size > 10 * 1024 * 1024:
+                return Response({
+                    'error': 'File too large',
+                    'max_size': '10MB'
+                }, status=400)
+
+            # Determine resource type and upload to Cloudinary
+            resource_type = self.get_resource_type(file_type, document_type)
+            folder = f"user_{user.id}/documents/{document_type}"
+            
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder=folder,
+                    resource_type=resource_type,
+                    type="private",
+                    access_mode="authenticated",
+                    secure=True
+                )
+            except Exception as e:
+                logger.error(f"Cloudinary upload failed: {str(e)}")
+                return Response(
+                    {'error': 'Failed to upload file to storage'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            # Create document record
+            document = Document.objects.create(
+                user=user,
+                cloudinary_public_id=upload_result['public_id'],
+                document_type=document_type,
+                original_filename=file.name,
+                status='pending'
+            )
+
+            # Generate signed URL
+            signed_url, expiration = self.generate_signed_url(
+                upload_result['public_id'],
+                resource_type
+            )
+
+            response_data = {
+                'id': document.id,
+                'fulldata_applicant_id': user.fulldata_applicant_id,
+                'document_type': document.get_document_type_display(),
+                'status': document.status,
+                'filename': document.original_filename,
+                'uploaded_at': document.uploaded_at
+            }
+
+            if signed_url:
+                response_data.update({
+                    'temporary_url': signed_url,
+                    'expires_at': expiration.isoformat()
+                })
+
+            return Response(response_data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            logger.error(f"Unexpected error during upload: {str(e)}")
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def get(self, request):
         try:
-            # Retrieve all document records from the database
             documents = Document.objects.all()
             response_data = []
+
             for doc in documents:
-                # Fetching the related student personal data for each document
-                personal_data = TblStudentPersonalData.objects.filter(email=doc.user.email).first()
-                
-                if personal_data:
-                    doc_data = {
-                        'id': doc.id,
-                        # Extract only the `fulldata_applicant_id` from the related personal data
-                        'fulldata_applicant_id': personal_data.fulldata_applicant_id,  # Directly access the ID field
-                        'document_type': doc.get_document_type_display(),
-                        'status': doc.status,
-                        'filename': doc.original_filename,
-                        'uploaded_at': doc.uploaded_at,
-                        'review_notes': doc.review_notes
-                    }
-                else:
-                    # If no related personal data, return only document info
-                    doc_data = {
-                        'id': doc.id,
-                        'fulldata_applicant_id':"Error: no user id",
-                        'document_type': doc.get_document_type_display(),
-                        'status': doc.status,
-                        'filename': doc.original_filename,
-                        'uploaded_at': doc.uploaded_at,
-                        'review_notes': doc.review_notes
-                    }
-        
+                doc_data = {
+                    'id': doc.id,
+                    'fulldata_applicant_id': doc.user.fulldata_applicant_id,
+                    'document_type': doc.get_document_type_display(),
+                    'status': doc.status,
+                    'filename': doc.original_filename,
+                    'uploaded_at': doc.uploaded_at,
+                    'review_notes': doc.review_notes
+                }
 
-
-                # Determine the resource type based on document type
                 resource_type = "image" if doc.document_type == 'profile' else "raw"
-                
-                # Generate signed URL for document access
                 signed_url, expiration = self.generate_signed_url(
                     doc.cloudinary_public_id,
                     resource_type
                 )
-                
+
                 if signed_url:
                     doc_data.update({
                         'temporary_url': signed_url,
@@ -337,7 +458,7 @@ class AdminDocumentView(APIView):
             return Response({'documents': response_data}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print(f"Error retrieving documents: {str(e)}")
+            logger.error(f"Error retrieving documents: {str(e)}")
             return Response(
                 {'error': 'Failed to retrieve documents'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

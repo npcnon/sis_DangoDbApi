@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import TblStudentOfficialInfo,TblStudentBasicInfo
+from .models import TblStudentOfficialInfo,TblStudentBasicInfo, TblStudentPersonalData
 from users.models import User, Profile
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
@@ -47,38 +47,53 @@ def generate_random_password(length=12):
 
 
 
-# @receiver(post_save, sender=TblStudentOfficialInfo)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         print('Signal is running for TblStudentOfficialInfo')
-#         try:
+@receiver(post_save, sender=TblStudentPersonalData)
+def update_user_profile_fulldata(sender, instance, created, **kwargs):
+    """
+    Signal to update User's fulldata_applicant_id when TblStudentPersonalData is created/updated
+    """
+    try:
+        # Try to find the user by email since that's the common identifier
+        user = User.objects.get(email=instance.email)
+        
+        # Update the fulldata_applicant_id
+        user.fulldata_applicant_id = str(instance.fulldata_applicant_id)
+        user.save()
+        
+        logger.info(f"Updated fulldata_applicant_id for user {user.email}")
+        
+    except User.DoesNotExist:
+        logger.warning(f"No user found with email {instance.email}")
+    except Exception as e:
+        logger.error(f"Error updating user fulldata_applicant_id: {str(e)}")
 
-#             personal_data = instance.fulldata_applicant_id
-
-#             user = User.objects.create(
-#                 student_id= instance.student_id,
-#                 name= f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip(),
-#                 email= personal_data.email,
-#                 password= make_password(instance.password)  
-#             )
-#             print(user)
-#             Profile.objects.create(user=user)
-
-#             print(f"Created new user and profile for student ID: {instance.student_id}")
-#         except Exception as e:
-#             print(f"Error creating user and profile for student ID {instance.student_id}: {str(e)}")
-#     else:
-#         try:
-#             user = User.objects.get(student_id=instance.student_id)
-#             user.name = f"{personal_data.f_name} {personal_data.m_name or ''} {personal_data.l_name}".strip()
-#             user.email = instance.email
-#             user.save()
-
-#             logger.info(f"Updated user information for student ID: {instance.student_id}")
-#         except User.DoesNotExist:
-#             logger.warning(f"No User found for student ID: {instance.student_id}")
-#         except Exception as e:
-#             logger.error(f"Error updating user information: {str(e)}")
+@receiver(post_save, sender=TblStudentOfficialInfo)
+def update_user_student_id(sender, instance, created, **kwargs):
+    """
+    Signal to update User's student_id when TblStudentOfficialInfo is created/updated
+    """
+    try:
+        # Get the email from the related PersonalData
+        email = instance.fulldata_applicant_id.email
+        
+        # Find the user by email
+        user = User.objects.get(email=email)
+        
+        # Update the student_id
+        user.student_id = instance.student_id
+        
+        # If there's a password in TblStudentOfficialInfo, update it
+        if instance.password:
+            user.password = make_password(instance.password)
+            
+        user.save()
+        
+        logger.info(f"Updated student_id for user {user.email}")
+        
+    except User.DoesNotExist:
+        logger.warning(f"No user found with email {email}")
+    except Exception as e:
+        logger.error(f"Error updating user student_id: {str(e)}")
 
 
 @receiver(post_save, sender=TblStudentBasicInfo)
