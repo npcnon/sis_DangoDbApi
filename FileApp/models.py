@@ -4,15 +4,15 @@ from users.models import User
 
 class Document(models.Model):
     DOCUMENT_TYPES = [
-        ('birth_certificate', 'Birth Certificate'),
-        ('form_137', 'Form 137'),
-        ('transcript_of_records', 'Transcript of Records'),
-        ('high_school_diploma', 'High School Diploma'),
-        ('good_moral', 'Good Moral Certificate'),
-        ('two_x_two_photo', 'Two by Two Picture'),
-        ('certificate_of_transfer', 'Certificate of Transfer'),
-        ('medical_certificate', 'Medical Certificate'),
-        ('profile', 'Profile Picture'),
+        ('birth_certificate', 'birth_certificate'),
+        ('form_137', 'form_137'),
+        ('transcript_of_records', 'transcript_of_records'),
+        ('high_school_diploma', 'high_school_diploma'),
+        ('good_moral', 'good_moral'),
+        ('two_x_two_photo', 'two_x_two_photo'),
+        ('certificate_of_transfer', 'certificate_of_transfer'),
+        ('medical_certificate', 'medical_certificate'),
+        ('profile', 'profile'),
     ]
 
     STATUS_CHOICES = [

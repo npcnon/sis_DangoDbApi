@@ -437,9 +437,17 @@ class AdminDocumentView(APIView):
 
     def get(self, request):
         try:
-            logger.info(f"Detected file type: {self}")
-            logger.info(f"request data: {request.data}")
+            email = request.query_params.get('email')
+            document_type = request.query_params.get('document_type')
+            
             documents = Document.objects.all()
+            
+            if email:
+                documents = documents.filter(user__email=email)
+            
+            if document_type:
+                documents = documents.filter(document_type=document_type)
+            
             response_data = []
 
             for doc in documents:
