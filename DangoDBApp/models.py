@@ -400,24 +400,6 @@ class TblStudentAcademicHistory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class TblStudentEnlistedSubjects(models.Model):
-    fulldata_applicant_id = models.ForeignKey(
-        TblStudentPersonalData,
-        on_delete=models.CASCADE,
-        related_name='related_enlistedsubj_data',
-        )
-    class_id = models.ForeignKey(
-        TblSchedule,
-        on_delete=models.CASCADE,
-        related_name='related_enlisted_subjects',
-    )
-    status = models.CharField(max_length=50, default="enlisted")
-    #Status and timestamp fields
-    is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = (('fulldata_applicant_id', 'class_id'),)
-    
+
+

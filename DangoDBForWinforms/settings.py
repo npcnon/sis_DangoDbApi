@@ -212,7 +212,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR / 'media')
 
 
-# # Logging configuration
+# Logging configuration
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,

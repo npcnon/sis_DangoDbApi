@@ -23,6 +23,7 @@ class Document(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
     cloudinary_public_id = models.CharField(max_length=255)
+    file_type = models.CharField(max_length=50)
     document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     original_filename = models.CharField(max_length=255)

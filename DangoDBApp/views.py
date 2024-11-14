@@ -14,14 +14,14 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,TblStudentEnlistedSubjects,TblSchedule,TblSemester
+    TblStudentOfficialInfo,TblSchedule,TblSemester
 )
 from .serializers import (
      TblCourseSerializer,CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
     TblStudentPersonalDataSerializer, TblStudentFamilyBackgroundSerializer,
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
-    TblBugReportSerializer, TblStudentOfficialInfoSerializer,TblStudentEnlistedSubjectsSerializer,
+    TblBugReportSerializer, TblStudentOfficialInfoSerializer,
     TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer
 )
 
@@ -284,7 +284,6 @@ StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFam
 StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
 StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
-StudentEnlistedSubjectsAPIView = create_api_view(TblStudentEnlistedSubjects, TblStudentEnlistedSubjectsSerializer)
 TblScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)
 StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicInfoSerializer)

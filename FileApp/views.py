@@ -155,6 +155,7 @@ class FileUploadView(APIView):
             # Create document record
             document = Document.objects.create(
                 user=request.user,
+                file_type=file_type,
                 cloudinary_public_id=upload_result['public_id'],
                 document_type=document_type,
                 original_filename=file.name,
@@ -170,6 +171,7 @@ class FileUploadView(APIView):
             response_data = {
                 'id': document.id,
                 'document_type': document.get_document_type_display(),
+                'file_type': document.file_type,
                 'status': document.status,
                 'filename': document.original_filename,
                 'uploaded_at': document.uploaded_at
@@ -208,6 +210,7 @@ class FileUploadView(APIView):
                     doc_data = {
                         'id': doc.id,
                         'document_type': doc.get_document_type_display(),
+                        'file_type': doc.file_type,
                         'status': doc.status,
                         'filename': doc.original_filename,
                         'uploaded_at': doc.uploaded_at,
@@ -215,7 +218,7 @@ class FileUploadView(APIView):
                     }
                     
                     # Determine resource type based on document type
-                    resource_type = "image" if doc.document_type == 'profile' else "raw"
+                    resource_type = "image" if doc.file_type.startswith('image/') else "raw"
                     
                     signed_url, expiration = self.generate_signed_url(
                         doc.cloudinary_public_id,
@@ -299,13 +302,16 @@ class AdminDocumentView(APIView):
             file_magic = magic.Magic(mime=True)
             file_type = file_magic.from_buffer(file.read(2048))
             file.seek(0)
+            print(f'file type: {file_type}')
             return file_type
         except Exception as e:
             logger.error(f"Error validating file type: {str(e)}")
             raise
+        
 
     def get_resource_type(self, file_type, document_type):
         """Determine Cloudinary resource type based on file and document type."""
+        print(f'document type: {document_type} \n file type {file_type}')
         if document_type == 'profile':
             return 'image'
         if file_type.startswith('image/'):
@@ -313,6 +319,7 @@ class AdminDocumentView(APIView):
         return 'raw'
 
     def post(self, request):
+        print(f'request data: {request.data}')
         try:
             logger.info("Starting public file upload process")
             
@@ -353,6 +360,7 @@ class AdminDocumentView(APIView):
 
             # Validate file type
             file_type = self.validate_file_type(file)
+            print(f"Detected file type: {file_type}")
             if file_type not in self.ALLOWED_MIME_TYPES:
                 return Response({
                     'error': 'Invalid file type',
@@ -389,6 +397,7 @@ class AdminDocumentView(APIView):
             # Create document record
             document = Document.objects.create(
                 user=user,
+                file_type=file_type,
                 cloudinary_public_id=upload_result['public_id'],
                 document_type=document_type,
                 original_filename=file.name,
@@ -405,6 +414,7 @@ class AdminDocumentView(APIView):
                 'id': document.id,
                 'email': user.email,
                 'document_type': document.get_document_type_display(),
+                'file_type': document.file_type,
                 'status': document.status,
                 'filename': document.original_filename,
                 'uploaded_at': document.uploaded_at
@@ -427,6 +437,8 @@ class AdminDocumentView(APIView):
 
     def get(self, request):
         try:
+            logger.info(f"Detected file type: {self}")
+            logger.info(f"request data: {request.data}")
             documents = Document.objects.all()
             response_data = []
 
@@ -441,7 +453,7 @@ class AdminDocumentView(APIView):
                     'review_notes': doc.review_notes
                 }
 
-                resource_type = "image" if doc.document_type == 'profile' else "raw"
+                resource_type = "image" if doc.file_type.startswith('image/') else "raw"
                 signed_url, expiration = self.generate_signed_url(
                     doc.cloudinary_public_id,
                     resource_type

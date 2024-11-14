@@ -253,11 +253,11 @@ Content-Type: application/json
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT https://afknon.pythonanywhere.com/api/deactivate_or_modify_personal-student-data/1/False
+PUT https://djangoportal-backends.onrender.com/api/deactivate_or_modify_personal-student-data/99/False
 Content-Type: application/json
 
 {
-    "status": "verified"
+    "status": "initially enrolled"
 }
 
 
