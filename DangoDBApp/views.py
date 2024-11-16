@@ -15,7 +15,7 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,TblSchedule,TblSemester
+    TblStudentOfficialInfo,TblSchedule,TblSemester,TblStudentEnlistedOnSemesters
 )
 from .serializers import (
      TblCourseSerializer,CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
@@ -23,7 +23,7 @@ from .serializers import (
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,
-    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer
+    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer,TblStudentEnlistedOnSemestersSerializer
 )
 
 import logging
@@ -301,6 +301,7 @@ StudentBasicInfoAPIView = create_api_view(TblStudentBasicInfo, TblStudentBasicIn
 BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
 CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
 EmployeeAPIView = create_api_view(TblEmployee, TblEmployeeSerializer)
+StudentEnlistedOnSemestersAPIView = create_api_view(TblStudentEnlistedOnSemesters, TblStudentEnlistedOnSemestersSerializer)
 
 class OfficialStudentAPIView(APIView):
     def post(self, request):

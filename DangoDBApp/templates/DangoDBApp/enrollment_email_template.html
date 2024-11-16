@@ -1,48 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enrollment Application</title>
     <style>
-        .email-container {
+        body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
             background-color: #f4f4f4;
-            color: #333;
         }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .email-wrapper {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .title {
+            color: #333333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .message {
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .credentials-container {
+            margin: 30px 0;
+        }
+        .credential-label {
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .credential-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+            border: 1px solid #e9ecef;
+        }
+        .email-display {
+            font-size: 18px;
+            color: #007bff;
+            font-weight: 500;
+        }
+        .password-display {
+            font-size: 24px;
+            color: #007bff;
+            font-family: monospace;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
         .button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
+            background-color: #007bff;
+            padding: 14px 32px;
             text-decoration: none;
             display: inline-block;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            color: white !important; /* Force white color */
         }
-        .password-box {
-            font-family: monospace;
-            font-size: 18px;
-            background-color: #f4f4f4;
-            border: 1px solid #ddd;
-            padding: 10px;
-            display: inline-block;
-            margin-top: 10px;
+        
+        .button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+            color: white !important; /* Force white color on hover */
+            text-decoration: none; /* Prevent underline on hover */
+        }
+        
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+        
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+        
+        .button:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .button:visited {
+            color: white !important; /* Force white color for visited links */
+        }
+        
+        @media (max-width: 480px) {
+            .button {
+                padding: 12px 24px;
+                font-size: 15px;
+                width: 100%;
+                max-width: 280px;
+            }
+        }        
+        .security-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            color: #999999;
+            font-size: 12px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        .warning {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="email-container">
-        <h2>Enrollment Application Verified</h2>
-        <p>Your Enrollment Application has been verified.</p>
-        <p>You can now log in to our student portal by clicking the link below:</p>
-        <a href="{{ portal_link }}" class="button">Log In to Student Portal</a>
-        <p>Use your email: <strong>{{ email }}</strong> for logging in.</p>
-        <p>Your password is enclosed below:</p>
-        <div class="password-box">
-            {{ generated_password }}
+    <div class="container">
+        <div class="email-wrapper">
+            <div class="header">
+                <img src="https://res.cloudinary.com/dzlzm64uw/image/private/s--XkIo0RGW--/v1/user_103/documents/birth_certificate/gobonelzvf4qhpg77mba" alt="School Logo" class="logo">
+                <h1 class="title">Welcome to Benedicto College!</h1>
+            </div>
+            
+            <div class="message">
+                <p>Dear Student,</p>
+                <p>Congratulations! 🎉 Your enrollment application has been successfully verified. We're excited to have you join our academic community.</p>
+                <p>Below are your credentials to access the student portal:</p>
+            </div>
+
+            <div class="credentials-container">
+                <div class="credential-label">Your Email Address</div>
+                <div class="credential-box email-display">
+                    {{ email }}
+                </div>
+
+                <div class="credential-label">Your Temporary Password</div>
+                <div class="credential-box password-display">
+                    {{ generated_password }}
+                </div>
+            </div>
+
+            <div class="security-notice">
+                <strong>Important:</strong> For your security, please change your password immediately upon your first login.
+            </div>
+
+            <div class="button-container">
+                <a href="{{ portal_link }}" class="button">Access Student Portal</a>
+            </div>
+
+            <div class="warning">
+                If you didn't submit an enrollment application, please contact our admissions office immediately.
+            </div>
+
+            <div class="footer">
+                <p>This is an automated message, please do not reply.</p>
+                <p>&copy; {% now "Y" %} Benedicto College. All rights reserved.</p>
+            </div>
         </div>
-        <p>Please change your password upon first login for security reasons.</p>
     </div>
 </body>
 </html>

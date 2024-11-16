@@ -21,6 +21,7 @@ from .views import (
     CourseAPIView,
     EmployeeAPIView,
     GetProgramSchedulesView,
+    StudentEnlistedOnSemestersAPIView
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
 
@@ -30,6 +31,7 @@ urlpatterns = [
     path('full-student-data', StudentDataAPIView.as_view(), name='full-student-data'),
 
 
+    path('enlisted-students/', StudentEnlistedOnSemestersAPIView.as_view(), name='enlisted students'),
     path('class-list/', TblScheduleAPIView.as_view(), name='class-list'),
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),

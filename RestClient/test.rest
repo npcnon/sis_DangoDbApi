@@ -263,12 +263,12 @@ Content-Type: application/json
 
 
 ### Login to get token (if needed)
-POST http://127.0.0.1:8000/api/login
+POST http://127.0.0.1:8000/api/enlisted-students/
 Content-Type: application/json
 
 {
-    "identifier": "npcshengaoren@gmail.com",
-    "password": "<>nP&7[/5)y^"
+    "semester_id" : 5,
+    "fulldata_applicant_id": 12
 }
 
 ### Delete Single Document

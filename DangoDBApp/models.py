@@ -415,6 +415,11 @@ class TblStudentEnlistedOnSemesters(models.Model):
     semester_id = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
     fulldata_applicant_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
 
+    #Status and timestamp fields
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 

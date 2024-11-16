@@ -6,10 +6,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
 from DangoDBApp.models import TblProspectus
-
-TblProspectus.objects.filter().delete()
-
-
+from DangoDBApp.models import TblStudentBasicInfo as t
+from users.models import User as u
+email = "afkmhafric"
+all_tables = [t,u]
+for x in all_tables:
+    x.objects.filter(email__icontains=email).delete()
 
 
 

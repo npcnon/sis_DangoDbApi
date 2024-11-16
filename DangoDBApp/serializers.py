@@ -12,6 +12,7 @@ from .models import (
     TblProgram,
     TblDepartment,
     TblSemester,
+    TblStudentEnlistedOnSemesters,
     TblStudentPersonalData,
     TblStudentFamilyBackground,
     TblStudentAcademicBackground,
@@ -108,6 +109,7 @@ TblEmployeeSerializer = create_serializer(TblEmployee)
 TblScheduleSerializer = create_serializer(TblSchedule)
 TblCourseSerializer = create_serializer(TblCourse)
 TblProspectusSerializer = create_serializer(TblProspectus)
+TblStudentEnlistedOnSemestersSerializer = create_serializer(TblStudentEnlistedOnSemesters)
 
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
@@ -119,7 +121,6 @@ TblStudentAddPersonalDataSerializer = create_serializer(TblStudentAddPersonalDat
 TblStudentFamilyBackgroundSerializer = create_fullstudentdata_serializer(TblStudentFamilyBackground)
 TblStudentAcademicBackgroundSerializer = create_fullstudentdata_serializer(TblStudentAcademicBackground)
 TblStudentAcademicHistorySerializer = create_fullstudentdata_serializer(TblStudentAcademicHistory)
-
 
 TblBugReportSerializer = create_serializer(TblBugReport)
 
