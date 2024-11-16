@@ -7,10 +7,11 @@ from django.core.mail import send_mail
 from users.models import User, Profile
 from users.serializers import UserSerializer
 from django.db import transaction   
+import requests 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
 from .models import (
-     TblCourse, TblEmployee, TblProgram, TblDepartment,
+     TblCourse, TblEmployee, TblProgram, TblDepartment, TblProspectus,
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
@@ -22,7 +23,7 @@ from .serializers import (
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,
-    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer
+    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer
 )
 
 import logging
@@ -31,8 +32,9 @@ import string
 from django.utils import timezone
 from datetime import timedelta
 from .models import EmailVerification
-
-
+from django.db.models import Q
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 def generate_random_code(length=8):
     characters = string.ascii_letters + string.digits
@@ -51,17 +53,27 @@ class EmailVerificationAPIView(APIView):
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         verification_code = generate_random_code()
-        expires_at = timezone.now() + timedelta(hours=24)  
+        expires_at = timezone.now() + timedelta(hours=24)
 
         EmailVerification.objects.update_or_create(
             email=email,
             defaults={'verification_code': verification_code, 'is_verified': False, 'expires_at': expires_at}
         )
+
+        # Render the HTML template
+        html_message = render_to_string('email_verification_template.html', {
+            'verification_code': verification_code,
+        })
+        
+        # Create plain text version of the email
+        plain_message = strip_tags(html_message)
+
         send_mail(
-            "Email Verification for Student Application",
-            f"`!PLEASE DO NOT REPLY!` Your verification code is: {verification_code}. This code will expire in 24 hours.",
-            "noreply@yourdomain.com",
-            [email],
+            subject="Verify Your Email - Student Application",
+            message=plain_message,
+            from_email="noreply@yourdomain.com",
+            recipient_list=[email],
+            html_message=html_message,
             fail_silently=False,
         )
 
@@ -275,7 +287,6 @@ def create_api_view(model, serializer):
 
 
 
-# Instantiate API views
 ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
@@ -296,7 +307,6 @@ class OfficialStudentAPIView(APIView):
         try:
             print(request.data)
             with transaction.atomic():
-                # Create a savepoint
                 sid = transaction.savepoint()
                 program_id = request.data.get('academic_background', {}).get('program')
                 if not program_id:
@@ -305,7 +315,6 @@ class OfficialStudentAPIView(APIView):
                         "message": "Program ID is required."
                     }, status=status.HTTP_400_BAD_REQUEST)
                 
-                # Now use program_id to get the program and associated campus
                 program = TblProgram.objects.get(id=program_id)
                 campus = program.department_id.campus_id.id
 
@@ -324,7 +333,6 @@ class OfficialStudentAPIView(APIView):
                     'sex': request.data.get('personal_data', {}).get('sex'),
                     'email': request.data.get('personal_data', {}).get('email'),
                 }
-                # First validate the full student data
                 basic_data_serializer = TblStudentBasicInfoSerializer(data=basic_student_data)
                 if not basic_data_serializer.is_valid():
                     return Response({
@@ -342,7 +350,6 @@ class OfficialStudentAPIView(APIView):
                     'academic_history': request.data.get('academic_history')
                 }
                 
-                # Validate full student data
                 full_data_serializer = StudentFullDataSerializer(data=student_data)
                 if not full_data_serializer.is_valid():
                     return Response({
@@ -352,27 +359,21 @@ class OfficialStudentAPIView(APIView):
                     }, status=status.HTTP_400_BAD_REQUEST)
                 basic_data = basic_data_serializer.save()
 
-                # Modify the request data to include the basicdata_applicant_id
                 try:
-                    # Create the full student data first
                     full_student_data = full_data_serializer.save()
                     
-                    # Get the actual TblStudentPersonalData instance
                     personal_data_instance = TblStudentPersonalData.objects.get(
                         fulldata_applicant_id=full_student_data['personal_data']['fulldata_applicant_id']
                     )
                     
-                    # Prepare official data with the personal data instance
                     official_data = {
                         'student_id': request.data.get('student_id'),
                         'campus': request.data.get('campus'),
                         'fulldata_applicant_id': personal_data_instance.fulldata_applicant_id
                     }
 
-                    # Validate and create the official student record
                     official_serializer = TblStudentOfficialInfoSerializer(data=official_data)
                     if not official_serializer.is_valid():
-                        # Roll back to savepoint if official data is invalid
                         transaction.savepoint_rollback(sid)
                         return Response({
                             "status": "error",
@@ -382,10 +383,8 @@ class OfficialStudentAPIView(APIView):
 
                     official_student = official_serializer.save()
                     
-                    # If everything succeeds, commit the transaction
                     transaction.savepoint_commit(sid)
                     
-                    # Return the combined data
                     combined_serializer = CombinedOfficialStudentSerializer(official_student)
                     return Response({
                         "status": "success",
@@ -394,7 +393,6 @@ class OfficialStudentAPIView(APIView):
                     }, status=status.HTTP_201_CREATED)
 
                 except Exception as e:
-                    # Roll back to savepoint if any error occurs during creation
                     transaction.savepoint_rollback(sid)
                     raise e
 
@@ -415,31 +413,25 @@ class ProgramFilterAPIView(APIView):
     """
     
     def get(self, request):
+        print(f'request data: {request.data}')
         try:
-            # Get query parameters
             department_id = request.GET.get('department_id')
             campus_id = request.GET.get('campus_id')
             
-            # Start with all active programs
             queryset = TblProgram.objects.filter(is_active=True)
             
-            # Filter by department if provided
             if department_id:
                 queryset = queryset.filter(department_id=department_id)
             
-            # Filter by campus if provided
             if campus_id:
-                # Filter programs where their department belongs to the specified campus
                 queryset = queryset.filter(department_id__campus_id=campus_id)
             
-            # If both filters are empty, return bad request
             if not (department_id or campus_id):
                 return Response(
                     {"error": "Please provide either department_id or campus_id parameter"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Serialize and return the filtered programs
             serializer = TblProgramSerializer(queryset, many=True)
             
             return Response({
@@ -472,10 +464,8 @@ class SemesterFilterAPIView(APIView):
         try:
             campus_id = request.GET.get('campus_id')
             
-            # Start with all active semesters
             queryset = TblSemester.objects.filter(is_active=True)
 
-            # Filter by campus if provided
             if campus_id:
                 queryset = queryset.filter(campus_id=campus_id)
             else:
@@ -484,7 +474,6 @@ class SemesterFilterAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Serialize and return the filtered semesters
             serializer = TblSemesterSerializer(queryset, many=True)
             
             return Response({
@@ -498,3 +487,161 @@ class SemesterFilterAPIView(APIView):
                 {"error": f"An error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class GetProgramSchedulesView(APIView):
+    def get(self, request):
+        program_id = request.query_params.get('program_id')
+        year_level = request.query_params.get('year_level')
+        semester_id = request.query_params.get('semester_id')
+
+        if not all([program_id, year_level, semester_id]):
+            return Response({
+                'error': 'Missing required parameters. Please provide program_id, year_level, and semester_id'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Fetch program and semester info
+            try:
+                program = TblProgram.objects.get(
+                    id=program_id,
+                    is_active=True,
+                    is_deleted=False
+                )
+            except TblProgram.DoesNotExist:
+                return Response({
+                    'error': 'Program not found or inactive'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                semester = TblSemester.objects.get(
+                    id=semester_id,
+                    is_active=True,
+                    is_deleted=False
+                )
+            except TblSemester.DoesNotExist:
+                return Response({
+                    'error': 'Semester not found or inactive'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Get relevant course IDs from prospectus
+            prospectus_courses = TblProspectus.objects.filter(
+                program_id=program_id,
+                year_level=year_level,
+                semester_name=semester.semester_name,
+                is_active=True,
+                is_deleted=False
+            ).select_related('course_id')
+
+            if not prospectus_courses.exists():
+                return Response({
+                    'message': 'No courses found in prospectus for given parameters'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            course_ids = list(prospectus_courses.values_list('course_id', flat=True))
+
+            # Fetch schedules from external API
+            import requests
+            
+            api_url = "https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects"
+            response = requests.get(api_url)
+            
+            if response.status_code != 200:
+                return Response({
+                    'error': 'Failed to fetch schedules from external API'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            external_schedules = response.json()
+            
+            # Filter schedules based on semester_id AND subject_id (course_id)
+            filtered_schedules = [
+                schedule for schedule in external_schedules 
+                if schedule['semester_id'] == int(semester_id) and 
+                   schedule['subject_id'] in course_ids
+            ]
+
+            if not filtered_schedules:
+                return Response({
+                    'message': 'No schedules found for the courses in this semester'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            schedule_data = []
+            for schedule in filtered_schedules:
+                schedule_info = {
+                    'schedule_id': schedule['id'],
+                    'course': {
+                        'id': schedule['subject_id'],
+                        'code': schedule['subject_code'],
+                        'description': schedule['subject'],
+                        'units': schedule['units']
+                    },
+                    'instructor': {
+                        'name': schedule['teacher'],
+                        'title': ''  # If title is needed, you'll need to get it from somewhere else
+                    },
+                    'room': schedule['room'],
+                    'day': schedule['day'],
+                    'time': {
+                        'start': schedule['start'].split('T')[1][:5],
+                        'end': schedule['end'].split('T')[1][:5]
+                    }
+                }
+                schedule_data.append(schedule_info)
+
+            response_data = {
+                'program': {
+                    'id': program.id,
+                    'code': program.code,
+                    'description': program.description
+                },
+                'year_level': year_level,
+                'semester': {
+                    'id': semester.id,
+                    'name': semester.semester_name,
+                    'school_year': semester.school_year
+                },
+                'schedules': schedule_data
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                'error': f'An unexpected error occurred: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+    def post(self, request):
+        try:
+            fulldata_applicant_id = request.data.get('fulldata_applicant_id')
+            class_ids = request.data.get('class_ids')
+
+            if not fulldata_applicant_id or not class_ids:
+                return Response({
+                    'error': 'Missing required parameters. Please provide fulldata_applicant_id and class_ids'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            payload = {
+                'fulldata_applicant_id': fulldata_applicant_id,
+                'class_ids': class_ids
+            }
+
+            external_api_response = requests.post(
+                'https://node-mysql-signup-verification-api.onrender.com/enrollment/external/submit-enlistment',
+                json=payload
+            )
+            print(external_api_response)
+            return Response(
+                external_api_response.json(),
+                status=external_api_response.status_code
+            )
+
+        except requests.RequestException as e:
+            return Response({
+                'error': f'Failed to communicate with external API: {str(e)}'
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            
+        except Exception as e:
+            return Response({
+                'error': f'An unexpected error occurred: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

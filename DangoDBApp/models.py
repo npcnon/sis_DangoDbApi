@@ -126,6 +126,17 @@ class TblCourse(models.Model):
     created_at = models.CharField(max_length=225)
     updated_at = models.CharField(max_length=225)
 
+class TblProspectus(models.Model):
+    id = models.IntegerField(primary_key=True)
+    year_level = models.CharField(max_length=50)
+    semester_name = models.CharField(max_length=50)
+    course_id = models.ForeignKey(TblCourse, on_delete=models.CASCADE)
+    program_id = models.ForeignKey(TblProgram, on_delete=models.CASCADE)
+    prerequisite = models.JSONField(null=True, blank=True)
+    is_active = models.BooleanField()
+    is_deleted = models.BooleanField()
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
 
 
 #Class
@@ -398,6 +409,11 @@ class TblStudentAcademicHistory(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class TblStudentEnlistedOnSemesters(models.Model):
+    semester_id = models.ForeignKey(TblSemester, on_delete=models.CASCADE)
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
 
 
 

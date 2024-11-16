@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db import IntegrityError
 from DangoDBApp.models import (
     TblCourse,
+    TblProspectus,
     TblSchedule,
     TblDepartment,
     TblCampus,
@@ -20,7 +21,8 @@ from DangoDBApp.serializers import (
     TblSemesterSerializer,
     TblScheduleSerializer,
     TblEmployeeSerializer,
-    TblCourseSerializer
+    TblCourseSerializer,
+    TblProspectusSerializer
 )
 import traceback
 def run_cron_job(fetched_data, model_class, serializer_class, unique_field):
@@ -137,13 +139,26 @@ def map_data(fetched_data, model_name):
                     'day': item['day'],
                     'recurrence_pattern': item['recurrencePattern'],
                 })
+        elif model_name == "prospectus":
+            mapped_data.append({
+                'id': item['prospectus_subject_id'],
+                'year_level': item['yearLevel'],
+                'semester_name': item['semesterName'],
+                'course_id': item['course_id'],
+                'program_id': item['program_id'],
+                'prerequisite': [pre['course_id'] for pre in item['prerequisites']] if item['prerequisites'] else None,
+                'is_active': item['isActive'],
+                'is_deleted': item['isDeleted'],
+                'created_at': item['createdAt'],
+                'updated_at': item['updatedAt']
+            })
+        
     return mapped_data
 
 class FetchAPIDataCronJob(CronJobBase):
     RUN_EVERY_MINS = 1  # Run every minute for testing
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'DangoDBApp.fetch_api_data' 
-
     def do(self):
         print(f"Cron job running at {timezone.now()}")
         
@@ -155,7 +170,7 @@ class FetchAPIDataCronJob(CronJobBase):
             'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
             'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
             'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
-        }
+            'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():
             try:

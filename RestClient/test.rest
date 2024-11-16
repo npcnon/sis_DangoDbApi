@@ -50,7 +50,7 @@ Content-Type: application/json
     "program": 1,
     "birth_date": "2000-01-01",
     "sex": "Male",
-    "email": "afkmhafric@gmail.com"
+    "email": "grayravennpc2@gmail.com"
 }
 
 ### POST onsiteFull student
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "npcsasdadasdasdn@gmail.com",
+    "email": "shinygluttontuna@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -147,7 +147,7 @@ Content-Type: application/json
 
 {
     "personal_data": {
-        "basicdata_applicant_id": 2,
+        "basicdata_applicant_id": 12,
         "f_name": "Mhafric",
         "m_name": "",
         "suffix": "",
@@ -158,9 +158,9 @@ Content-Type: application/json
         "marital_status": "Single",
         "religion": "Christian",
         "country": "USA",
-        "email": "afkmhafric@gmail.com",
+        "email": "shinygluttontuna@gmail.com",
         "acr": "123456",
-        "status": "officially enrolled"
+        "status": "initially enrolled"
     },
     "add_personal_data": {
         "city_address": "123 Main St",
@@ -197,12 +197,12 @@ Content-Type: application/json
     "academic_background": {
         "program": 1,
         "major_in": "Computer Science",
-        "student_type": "Full-time",
+        "student_type": "Undergraduate",
         "semester_entry": 1,
-        "year_level":"1st Year",
+        "year_level":"Fourth Year",
         "year_entry": 2023,
         "year_graduate": 2027,
-        "application_type": "New"
+        "application_type": "old"
     },
     "academic_history": {
         "elementary_address": "Elementary St, City",
@@ -253,11 +253,11 @@ Content-Type: application/json
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT https://djangoportal-backends.onrender.com/api/deactivate_or_modify_personal-student-data/99/False
+PUT https://djangoportal-backends.onrender.com/api/deactivate_or_modify_personal-student-data/108/False
 Content-Type: application/json
 
 {
-    "status": "initially enrolled"
+    "status": "pending"
 }
 
 
@@ -294,3 +294,16 @@ Content-Type: application/json
 DELETE {{baseUrl}}/api/documents/
 Authorization: Bearer {{token}}
 Content-Type: application/json
+
+
+### Enlist student
+POST https://node-mysql-signup-verification-api.onrender.com/enrollment/external/submit-enlistment
+Content-Type: application/json
+
+{
+    "fulldata_applicant_id":11,
+    "class_ids":[1,2,3,4]
+}
+
+### GET REQUEST
+GET https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects

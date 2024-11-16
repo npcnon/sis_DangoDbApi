@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'DangoDBApp',
     'cloudinary_storage',
     'cloudinary',
-    'FileApp'
+    'FileApp',
+    'django_apscheduler',
 ]
 # Cloudinary configuration
 cloudinary.config(
@@ -142,11 +143,19 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # 'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    # 'DEFAULT_PARSER_CLASSES': (
+    #     'rest_framework.parsers.MultiPartParser',
+    #     'rest_framework.parsers.FormParser',
+    # ),
 }
 CRON_CLASSES = [
     "DangoDBApp.cron.FetchAPIDataCronJob",
 ]
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

@@ -12,4 +12,5 @@ cloudinary
 django-cloudinary-storage
 python-magic
 gunicorn
-pdf2image
+django-apscheduler
+django-crontab

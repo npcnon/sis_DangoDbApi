@@ -6,6 +6,7 @@ import re
 from rest_framework import serializers
 from .models import (
     TblCourse,
+    TblProspectus,
     TblSchedule,
     TblEmployee,
     TblProgram,
@@ -106,6 +107,8 @@ TblDepartmentSerializer = create_serializer(TblDepartment)
 TblEmployeeSerializer = create_serializer(TblEmployee)
 TblScheduleSerializer = create_serializer(TblSchedule)
 TblCourseSerializer = create_serializer(TblCourse)
+TblProspectusSerializer = create_serializer(TblProspectus)
+
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
 

@@ -124,7 +124,6 @@ def create_students(num_students):
                     religion=unique_data["religion"],
                     country="Philippines",
                     email=unique_data["email"],
-                    status="pending"
                 )
 
                 # Create AddPersonalData

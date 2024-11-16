@@ -8,6 +8,9 @@ import cloudinary.uploader
 import cloudinary.utils
 import magic
 from datetime import datetime, timedelta
+from rest_framework.response import Response
+from django.db import transaction
+from typing import Dict, Any, Tuple
 
 from users.models import User
 from .models import Document
@@ -69,73 +72,115 @@ class FileUploadView(APIView):
         return 'raw'
 
     def post(self, request):
+        print(f"request data: {request.data}")
+        print(f"Starting file upload process for user: {request.user.id}")
+        
         try:
-            print("Starting file upload process")
+            # Validate request has file
             if 'file' not in request.FILES:
-                return Response({'error': 'No file provided'}, status=400)
+                logger.warning("Upload attempt with no file provided")
+                return Response({
+                    'error': 'No file provided',
+                    'code': 'FILE_MISSING',
+                    'details': 'Please attach a file to your request'
+                }, status=400)
 
             file = request.FILES['file']
             document_type = request.data.get('document_type')
             
-            logger.info(f"Processing upload for document type: {document_type}")
-            
+            # Log initial request details
+            logger.info(f"Upload request received - File: {file.name}, Type: {document_type}, Size: {file.size}")
+
             # Validate document type
-            if not document_type or document_type not in dict(Document.DOCUMENT_TYPES):
+            if not document_type:
+                logger.warning("Upload attempt with missing document type")
                 return Response({
-                    'error': 'Invalid document type',
+                    'error': 'Document type not provided',
+                    'code': 'DOCUMENT_TYPE_MISSING',
                     'valid_types': dict(Document.DOCUMENT_TYPES)
                 }, status=400)
+                
+            if document_type not in dict(Document.DOCUMENT_TYPES):
+                logger.warning(f"Invalid document type provided: {document_type}")
+                return Response({
+                    'error': 'Invalid document type',
+                    'code': 'INVALID_DOCUMENT_TYPE',
+                    'valid_types': dict(Document.DOCUMENT_TYPES),
+                    'provided_type': document_type
+                }, status=400)
 
-            # Check existing document
+            # Check for existing document
             existing_doc = Document.objects.filter(
                 user=request.user,
                 document_type=document_type
             ).first()
             
             if existing_doc:
-                # For existing documents, try to generate a new signed URL
-                signed_url, expiration = self.generate_signed_url(
-                    existing_doc.cloudinary_public_id,
-                    self.get_resource_type(self.validate_file_type(file), document_type)
-                )
-                
-                response_data = {
-                    'error': 'Document already submitted',
-                    'status': existing_doc.status,
-                    'uploaded_at': existing_doc.uploaded_at
-                }
-                
-                if signed_url:
-                    response_data.update({
-                        'temporary_url': signed_url,
-                        'expires_at': expiration.isoformat()
-                    })
-                
-                return Response(response_data, status=400)
+                logger.info(f"Duplicate document upload attempt for type: {document_type}")
+                try:
+                    signed_url, expiration = self.generate_signed_url(
+                        existing_doc.cloudinary_public_id,
+                        self.get_resource_type(self.validate_file_type(file), document_type)
+                    )
+                    
+                    response_data = {
+                        'error': 'Document already submitted',
+                        'code': 'DUPLICATE_DOCUMENT',
+                        'status': existing_doc.status,
+                        'uploaded_at': existing_doc.uploaded_at,
+                        'document_id': existing_doc.id
+                    }
+                    
+                    if signed_url:
+                        response_data.update({
+                            'temporary_url': signed_url,
+                            'expires_at': expiration.isoformat()
+                        })
+                    
+                    return Response(response_data, status=400)
+                except Exception as e:
+                    logger.error(f"Error generating signed URL for existing document: {str(e)}")
+                    return Response({
+                        'error': 'Error accessing existing document',
+                        'code': 'EXISTING_DOCUMENT_ACCESS_ERROR',
+                        'details': str(e)
+                    }, status=500)
 
             # Validate file type
-            file_type = self.validate_file_type(file)
-            if file_type not in self.ALLOWED_MIME_TYPES:
+            try:
+                file_type = self.validate_file_type(file)
+                if file_type not in self.ALLOWED_MIME_TYPES:
+                    logger.warning(f"Invalid file type uploaded: {file_type}")
+                    return Response({
+                        'error': 'Invalid file type',
+                        'code': 'INVALID_FILE_TYPE',
+                        'allowed_types': list(self.ALLOWED_MIME_TYPES.keys()),
+                        'provided_type': file_type
+                    }, status=400)
+            except Exception as e:
+                logger.error(f"Error validating file type: {str(e)}")
                 return Response({
-                    'error': 'Invalid file type',
-                    'allowed_types': list(self.ALLOWED_MIME_TYPES.keys())
+                    'error': 'File type validation failed',
+                    'code': 'FILE_TYPE_VALIDATION_ERROR',
+                    'details': str(e)
                 }, status=400)
 
-            # Validate file size (10MB limit)
+            # Validate file size
             if file.size > 10 * 1024 * 1024:
+                logger.warning(f"File size too large: {file.size} bytes")
                 return Response({
                     'error': 'File too large',
-                    'max_size': '10MB'
+                    'code': 'FILE_TOO_LARGE',
+                    'max_size': '10MB',
+                    'provided_size': f"{file.size / (1024 * 1024):.2f}MB"
                 }, status=400)
-
-            # Determine resource type
-            resource_type = self.get_resource_type(file_type, document_type)
 
             # Upload to Cloudinary
             folder = f"user_{request.user.id}/documents/{document_type}"
-            print(f"Uploading to Cloudinary folder: {folder}")
+            logger.info(f"Attempting Cloudinary upload to folder: {folder}")
             
             try:
+                resource_type = self.get_resource_type(file_type, document_type)
                 upload_result = cloudinary.uploader.upload(
                     file,
                     folder=folder,
@@ -144,59 +189,87 @@ class FileUploadView(APIView):
                     access_mode="authenticated",
                     secure=True
                 )
-                print(f"Cloudinary upload successful: {upload_result['public_id']}")
+                logger.info(f"Cloudinary upload successful: {upload_result['public_id']}")
+            except cloudinary.exceptions.Error as e:
+                logger.error(f"Cloudinary upload failed: {str(e)}")
+                return Response({
+                    'error': 'Storage upload failed',
+                    'code': 'CLOUDINARY_UPLOAD_ERROR',
+                    'details': str(e)
+                }, status=500)
             except Exception as e:
-                print(f"Cloudinary upload failed: {str(e)}")
-                return Response(
-                    {'error': 'Failed to upload file to storage'},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+                logger.error(f"Unexpected error during Cloudinary upload: {str(e)}")
+                return Response({
+                    'error': 'Unexpected error during file upload',
+                    'code': 'UPLOAD_ERROR',
+                    'details': str(e)
+                }, status=500)
 
             # Create document record
-            document = Document.objects.create(
-                user=request.user,
-                file_type=file_type,
-                cloudinary_public_id=upload_result['public_id'],
-                document_type=document_type,
-                original_filename=file.name,
-                status='pending'
-            )
+            try:
+                document = Document.objects.create(
+                    user=request.user,
+                    file_type=file_type,
+                    cloudinary_public_id=upload_result['public_id'],
+                    document_type=document_type,
+                    original_filename=file.name,
+                    status='pending'
+                )
+                logger.info(f"Document record created successfully: {document.id}")
+            except IntegrityError as e:
+                logger.error(f"Database integrity error: {str(e)}")
+                return Response({
+                    'error': 'Document already exists for this user',
+                    'code': 'DATABASE_INTEGRITY_ERROR',
+                    'details': str(e)
+                }, status=400)
+            except Exception as e:
+                logger.error(f"Database error during document creation: {str(e)}")
+                return Response({
+                    'error': 'Failed to create document record',
+                    'code': 'DATABASE_ERROR',
+                    'details': str(e)
+                }, status=500)
 
             # Generate signed URL
-            signed_url, expiration = self.generate_signed_url(
-                upload_result['public_id'],
-                resource_type
-            )
+            try:
+                signed_url, expiration = self.generate_signed_url(
+                    upload_result['public_id'],
+                    resource_type
+                )
 
-            response_data = {
-                'id': document.id,
-                'document_type': document.get_document_type_display(),
-                'file_type': document.file_type,
-                'status': document.status,
-                'filename': document.original_filename,
-                'uploaded_at': document.uploaded_at
-            }
+                response_data = {
+                    'id': document.id,
+                    'document_type': document.get_document_type_display(),
+                    'file_type': document.file_type,
+                    'status': document.status,
+                    'filename': document.original_filename,
+                    'uploaded_at': document.uploaded_at
+                }
 
-            if signed_url:
-                response_data.update({
-                    'temporary_url': signed_url,
-                    'expires_at': expiration.isoformat()
-                })
+                if signed_url:
+                    response_data.update({
+                        'temporary_url': signed_url,
+                        'expires_at': expiration.isoformat()
+                    })
 
-            return Response(response_data, status=status.HTTP_201_CREATED)
+                logger.info(f"Document upload process completed successfully: {document.id}")
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                logger.error(f"Error generating signed URL: {str(e)}")
+                return Response({
+                    'error': 'Failed to generate access URL',
+                    'code': 'URL_GENERATION_ERROR',
+                    'details': str(e)
+                }, status=500)
 
-        except IntegrityError as e:
-            print(f"IntegrityError during upload: {str(e)}")
-            return Response(
-                {'error': 'Document already exists for this user'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
         except Exception as e:
-            print(f"Unexpected error during upload: {str(e)}")
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            logger.error(f"Unexpected error in upload process: {str(e)}")
+            return Response({
+                'error': 'Internal server error',
+                'code': 'INTERNAL_SERVER_ERROR',
+                'details': str(e)
+            }, status=500)
 
     def get(self, request, document_id=None):
         try:
@@ -267,6 +340,12 @@ class FileUploadView(APIView):
                 {'error': 'Failed to retrieve document'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+
+        
+
+
+
         
 class AdminDocumentView(APIView):
     """Public view to post and retrieve documents without authentication."""
@@ -483,3 +562,7 @@ class AdminDocumentView(APIView):
                 {'error': 'Failed to retrieve documents'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+
+
