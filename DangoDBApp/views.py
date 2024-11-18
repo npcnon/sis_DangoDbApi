@@ -1,5 +1,6 @@
 # DangoDBApp.views
 
+import time
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -502,7 +503,7 @@ class GetProgramSchedulesView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Fetch program and semester info
+            # Fetch program info
             try:
                 program = TblProgram.objects.get(
                     id=program_id,
@@ -525,7 +526,6 @@ class GetProgramSchedulesView(APIView):
                     'error': 'Semester not found or inactive'
                 }, status=status.HTTP_404_NOT_FOUND)
 
-            # Get relevant course IDs from prospectus
             prospectus_courses = TblProspectus.objects.filter(
                 program_id=program_id,
                 year_level=year_level,
@@ -541,24 +541,36 @@ class GetProgramSchedulesView(APIView):
 
             course_ids = list(prospectus_courses.values_list('course_id', flat=True))
 
-            # Fetch schedules from external API
-            import requests
+            MAX_RETRIES = 3
+            response = None
             
-            api_url = "https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects"
-            response = requests.get(api_url)
-            
-            if response.status_code != 200:
+            for attempt in range(MAX_RETRIES):
+                try:
+                    response = requests.get(
+                        "https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects",
+                        timeout=30
+                    )
+                    if response.status_code == 200:
+                        break
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                except requests.RequestException as e:
+                    if attempt == MAX_RETRIES - 1:
+                        return Response({
+                            'error': f'Failed to fetch schedules after {MAX_RETRIES} attempts'
+                        }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                    time.sleep(2 ** attempt)
+
+            if not response or response.status_code != 200:
                 return Response({
                     'error': 'Failed to fetch schedules from external API'
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             external_schedules = response.json()
             
-            # Filter schedules based on semester_id AND subject_id (course_id)
             filtered_schedules = [
                 schedule for schedule in external_schedules 
                 if schedule['semester_id'] == int(semester_id) and 
-                   schedule['subject_id'] in course_ids
+                schedule['subject_id'] in course_ids
             ]
 
             if not filtered_schedules:
@@ -578,7 +590,7 @@ class GetProgramSchedulesView(APIView):
                     },
                     'instructor': {
                         'name': schedule['teacher'],
-                        'title': ''  # If title is needed, you'll need to get it from somewhere else
+                        'title': ''
                     },
                     'room': schedule['room'],
                     'day': schedule['day'],
@@ -609,8 +621,7 @@ class GetProgramSchedulesView(APIView):
         except Exception as e:
             return Response({
                 'error': f'An unexpected error occurred: {str(e)}'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  
 
     def post(self, request):
         try:
