@@ -30,7 +30,8 @@ urlpatterns = [
     #Full Student Data
     path('full-student-data/', StudentDataAPIView.as_view(), name='full-student-data'),
     path('full-student-data', StudentDataAPIView.as_view(), name='full-student-data'),
-path('prospectus-prerequisites-schedules/', ProspectusPrerequisitesScheduleView.as_view(), name='prospectus-prerequisites-schedules'),    path('enlisted-students/', StudentEnlistedOnSemestersAPIView.as_view(), name='enlisted students'),
+    path('prospectus-prerequisites-schedules/', ProspectusPrerequisitesScheduleView.as_view(), name='prospectus-prerequisites-schedules'),    
+    path('enlisted-students/', StudentEnlistedOnSemestersAPIView.as_view(), name='enlisted students'),
     path('class-list/', TblScheduleAPIView.as_view(), name='class-list'),
     #Official student Data
     path('official-student-data/', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),

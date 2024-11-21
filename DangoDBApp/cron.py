@@ -156,7 +156,7 @@ def map_data(fetched_data, model_name):
     return mapped_data
 
 class FetchAPIDataCronJob(CronJobBase):
-    RUN_EVERY_MINS = 1  # Run every minute for testing
+    RUN_EVERY_MINS = 1  
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'DangoDBApp.fetch_api_data' 
     def do(self):

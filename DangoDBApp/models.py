@@ -423,5 +423,6 @@ class TblStudentEnlistedOnSemesters(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
-
+class TblStudentGrades(models.Model):
+    passed = models.BooleanField(default=True)
+    
