@@ -657,3 +657,57 @@ class GetProgramSchedulesView(APIView):
             return Response({
                 'error': f'An unexpected error occurred: {str(e)}'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+
+
+
+
+
+class ProspectusPrerequisitesScheduleView(APIView):
+    def get(self, request):
+        try:
+            # Get filter parameters
+            has_schedule = request.query_params.get('has_schedule', '').lower() == 'true'
+
+            # Fetch schedules from external API
+            schedules_response = requests.get('https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects')
+            schedules = schedules_response.json()
+
+            # Get prospectus entries with prerequisites
+            prospectus_with_prereqs = TblProspectus.objects.filter(
+                prerequisite__isnull=False
+            ).select_related('course_id')
+
+            results = []
+            for prospectus_item in prospectus_with_prereqs:
+                course = prospectus_item.course_id
+                
+                matching_schedules = [
+                    schedule for schedule in schedules 
+                    if (schedule['subject_id'] == course.id and 
+                        schedule['semester'].lower() == prospectus_item.semester_name.lower())
+                ]
+                
+                # Determine if entry matches the filter
+                entry = {
+                    'prospectus_id': prospectus_item.id,
+                    'course_code': course.code,
+                    'course_description': course.description,
+                    'semester_name': prospectus_item.semester_name,
+                    'year_level': prospectus_item.year_level,
+                    'has_schedule': bool(matching_schedules)
+                }
+                
+                # Filter based on has_schedule parameter
+                if has_schedule is None or entry['has_schedule'] == has_schedule:
+                    results.append(entry)
+
+            return Response(results, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
