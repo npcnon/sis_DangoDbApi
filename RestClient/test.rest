@@ -245,7 +245,6 @@ Content-Type: application/json
 {
     "student_id": "2024-00005",
     "campus": 1,
-    "password": "qweqwe",
     "fulldata_applicant_id": 1
 }
 
@@ -253,11 +252,11 @@ Content-Type: application/json
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT https://djangoportal-backends.onrender.com/api/deactivate_or_modify_personal-student-data/108/False
+PUT http://127.0.0.1:8000/api/deactivate_or_modify_personal-student-data/1/False
 Content-Type: application/json
 
 {
-    "status": "pending"
+    "status": "initially enrolled"
 }
 
 
@@ -268,7 +267,7 @@ Content-Type: application/json
 
 {
     "semester_id" : 5,
-    "fulldata_applicant_id": 12
+    "fulldata_applicant_id": 1
 }
 
 ### Delete Single Document

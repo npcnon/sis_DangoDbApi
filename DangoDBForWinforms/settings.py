@@ -129,7 +129,27 @@ DATABASES = {
         'HOST':'srv1417.hstgr.io',
         'PORT':'3306',
     },
+
+
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'portal',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST':'localhost',
+#         'PORT':'3306',
+#     },
+
+    
+# }
+
+
+
+
 
 # SQLite
 # DATABASES = {
