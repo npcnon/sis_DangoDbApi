@@ -183,7 +183,10 @@ class TblStudentBasicInfo(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    class Meta:
+        unique_together = (
+            'first_name', 'last_name'
+        )
     def __str__(self):
         return f"{self.basicdata_applicant_id}"
 
@@ -251,9 +254,7 @@ class TblStudentPersonalData(models.Model):
 
     class Meta:
         unique_together = (
-            'f_name', 'm_name', 'suffix', 'l_name',
-            'sex', 'birth_date', 'birth_place', 'marital_status',
-            'religion', 'country', 'email', 'acr', 'status'
+            'f_name', 'l_name'
         )
 
     def __str__(self):
