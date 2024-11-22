@@ -24,3 +24,5 @@ for x in all_tables:
 # # Generate a response
 # response = chatbot("Hello! How can I help you?")
 # print(response)
+#TODO: returnee student 
+#TODO: report 1:title, 2:THeoritical framework,statement of the problemo 3: Technical background, CHAP 4 presentation 15min quis and ansa, developers
