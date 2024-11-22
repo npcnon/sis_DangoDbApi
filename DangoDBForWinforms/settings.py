@@ -129,8 +129,6 @@ DATABASES = {
         'HOST':'srv1417.hstgr.io',
         'PORT':'3306',
     },
-
-
 }
 
 
