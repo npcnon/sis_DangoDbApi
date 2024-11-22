@@ -70,16 +70,19 @@ def update_user_profile_fulldata(sender, instance, created, **kwargs):
 @receiver(post_save, sender=TblStudentOfficialInfo)
 def update_user_student_id(sender, instance, created, **kwargs):
     """
-    Signal to update User's student_id when TblStudentOfficialInfo is created/updated
+    Signal to update User's student_id and student status when TblStudentOfficialInfo is created/updated
     """
     try:
-        # Get the email from the related PersonalData
-        email = instance.fulldata_applicant_id.email
+        # Access the related personal data record through the foreign key
+        personal_data = instance.fulldata_applicant_id
         
-        # Find the user by email
-        user = User.objects.get(email=email)
+        # Update the personal data status
+        TblStudentPersonalData.objects.filter(fulldata_applicant_id=personal_data.fulldata_applicant_id).update(
+            status='officially enrolled'
+        )
         
-        # Update the student_id
+        # Find and update the user
+        user = User.objects.get(email=personal_data.email)
         user.student_id = instance.student_id
         
         # If there's a password in TblStudentOfficialInfo, update it
@@ -88,12 +91,12 @@ def update_user_student_id(sender, instance, created, **kwargs):
             
         user.save()
         
-        logger.info(f"Updated student_id for user {user.email}")
+        logger.info(f"Updated student_id and status for user {personal_data.email}")
         
     except User.DoesNotExist:
-        logger.warning(f"No user found with email {email}")
+        logger.warning(f"No user found with email {personal_data.email}")
     except Exception as e:
-        logger.error(f"Error updating user student_id: {str(e)}")
+        logger.error(f"Error updating user student_id and status: {str(e)}")
 
 
 @receiver(post_save, sender=TblStudentBasicInfo)

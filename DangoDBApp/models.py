@@ -221,6 +221,7 @@ class TblStudentPersonalData(models.Model):
         ('officially enrolled', 'officially enrolled'),
         ('pending', 'pending'),
         ('rejected', 'rejected'),
+        ('unverified', 'unverified'),
         ('initially enrolled', 'initially enrolled')
     ]
     basicdata_applicant_id = models.OneToOneField(

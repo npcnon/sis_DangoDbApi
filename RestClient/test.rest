@@ -243,7 +243,7 @@ POST http://127.0.0.1:8000/api/official-student-data/
 Content-Type: application/json
 
 {
-    "student_id": "2024-00005",
+    "student_id": "2024-00001",
     "campus": 1,
     "fulldata_applicant_id": 1
 }
