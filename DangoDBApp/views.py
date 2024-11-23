@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 class EmailVerificationAPIView(APIView):
     
     def post(self, request):
-        print(request.data)
+        logger.info(request.data)
         email = request.data.get('email')
         
         if not email:
@@ -172,7 +172,7 @@ def create_api_view(model, serializer):
                     #         [recipient_email],  
                     #         fail_silently=False,
                     #     )
-                    #     print("emailsend ")
+                    #     logger.info("emailsend ")
                     #     logger.info("Email sent successfully")
                     if model.__name__ in ["TblStudentAcademicHistory"]:
                         student_id = validated_data.get("stdnt_id")
@@ -215,8 +215,8 @@ def create_api_view(model, serializer):
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         def put(self, request, id_or_offercode, deactivate):
-            print(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
-            print(f"Request Data: {request.data}")
+            logger.info(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
+            logger.info(f"Request Data: {request.data}")
 
             try:
                 # Determine primary key field
@@ -229,7 +229,7 @@ def create_api_view(model, serializer):
 
                 # Handle deactivation
                 if deactivate.lower() == "true":
-                    print("Deactivation process activated")
+                    logger.info("Deactivation process activated")
                     try:
                         instance = model.objects.get(**{pk_field: id_or_offercode})
                         if instance.is_active:
@@ -239,7 +239,7 @@ def create_api_view(model, serializer):
                             instance.is_active = True
                             status_message = "activated"
                         instance.save()
-                        print(f"Instance {status_message} successfully")
+                        logger.info(f"Instance {status_message} successfully")
                         return Response({
                             "status": "success",
                             "message": f"Object {status_message} successfully",
@@ -286,7 +286,7 @@ def create_api_view(model, serializer):
                         setattr(instance, pk_field, new_id)
 
                     updated_instance = serializer_data.save()
-                    print(f"Instance updated successfully: {serializer_data.data}")
+                    logger.info(f"Instance updated successfully: {serializer_data.data}")
                     return Response({
                         "status": "success",
                         "message": "Object updated successfully",
@@ -349,7 +349,7 @@ StudentEnlistedOnSemestersAPIView = create_api_view(TblStudentEnlistedOnSemester
 class OfficialStudentAPIView(APIView):
     def post(self, request):
         try:
-            print(request.data)
+            logger.info(request.data)
             with transaction.atomic():
                 sid = transaction.savepoint()
                 program_id = request.data.get('academic_background', {}).get('program')
@@ -456,7 +456,7 @@ class ProgramFilterAPIView(APIView):
     """
     
     def get(self, request):
-        print(f'request data: {request.data}')
+        logger.info(f'request data: {request.data}')
         try:
             department_id = request.GET.get('department_id')
             campus_id = request.GET.get('campus_id')
@@ -534,7 +534,6 @@ class SemesterFilterAPIView(APIView):
 
 class GetProgramSchedulesView(APIView):
     def get(self, request):
-        print(f'semesterid: {request.query_params.get('semester_id')}')
         program_id = request.query_params.get('program_id')
         year_level = request.query_params.get('year_level')
         semester_id = request.query_params.get('semester_id')
@@ -656,7 +655,7 @@ class GetProgramSchedulesView(APIView):
                 },
                 'schedules': schedule_data
             }
-            print(f'schedules{schedule_data}')
+            logger.info(f'schedules{schedule_data}')
             return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -666,7 +665,7 @@ class GetProgramSchedulesView(APIView):
 
     def post(self, request):
         try:
-            print(request.data)
+            logger.info(request.data)
             fulldata_applicant_id = request.data.get('fulldata_applicant_id')
             class_ids = request.data.get('class_ids')
 
@@ -685,7 +684,7 @@ class GetProgramSchedulesView(APIView):
                 'https://node-mysql-signup-verification-api.onrender.com/enrollment/external/submit-enlistment',
                 json=payload
             )
-            print(external_api_response)
+            logger.info(external_api_response)
             return Response(
                 external_api_response.json(),
                 status=external_api_response.status_code
