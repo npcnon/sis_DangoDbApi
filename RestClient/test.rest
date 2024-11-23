@@ -58,12 +58,12 @@ POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-32675",
+  "student_id": "2024-32125",
   "campus": 1,
   "personal_data": {
-    "f_name": "qzxcxccx",
+    "f_name": "qzzzzzx",
     "m_name": "Mazz",
-    "l_name": "asdddh",
+    "l_name": "asasdddh",
     "suffix": "Jr",
     "sex": "Male",
     "birth_date": "2000-05-15",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "s1qwe123we@gmail.com",
+    "email": "s1ds123e@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
