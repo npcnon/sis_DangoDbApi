@@ -54,16 +54,16 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST https://djangoportal-backends.onrender.com/api/onsite-full-student-data/
+POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-21231",
+  "student_id": "2024-32154",
   "campus": 1,
   "personal_data": {
-    "f_name": "qzzzzz",
-    "m_name": "Masdasdasdz",
-    "l_name": "asdasdasdh",
+    "f_name": "qezz",
+    "m_name": "Mazz",
+    "l_name": "asdddh",
     "suffix": "Jr",
     "sex": "Male",
     "birth_date": "2000-05-15",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "shinygluttontuna@gmail.com",
+    "email": "s1qweqaqweqwe@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -239,20 +239,18 @@ Content-Type: application/json
     "citizenship": "American"
 }
 ### POST Official student
-POST http://127.0.0.1:8000/api/official-student-data/
+POST http://127.0.0.1:8000/api/proxy
 Content-Type: application/json
 
 {
-    "student_id": "2024-00001",
-    "campus": 1,
-    "fulldata_applicant_id": 1
+    "url" : "https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects"
 }
 
 
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT http://127.0.0.1:8000/api/deactivate_or_modify_personal-student-data/1/False
+PUT http://127.0.0.1:8000/api/deactivate_or_modify_stdntacademicbackground/1/False
 Content-Type: application/json
 
 {

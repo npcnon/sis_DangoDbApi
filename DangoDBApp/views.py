@@ -389,11 +389,10 @@ class OfficialStudentAPIView(APIView):
                     
                     combined_serializer = CombinedOfficialStudentSerializer(official_student)
                     return Response({
-                        "status": "success",
+                        "status": "success", 
                         "message": "Official student record created successfully",
-                        "data": combined_serializer.data
+                        "fulldata_applicant_id": personal_data_instance.fulldata_applicant_id
                     }, status=status.HTTP_201_CREATED)
-
                 except Exception as e:
                     transaction.savepoint_rollback(sid)
                     raise e
@@ -493,6 +492,7 @@ class SemesterFilterAPIView(APIView):
 
 class GetProgramSchedulesView(APIView):
     def get(self, request):
+        print(f'semesterid: {request.query_params.get('semester_id')}')
         program_id = request.query_params.get('program_id')
         year_level = request.query_params.get('year_level')
         semester_id = request.query_params.get('semester_id')
@@ -569,8 +569,7 @@ class GetProgramSchedulesView(APIView):
             
             filtered_schedules = [
                 schedule for schedule in external_schedules 
-                if schedule['semester_id'] == int(semester_id) and 
-                schedule['subject_id'] in course_ids
+                if schedule['subject_id'] in course_ids
             ]
 
             if not filtered_schedules:
@@ -615,7 +614,7 @@ class GetProgramSchedulesView(APIView):
                 },
                 'schedules': schedule_data
             }
-
+            print(f'schedules{schedule_data}')
             return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -625,8 +624,10 @@ class GetProgramSchedulesView(APIView):
 
     def post(self, request):
         try:
+            print(request.data)
             fulldata_applicant_id = request.data.get('fulldata_applicant_id')
             class_ids = request.data.get('class_ids')
+
 
             if not fulldata_applicant_id or not class_ids:
                 return Response({
@@ -711,3 +712,54 @@ class ProspectusPrerequisitesScheduleView(APIView):
                 {"error": str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class ProxyAPIView(APIView):
+    def post(self, request):
+        # Get the target URL from request body
+        target_url = request.data.get('url')
+        
+        if not target_url:
+            return Response({
+                'error': 'Missing required parameter. Please provide url'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        MAX_RETRIES = 3
+        response = None
+
+        # Implement retry logic with exponential backoff
+        for attempt in range(MAX_RETRIES):
+            try:
+                response = requests.get(
+                    target_url,
+                    timeout=30
+                )
+                if response.status_code == 200:
+                    break
+                time.sleep(2 ** attempt)  # Exponential backoff
+            except requests.RequestException as e:
+                if attempt == MAX_RETRIES - 1:
+                    return Response({
+                        'error': f'Failed to fetch data after {MAX_RETRIES} attempts: {str(e)}'
+                    }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                time.sleep(2 ** attempt)
+
+        if not response or response.status_code != 200:
+            return Response({
+                'error': 'Failed to fetch data from provided URL',
+                'status_code': response.status_code if response else None
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            # Return the data from the external API
+            return Response(response.json(), status=status.HTTP_200_OK)
+        except ValueError:
+            # Handle case where response is not JSON
+            return Response({
+                'error': 'Invalid JSON response from target URL'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({
+                'error': f'An unexpected error occurred: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

@@ -22,7 +22,8 @@ from .views import (
     EmployeeAPIView,
     GetProgramSchedulesView,
     StudentEnlistedOnSemestersAPIView,
-    ProspectusPrerequisitesScheduleView
+    ProspectusPrerequisitesScheduleView,
+    ProxyAPIView
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
 
@@ -48,7 +49,7 @@ urlpatterns = [
     path('employee/', EmployeeAPIView.as_view(), name = 'employee'),
 
     path('emailapi', EmailVerificationAPIView.as_view(), name = 'email-verification'),
-
+    path('proxy', ProxyAPIView.as_view(), name = 'proxy'),
 
     path('personal-student-data/',StudentPersonalDataAPIView.as_view(),name = 'student-personal-list'),
     path('add-personal-data/',StudentAddPersonalDataAPIView.as_view(),name = 'add-personal-data'),
