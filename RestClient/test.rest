@@ -54,16 +54,16 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST http://127.0.0.1:8000/api/onsite-full-student-data/
+POST https://djangoportal-backends.onrender.com/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-32125",
+  "student_id": "2024-35615",
   "campus": 1,
   "personal_data": {
-    "f_name": "qzzzzzx",
+    "f_name": "asdzzzx",
     "m_name": "Mazz",
-    "l_name": "asasdddh",
+    "l_name": "as2321dddh",
     "suffix": "Jr",
     "sex": "Male",
     "birth_date": "2000-05-15",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "s1ds123e@gmail.com",
+    "email": "s1zx3e@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -239,11 +239,12 @@ Content-Type: application/json
     "citizenship": "American"
 }
 ### POST Official student
-POST http://127.0.0.1:8000/api/proxy
+POST https://node-mysql-signup-verification-api.onrender.com/students/external/add-enrollment
 Content-Type: application/json
 
 {
-    "url" : "https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects"
+    "semester_id" : 9,
+    "fulldata_applicant_id": 55
 }
 
 

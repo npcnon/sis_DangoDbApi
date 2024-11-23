@@ -168,9 +168,10 @@ class FetchAPIDataCronJob(CronJobBase):
             # 'program': (TblProgram, TblProgramSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-programs-active'),
             'semester': (TblSemester, TblSemesterSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-all-semesters'),
             # 'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
-            'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
+            # 'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
             # 'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
-            'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        }
+            # 'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        
+            }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():
             try:

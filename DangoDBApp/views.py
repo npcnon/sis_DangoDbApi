@@ -610,7 +610,8 @@ class GetProgramSchedulesView(APIView):
             
             filtered_schedules = [
                 schedule for schedule in external_schedules 
-                if schedule['subject_id'] in course_ids
+                if schedule['semester_id'] == int(semester_id) and 
+                schedule['subject_id'] in course_ids
             ]
 
             if not filtered_schedules:

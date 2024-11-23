@@ -136,14 +136,14 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 
-@receiver(post_save, sender=TblSemester)
-def update_student_semester_entry(sender, instance, created, **kwargs):
-    if instance.is_active:
+# @receiver(post_save, sender=TblSemester)
+# def update_student_semester_entry(sender, instance, created, **kwargs):
+#     if instance.is_active:
         
-        # Find all students in this campus who need their semester entry updated
-        students_in_campus = TblStudentAcademicBackground.objects.filter(
-            program__department_id__campus_id=instance.campus_id
-        )
+#         # Find all students in this campus who need their semester entry updated
+#         students_in_campus = TblStudentAcademicBackground.objects.filter(
+#             program__department_id__campus_id=instance.campus_id
+#         )
         
-        # Update their semester entry to the new active semester
-        students_in_campus.update(semester_entry=instance)
+#         # Update their semester entry to the new active semester
+#         students_in_campus.update(semester_entry=instance)
