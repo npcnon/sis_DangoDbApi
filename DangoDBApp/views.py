@@ -7,7 +7,7 @@ from rest_framework import status
 from django.core.mail import send_mail
 from users.models import User, Profile
 from users.serializers import UserSerializer
-from django.db import transaction   
+from django.db import DatabaseError, transaction   
 import requests 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ValidationError
@@ -215,75 +215,117 @@ def create_api_view(model, serializer):
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         def put(self, request, id_or_offercode, deactivate):
-            logger.info(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
-            logger.info(f"Request Data: {request.data}")
+            print(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
+            print(f"Request Data: {request.data}")
 
             try:
+                # Determine primary key field
                 if hasattr(model, 'student_id'):
                     pk_field = 'student_id'
-                elif hasattr(model, 'applicant_id'):
-                    pk_field = 'applicant_id'
+                elif hasattr(model, 'fulldata_applicant_id'):
+                    pk_field = 'fulldata_applicant_id'
                 else:
                     pk_field = 'pk'  
 
-                
+                # Handle deactivation
                 if deactivate.lower() == "true":
-                    logger.info("Deactivation process activated")
+                    print("Deactivation process activated")
                     try:
                         instance = model.objects.get(**{pk_field: id_or_offercode})
                         if instance.is_active:
                             instance.is_active = False
+                            status_message = "deactivated"
                         else:
                             instance.is_active = True
+                            status_message = "activated"
                         instance.save()
-                        logger.info("Instance deactivated successfully")
-                        return Response({"success": "Object updated successfully"}, status=status.HTTP_200_OK)
+                        print(f"Instance {status_message} successfully")
+                        return Response({
+                            "status": "success",
+                            "message": f"Object {status_message} successfully",
+                            "data": {
+                                pk_field: getattr(instance, pk_field),
+                                "is_active": instance.is_active
+                            }
+                        }, status=status.HTTP_200_OK)
                     except model.DoesNotExist:
-                        logger.error("Object not found")
-                        return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
+                        logger.error(f"Object with {pk_field}={id_or_offercode} not found")
+                        return Response({
+                            "status": "error",
+                            "message": "Object not found",
+                            "details": f"No object found with {pk_field}={id_or_offercode}"
+                        }, status=status.HTTP_404_NOT_FOUND)
 
-                
+                # Handle update
                 try:
                     instance = model.objects.get(**{pk_field: id_or_offercode})
                 except model.DoesNotExist:
-                    logger.error("Object not found")
-                    return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
-                
+                    logger.error(f"Object with {pk_field}={id_or_offercode} not found")
+                    return Response({
+                        "status": "error",
+                        "message": "Object not found",
+                        "details": f"No object found with {pk_field}={id_or_offercode}"
+                    }, status=status.HTTP_404_NOT_FOUND)
+
                 serializer_data = serializer(instance, data=request.data, partial=True)
 
                 if serializer_data.is_valid():
                     validated_data = serializer_data.validated_data
 
+                    # Check if trying to update primary key
                     new_id = validated_data.get(pk_field)
-
                     if new_id and new_id != getattr(instance, pk_field):
                         if model.objects.filter(**{pk_field: new_id}).exists():
-                            logger.error(f"Attempt to update to a {pk_field} that already exists")
-                            return Response({"error": f"{pk_field} already exists"}, status=status.HTTP_400_BAD_REQUEST)
+                            logger.error(f"Attempt to update to a {pk_field} that already exists: {new_id}")
+                            return Response({
+                                "status": "error",
+                                "message": f"{pk_field} already exists",
+                                "details": f"Cannot update {pk_field} to {new_id} as it already exists"
+                            }, status=status.HTTP_400_BAD_REQUEST)
 
                         setattr(instance, pk_field, new_id)
 
-                    serializer_data.save()
-                    logger.info(f"Instance updated successfully: {serializer_data.data}")
-                    return Response(serializer_data.data, status=status.HTTP_200_OK)
+                    updated_instance = serializer_data.save()
+                    print(f"Instance updated successfully: {serializer_data.data}")
+                    return Response({
+                        "status": "success",
+                        "message": "Object updated successfully",
+                        "data": serializer_data.data
+                    }, status=status.HTTP_200_OK)
 
-                logger.error(f"Serializer errors: {serializer_data.errors}")
-                return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
+                logger.error(f"Validation errors: {serializer_data.errors}")
+                return Response({
+                    "status": "error",
+                    "message": "Validation failed",
+                    "errors": serializer_data.errors,
+                    "error_count": len(serializer_data.errors)
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            except ValidationError as e:
+                logger.error(f"Validation error occurred: {str(e)}")
+                return Response({
+                    "status": "error",
+                    "message": "Validation error",
+                    "errors": e.detail if hasattr(e, 'detail') else str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            except DatabaseError as e:
+                logger.error(f"Database error occurred: {str(e)}")
+                return Response({
+                    "status": "error",
+                    "message": "Database error",
+                    "details": str(e)
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             except Exception as e:
-                logger.error(f"Exception occurred: {e}")
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                    
-            except model.DoesNotExist:
-                logger.error("Object not found")
-                return Response({"error": "Object not found"}, status=status.HTTP_404_NOT_FOUND)
-            
-            except Exception as e:
-                logger.error(f"Exception occurred: {e}")
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                logger.error(f"Unexpected error occurred: {str(e)}")
+                return Response({
+                    "status": "error",
+                    "message": "An unexpected error occurred",
+                    "details": str(e)
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return ViewSet
-
 
 
 

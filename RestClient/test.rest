@@ -58,10 +58,10 @@ POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-32154",
+  "student_id": "2024-32675",
   "campus": 1,
   "personal_data": {
-    "f_name": "qezz",
+    "f_name": "qzxcxccx",
     "m_name": "Mazz",
     "l_name": "asdddh",
     "suffix": "Jr",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "s1qweqaqweqwe@gmail.com",
+    "email": "s1qwe123we@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"
@@ -250,11 +250,11 @@ Content-Type: application/json
 ### PUT personal data(for editing student status)
 # choices are pending, initially enrolled, rejected, officially enrolled
 
-PUT http://127.0.0.1:8000/api/deactivate_or_modify_stdntacademicbackground/1/False
+PUT http://127.0.0.1:8000/api/deactivate_or_modify_stdntacademicbackground/9/False
 Content-Type: application/json
 
 {
-    "status": "initially enrolled"
+    "semester_entry": 8
 }
 
 
