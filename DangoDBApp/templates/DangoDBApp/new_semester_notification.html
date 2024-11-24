@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Semester Announcement</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="https://res.cloudinary.com/dzlzm64uw/image/private/s--XkIo0RGW--/v1/user_103/documents/birth_certificate/gobonelzvf4qhpg77mba" alt="School Logo" style="max-width: 150px; height: auto; margin-bottom: 20px;">
+                <h1 style="color: #333333; font-size: 24px; margin-bottom: 15px;">New Semester Registration Now Open! 🎓</h1>
+            </div>
+            
+            <div style="color: #666666; line-height: 1.6; margin-bottom: 20px;">
+                <p>Dear {{ student_name }},</p>
+                <p>We're excited to announce that registration for the new semester is now open! 🎉 Get ready to continue your academic journey with us.</p>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <div style="color: #666666; font-size: 14px; margin-bottom: 5px; text-align: center;">Semester</div>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; border: 1px solid #e9ecef; font-size: 18px; color: #007bff; font-weight: 500;">
+                    {{ semester_name }}
+                </div>
+
+                <div style="color: #666666; font-size: 14px; margin-bottom: 5px; text-align: center;">Registration Period</div>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; border: 1px solid #e9ecef; font-size: 18px; color: #007bff; font-weight: 500;">
+                    {{ registration_dates }}
+                </div>
+            </div>
+
+            <div style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0; font-size: 14px;">
+                <strong>Important:</strong> Please ensure to review your curriculum requirements and prerequisites before enrolling in courses.
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ enrollment_url }}" style="background-color: #007bff; padding: 14px 32px; text-decoration: none; display: inline-block; border-radius: 8px; font-size: 16px; font-weight: 600; border: none; color: white !important;">Start Registration</a>
+            </div>
+
+            <div style="color: #666666; line-height: 1.6; margin-bottom: 20px;">
+                <p>Need help with registration? Our academic advisors are here to assist you:</p>
+                <ul style="color: #666666;">
+                    <li>Email: academic.support@benedicto.edu</li>
+                    <li>Phone: (123) 456-7890</li>
+                    <li>Office Hours: Monday-Friday, 8:00 AM - 5:00 PM</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; color: #999999; font-size: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                <p>This is an automated message, please do not reply.</p>
+                <p>&copy; 2024 Benedicto College. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

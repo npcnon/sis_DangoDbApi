@@ -426,4 +426,17 @@ class TblStudentEnlistedOnSemesters(models.Model):
 
 class TblStudentGrades(models.Model):
     passed = models.BooleanField(default=True)
+
+
+
+# Add this model to track email notifications
+class TblEmailNotificationLog(models.Model):
+    semester_id = models.IntegerField()
+    notification_type = models.CharField(max_length=50)
+    recipients_count = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        indexes = [
+            models.Index(fields=['semester_id', 'created_at'])
+        ]

@@ -156,7 +156,7 @@ DATABASES = {
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
+STUDENT_PORTAL_URL='https://benedicto-student-portal.vercel.app/login'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
