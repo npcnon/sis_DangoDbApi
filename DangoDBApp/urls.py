@@ -23,7 +23,9 @@ from .views import (
     GetProgramSchedulesView,
     StudentEnlistedOnSemestersAPIView,
     ProspectusPrerequisitesScheduleView,
-    ProxyAPIView
+    ProxyAPIView,
+    ProspectusAPIView,
+
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
 
@@ -40,7 +42,9 @@ urlpatterns = [
     path('onsite-full-student-data/', OfficialStudentAPIView.as_view(), name='official-student-data'),
     path('onsite-full-student-data', OfficialStudentAPIView.as_view(), name='official-student-data'),
 
-    path('schedules/', GetProgramSchedulesView.as_view(), name='get-program-schedules'),    path('course/', CourseAPIView.as_view(), name = 'course-list'),
+    path('prospectus/', ProspectusAPIView.as_view(), name='get-prospectus'),    
+    path('course/', CourseAPIView.as_view(), name = 'course-list'),
+    path('schedules/', GetProgramSchedulesView.as_view(), name='get-program-schedules'),    
     path('semester/', SemesterFilterAPIView.as_view(), name = 'semester-list'),
     path('program/', ProgramFilterAPIView.as_view(), name = 'program-list'),
     path('department/',DepartmentAPIView.as_view(), name = 'department-list'),

@@ -345,7 +345,7 @@ BugReportAPIView = create_api_view(TblBugReport, TblBugReportSerializer)
 CourseAPIView = create_api_view(TblCourse, TblCourseSerializer)
 EmployeeAPIView = create_api_view(TblEmployee, TblEmployeeSerializer)
 StudentEnlistedOnSemestersAPIView = create_api_view(TblStudentEnlistedOnSemesters, TblStudentEnlistedOnSemestersSerializer)
-
+ProspectusAPIView = create_api_view(TblProspectus, TblProspectusSerializer)
 class OfficialStudentAPIView(APIView):
     def post(self, request):
         try:
