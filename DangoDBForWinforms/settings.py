@@ -139,7 +139,7 @@ DATABASES = {
 DATABASE_POOL_ARGS = {
     'max_connections': 300, 
     'stale_timeout': 300,    
-    'recycle': 280,        
+    'recycle': 300,        
 }
 # DATABASES = {
 #     'default': {
