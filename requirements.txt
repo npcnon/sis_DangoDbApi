@@ -14,3 +14,4 @@ python-magic
 gunicorn
 django-apscheduler
 django-crontab
+django-db-connection-pool[all]

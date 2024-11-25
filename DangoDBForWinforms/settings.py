@@ -120,28 +120,34 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 
 
+DATABASES = {
+    'default': {
+       'ENGINE': 'dj_db_conn_pool.backends.mysql',
+        'NAME': 'u286307273_portal',
+        'USER': 'u286307273_portal',
+        'PASSWORD': 'W5Cn6Q>+:l',
+        'HOST': 'srv1417.hstgr.io',
+        'PORT': '3306',
+        'CONN_MAX_AGE': 0,  # Important for connection pooling
+    }
+}
+
+# Add this configuration
+DATABASE_POOL_ARGS = {
+    'max_connections': 450,  # Significantly less than 500, but still generous
+    'stale_timeout': 300,    # Clean up connections after 5 minutes of inactivity
+}
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'u286307273_portal',
-#         'USER': 'u286307273_portal',
-#         'PASSWORD': 'W5Cn6Q>+:l',
-#         'HOST':'srv1417.hstgr.io',
+#         'NAME': 'portal',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST':'localhost',
 #         'PORT':'3306',
-#     },
+#     },   
 # }
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'portal',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
-        'PORT':'3306',
-    },   
-}
 
 
 
