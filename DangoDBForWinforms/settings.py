@@ -122,24 +122,25 @@ WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 DATABASES = {
     'default': {
-       'ENGINE': 'dj_db_conn_pool.backends.mysql',
+        'ENGINE': 'dj_db_conn_pool.backends.mysql',
         'NAME': 'u286307273_portal',
         'USER': 'u286307273_portal',
         'PASSWORD': 'W5Cn6Q>+:l',
         'HOST': 'srv1417.hstgr.io',
         'PORT': '3306',
-        'CONN_MAX_AGE': 300,  
+        'CONN_MAX_AGE': 0,  # Disable persistent connections
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 10,  
+            'connect_timeout': 10,
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'; SET SESSION wait_timeout=28800;",
         }
     }
 }
-# Update connection pool arguments
+
 DATABASE_POOL_ARGS = {
     'max_connections': 300, 
-    'stale_timeout': 300,    
-    'recycle': 300,        
+    'stale_timeout': 600,    # Increased from 300 to 600
+    'recycle': 500,          # Increased from 280 to 500
 }
 # DATABASES = {
 #     'default': {
