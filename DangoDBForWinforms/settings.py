@@ -128,16 +128,20 @@ DATABASES = {
         'PASSWORD': 'W5Cn6Q>+:l',
         'HOST': 'srv1417.hstgr.io',
         'PORT': '3306',
-        'CONN_MAX_AGE': 0,  # Important for connection pooling
+        'CONN_MAX_AGE': 300,  # Keep connections alive for 5 minutes
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'connect_timeout': 10,  # Connection timeout in seconds
+        }
     }
 }
 
-# Add this configuration
+# Update connection pool arguments
 DATABASE_POOL_ARGS = {
-    'max_connections': 450,  # Significantly less than 500, but still generous
-    'stale_timeout': 300,    # Clean up connections after 5 minutes of inactivity
+    'max_connections': 300,  # Reduce to prevent overwhelming the database
+    'stale_timeout': 300,    # 5 minutes timeout for idle connections
+    'recycle': 280,          # Recycle connections after 280 seconds
 }
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',

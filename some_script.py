@@ -5,30 +5,30 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DangoDBForWinforms.settings")
 django.setup()
 
-'''from DangoDBApp.models import TblProspectus
+from DangoDBApp.models import TblProspectus
 from DangoDBApp.models import TblStudentBasicInfo as t
 from DangoDBApp.models import TblStudentPersonalData as p
 from users.models import User as u
-email = "grayravennpc0"
+email = "afkmhafric"
 all_tables = [t,u]
 for x in all_tables:
     x.objects.filter(email__icontains=email).delete()
-'''
-from django.db import connection
 
-def get_active_connections():
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT COUNT(*) 
-            FROM information_schema.processlist 
-            WHERE user = %s
-        """, [connection.settings_dict['USER']])
-        result = cursor.fetchone()
-        return result[0] if result else 0
+# from django.db import connection
 
-# Usage:
-active = get_active_connections()
-print(f"Active connections: {active}")
+# def get_active_connections():
+#     with connection.cursor() as cursor:
+#         cursor.execute("""
+#             SELECT COUNT(*) 
+#             FROM information_schema.processlist 
+#             WHERE user = %s
+#         """, [connection.settings_dict['USER']])
+#         result = cursor.fetchone()
+#         return result[0] if result else 0
+
+# # Usage:
+# active = get_active_connections()
+# print(f"Active connections: {active}")
 # from transformers import pipeline
 
 # # Load a conversational pipeline
