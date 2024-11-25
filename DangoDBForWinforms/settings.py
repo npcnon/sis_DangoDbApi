@@ -128,19 +128,18 @@ DATABASES = {
         'PASSWORD': 'W5Cn6Q>+:l',
         'HOST': 'srv1417.hstgr.io',
         'PORT': '3306',
-        'CONN_MAX_AGE': 300,  # Keep connections alive for 5 minutes
+        'CONN_MAX_AGE': 300,  
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 10,  # Connection timeout in seconds
+            'connect_timeout': 10,  
         }
     }
 }
-
 # Update connection pool arguments
 DATABASE_POOL_ARGS = {
-    'max_connections': 300,  # Reduce to prevent overwhelming the database
-    'stale_timeout': 300,    # 5 minutes timeout for idle connections
-    'recycle': 280,          # Recycle connections after 280 seconds
+    'max_connections': 300, 
+    'stale_timeout': 300,    
+    'recycle': 280,        
 }
 # DATABASES = {
 #     'default': {
@@ -156,25 +155,13 @@ DATABASE_POOL_ARGS = {
 
 
 
-
-# SQLite
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 STUDENT_PORTAL_URL='https://benedicto-student-portal.vercel.app/login'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
-    # 'DEFAULT_PARSER_CLASSES': (
-    #     'rest_framework.parsers.MultiPartParser',
-    #     'rest_framework.parsers.FormParser',
-    # ),
+
 }
 CRON_CLASSES = [
     "DangoDBApp.cron.FetchAPIDataCronJob",
