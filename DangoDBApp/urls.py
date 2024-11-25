@@ -25,6 +25,7 @@ from .views import (
     ProspectusPrerequisitesScheduleView,
     ProxyAPIView,
     ProspectusAPIView,
+    RegistrarMessageAPIView
 
     )
 from .Views_V2.StudentFullDataView import StudentDataAPIView
@@ -41,6 +42,10 @@ urlpatterns = [
     path('official-student-data', StudentOfficialInfoAPIView.as_view(), name='official-student-data'),
     path('onsite-full-student-data/', OfficialStudentAPIView.as_view(), name='official-student-data'),
     path('onsite-full-student-data', OfficialStudentAPIView.as_view(), name='official-student-data'),
+
+
+    path('registrar-message', RegistrarMessageAPIView.as_view(), name='registrar-message'),
+    path('registrar-message/', RegistrarMessageAPIView.as_view(), name='registrar-message'),
 
     path('prospectus/', ProspectusAPIView.as_view(), name='get-prospectus'),    
     path('course/', CourseAPIView.as_view(), name = 'course-list'),

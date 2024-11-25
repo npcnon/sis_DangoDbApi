@@ -440,3 +440,12 @@ class TblEmailNotificationLog(models.Model):
         indexes = [
             models.Index(fields=['semester_id', 'created_at'])
         ]
+
+
+class TblRegistrarMessage(models.Model):
+    message = models.TextField()
+    fulldata_applicant_id = models.ForeignKey(TblStudentPersonalData, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)

@@ -116,6 +116,7 @@ def create_user_profile(sender, instance, created, **kwargs):
                 email= instance.email,
                 password= make_password(password)  
             )
+            
             print(user)
             Profile.objects.create(user=user)
             # print(f'password: {generated_password}')

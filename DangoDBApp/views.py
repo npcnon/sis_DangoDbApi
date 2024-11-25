@@ -16,7 +16,7 @@ from .models import (
     TblStudentPersonalData, TblStudentFamilyBackground,
     TblStudentAcademicBackground, TblStudentAcademicHistory, 
     TblStudentAddPersonalData, TblStudentBasicInfo,TblStudentBasicInfo,TblBugReport,
-    TblStudentOfficialInfo,TblSchedule,TblSemester,TblStudentEnlistedOnSemesters
+    TblStudentOfficialInfo,TblSchedule,TblSemester,TblStudentEnlistedOnSemesters,TblRegistrarMessage
 )
 from .serializers import (
      TblCourseSerializer,CombinedOfficialStudentSerializer, StudentFullDataSerializer, TblProgramSerializer, TblDepartmentSerializer,
@@ -24,7 +24,8 @@ from .serializers import (
     TblStudentAcademicBackgroundSerializer, TblStudentAcademicHistorySerializer,
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,
-    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer,TblStudentEnlistedOnSemestersSerializer
+    TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer,TblStudentEnlistedOnSemestersSerializer,
+    TblRegistrarMessageSerializer
 )
 
 import logging
@@ -329,7 +330,7 @@ def create_api_view(model, serializer):
 
 
 
-
+RegistrarMessageAPIView = create_api_view(TblRegistrarMessage, TblRegistrarMessageSerializer)
 ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)

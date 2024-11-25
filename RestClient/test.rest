@@ -305,3 +305,13 @@ Content-Type: application/json
 
 ### GET REQUEST
 GET https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects
+
+
+### Enlist student
+POST http://127.0.0.1:8000/api/registrar-message
+Content-Type: application/json
+
+{
+    "fulldata_applicant_id":1,
+    "message": "bubu ka"
+}

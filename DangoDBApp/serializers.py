@@ -22,7 +22,8 @@ from .models import (
     TblBugReport,
     TblStudentOfficialInfo,
     TblCampus,
-
+    TblRegistrarMessage,
+    
 )
 
 # Generalized DateField that handles date parsing/validation
@@ -110,7 +111,7 @@ TblScheduleSerializer = create_serializer(TblSchedule)
 TblCourseSerializer = create_serializer(TblCourse)
 TblProspectusSerializer = create_serializer(TblProspectus)
 TblStudentEnlistedOnSemestersSerializer = create_serializer(TblStudentEnlistedOnSemesters)
-
+TblRegistrarMessageSerializer = create_serializer(TblRegistrarMessage)
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
 
