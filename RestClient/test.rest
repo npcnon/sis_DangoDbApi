@@ -54,16 +54,16 @@ Content-Type: application/json
 }
 
 ### POST onsiteFull student
-POST https://djangoportal-backends.onrender.com/api/onsite-full-student-data/
+POST http://127.0.0.1:8000/api/onsite-full-student-data/
 Content-Type: application/json
 
 {
-  "student_id": "2024-35615",
+  "student_id": "2024-31215",
   "campus": 1,
   "personal_data": {
     "f_name": "asdzzzx",
     "m_name": "Mazz",
-    "l_name": "as2321dddh",
+    "l_name": "aasddh",
     "suffix": "Jr",
     "sex": "Male",
     "birth_date": "2000-05-15",
@@ -71,7 +71,7 @@ Content-Type: application/json
     "marital_status": "Single",
     "religion": "Christian",
     "country": "USA",
-    "email": "s1zx3e@gmail.com",
+    "email": "sas1233e@gmail.com",
     "on_site": true,
     "acr": "ACR123456",
     "status": "pending"

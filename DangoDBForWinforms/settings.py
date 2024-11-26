@@ -128,20 +128,25 @@ DATABASES = {
         'PASSWORD': 'W5Cn6Q>+:l',
         'HOST': 'srv1417.hstgr.io',
         'PORT': '3306',
-        'CONN_MAX_AGE': 0,  # Disable persistent connections
+        'CONN_MAX_AGE': 600,  # Increased from 0 to 600 seconds
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 10,
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'; SET SESSION wait_timeout=28800;",
+            'connect_timeout': 20,  # Increased timeout
+            'charset': 'utf8mb4',  # Recommended for full Unicode support
         }
     }
 }
 
 DATABASE_POOL_ARGS = {
-    'max_connections': 300, 
-    'stale_timeout': 600,    # Increased from 300 to 600
-    'recycle': 500,          # Increased from 280 to 500
+    'max_connections': 300,
+    'stale_timeout': 600,
+    'recycle': 500,
 }
+
+DATABASES['default']['OPTIONS']['connect_timeout'] = 30
+DATABASES['default']['OPTIONS']['read_timeout'] = 30
+DATABASES['default']['OPTIONS']['write_timeout'] = 30
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
