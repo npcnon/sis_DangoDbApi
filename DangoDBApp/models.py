@@ -245,7 +245,7 @@ class TblStudentPersonalData(models.Model):
     country = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
     acr = models.CharField(max_length=100, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unverified')
 
     #Status and timestamp fields
     is_active = models.BooleanField(default=True)

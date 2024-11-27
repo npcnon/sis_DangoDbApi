@@ -17,6 +17,9 @@ import string
 from django.core.mail import get_connection, EmailMessage
 from typing import List, Tuple
 import time
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.db.models import F
 logger = logging.getLogger(__name__)
 
 
@@ -141,113 +144,119 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 
-# @receiver(post_save, sender=TblSemester)
-# def send_new_semester_notifications(sender, instance, created, **kwargs):
-#     # Only proceed if a new semester is created and is active
-#     if not (created and instance.is_active):
-#         return
+@receiver(post_save, sender=TblSemester)
+def send_new_semester_notifications(sender, instance, created, **kwargs):
+    # Only proceed if a new semester is created and is active
+    if not (created and instance.is_active):
+        return
 
-#     try:
-#         # Check if notifications were already sent recently
-#         recent_notification = TblEmailNotificationLog.objects.filter(
-#             semester_id=instance.id,
-#             notification_type='new_semester',
-#             created_at__gte=timezone.now() - timezone.timedelta(hours=24)
-#         ).exists()
+    try:
+        # Check if notifications were already sent recently
+        recent_notification = TblEmailNotificationLog.objects.filter(
+            semester_id=instance.id,
+            notification_type='new_semester',
+            created_at__gte=timezone.now() - timezone.timedelta(hours=24)
+        ).exists()
 
-#         if recent_notification:
-#             return
+        if recent_notification:
+            return
 
-#         # Find students in the same campus
-#         students = TblStudentBasicInfo.objects.filter(
-#             campus=instance.campus_id,
-#             is_active=True,
-#             is_deleted=False
-#         )
+        # Find students in the same campus
+        students = TblStudentBasicInfo.objects.filter(
+            campus=instance.campus_id,
+            is_active=True,
+            is_deleted=False
+        )
 
-#         # Prepare email connection
-#         connection = get_connection()
-#         connection.open()
+        # Prepare email connection
+        connection = get_connection()
+        connection.open()
 
-#         # Track successful emails
-#         successful_emails = 0
-#         email_messages = []
+        # Track successful emails
+        successful_emails = 0
+        email_messages = []
 
-#         # Prepare and send emails
-#         for student in students:
-#             # Prepare email context
-#             context = {
-#                 'student_name': f"{student.first_name} {student.last_name}",
-#                 'semester_name': f"{instance.semester_name} {instance.school_year}",
-#                 'registration_dates': f"Open now through {(timezone.now() + timezone.timedelta(weeks=4)).strftime('%B %d, %Y')}",
-#                 'enrollment_url': settings.STUDENT_PORTAL_URL
-#             }
+        # Prepare and send emails
+        for student in students:
+            # Prepare email context
+            context = {
+                'student_name': f"{student.first_name} {student.last_name}",
+                'semester_name': f"{instance.semester_name} {instance.school_year}",
+                'registration_dates': f"Open now through {(timezone.now() + timezone.timedelta(weeks=4)).strftime('%B %d, %Y')}",
+                'enrollment_url': settings.STUDENT_PORTAL_URL
+            }
 
-#             # Render email template
-#             html_message = render_to_string('DangoDBApp/new_semester_notification.html', context)
-#             plain_message = strip_tags(html_message)
+            # Render email template
+            html_message = render_to_string('DangoDBApp/new_semester_notification.html', context)
+            plain_message = strip_tags(html_message)
 
-#             # Prepare email
-#             email = send_mail(
-#                 subject="New Semester Registration Open",
-#                 message=plain_message,
-#                 from_email=settings.DEFAULT_FROM_EMAIL,
-#                 recipient_list=[student.email],
-#                 html_message=html_message,
-#                 connection=connection,
-#                 fail_silently=False
-#             )
+            # Prepare email
+            email = send_mail(
+                subject="New Semester Registration Open",
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[student.email],
+                html_message=html_message,
+                connection=connection,
+                fail_silently=False
+            )
 
-#             if email:
-#                 successful_emails += 1
+            if email:
+                successful_emails += 1
 
-#         # Close connection
-#         connection.close()
+        # Close connection
+        connection.close()
 
-#         # Log the notification
-#         if successful_emails > 0:
-#             TblEmailNotificationLog.objects.create(
-#                 semester_id=instance.id,
-#                 notification_type='new_semester',
-#                 recipients_count=successful_emails
-#             )
+        # Log the notification
+        if successful_emails > 0:
+            TblEmailNotificationLog.objects.create(
+                semester_id=instance.id,
+                notification_type='new_semester',
+                recipients_count=successful_emails
+            )
 
-#     except Exception as e:
-#         # Log any errors
-#         print(f"Error sending new semester notifications: {e}")
+    except Exception as e:
+        # Log any errors
+        print(f"Error sending new semester notifications: {e}")
 
 
 # Define year level progression
-YEAR_LEVELS = ["First Year", "Second Year", "Third Year", "Fourth Year"]
+# YEAR_LEVELS = ["First Year", "Second Year", "Third Year", "Fourth Year"]
 
-@receiver(post_save, sender=TblStudentAcademicBackground)
-def update_student_year_level(sender, instance, created, **kwargs):
-    """
-    Signal to update student's year level when semester entry is updated to first semester.
+# @receiver(pre_save, sender=TblStudentAcademicBackground)
+# def update_student_year_level(sender, instance, **kwargs):
+#     """
+#     Signal to update student's year level when semester entry is changed to first semester.
     
-    Conditions:
-    1. Not a new record (created = False)
-    2. Updated semester_entry is first semester
-    3. Current year level is not the highest level
-    """
-    # Skip if this is a new record
-    if created:
-        return
+#     Conditions:
+#     1. Semester entry is changed
+#     2. New semester entry is a first semester
+#     3. Current year level is not the highest level
+#     """
+#     print(f"Running Academic Background updates ############################")
+#     try:
+#         # Check if this is an existing record (not a new creation)
+#         if instance.pk:
+#             # Get the existing record from the database
+#             old_instance = TblStudentAcademicBackground.objects.get(pk=instance.pk)
+            
+#             # Print debug information
+#             print(f"Old Semester Entry: {old_instance.semester_entry}")
+#             print(f"New Semester Entry: {instance.semester_entry}")
+#             print(f"Current Year Level: {instance.year_level}")
+            
+#             # Check if semester_entry has changed and is a first semester
+#             if (old_instance.semester_entry != instance.semester_entry and 
+#                 instance.semester_entry.semester_name.lower().startswith("1st")):
+                
+#                 # Find current index of year level
+#                 current_level_index = YEAR_LEVELS.index(instance.year_level)
+                
+#                 # Increment year level if not at the highest level
+#                 if current_level_index < len(YEAR_LEVELS) - 1:
+#                     instance.year_level = YEAR_LEVELS[current_level_index + 1]
+#                     print(f"Updating Year Level to: {instance.year_level}")
     
-    try:
-        # Check if the updated semester entry is the first semester
-        if instance.semester_entry.semester_name.lower().startswith("1st"):
-            # Find current index of year level
-            if instance.year_level == "First Year":
-                instance.year_level == "Second Year"
-            elif instance.year_level == "Second Year":
-                instance.year_level == "Third Year"
-            elif instance.year_level == "Third Year":
-                instance.year_level == "Fourth Year"
-            elif instance.year_level == "Fourth Year":
-                instance.year_level == "GRADUATE"
-
-    
-    except Exception as e:
-        # Log the error or handle it appropriately
-        print(f"Error updating student year level: {str(e)}")
+#     except Exception as e:
+#         # Log the error 
+#         print(f"Error updating student year level: {str(e)}")
