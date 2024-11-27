@@ -163,14 +163,14 @@ class FetchAPIDataCronJob(CronJobBase):
         print(f"Cron job running at {timezone.now()}")
         
         endpoints = {
-            'campus': (TblCampus, TblCampusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-campus-active'),
-            'department': (TblDepartment, TblDepartmentSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-department-active'),
-            'program': (TblProgram, TblProgramSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-programs-active'),
+            # 'campus': (TblCampus, TblCampusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-campus-active'),
+            # 'department': (TblDepartment, TblDepartmentSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-department-active'),
+            # 'program': (TblProgram, TblProgramSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-programs-active'),
             'semester': (TblSemester, TblSemesterSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-all-semesters'),
-            'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
-            'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
+            # 'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
+            # 'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
             # 'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
-            'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        
+            # 'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        
             }
         
         for model_name, (model_class, serializer_class, url) in endpoints.items():

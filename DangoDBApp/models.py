@@ -449,3 +449,4 @@ class TblRegistrarMessage(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
+    testfield= models.CharField(max_length=10)

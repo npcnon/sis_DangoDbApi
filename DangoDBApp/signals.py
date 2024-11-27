@@ -217,13 +217,14 @@ class EmailBatchSender:
                 except Exception as conn_err:
                     logger.error(f"Failed to reconnect: {str(conn_err)}")
 
+
 @receiver(post_save, sender=TblSemester)
 def update_student_semester_entry(sender, instance, created, **kwargs):
     if not (instance.is_active and created):
         return
 
     try:
-        # Check for recent notifications
+      
         recent_notification = TblEmailNotificationLog.objects.filter(
             semester_id=instance.id,
             created_at__gte=timezone.now() - timedelta(hours=24)
@@ -233,7 +234,7 @@ def update_student_semester_entry(sender, instance, created, **kwargs):
             logger.warning(f"Skipping email notifications - already sent within 24 hours for semester {instance.id}")
             return
 
-        # Get previous semester check
+  
         previous_semester = TblSemester.objects.filter(
             campus_id=instance.campus_id,
             is_active=True,
@@ -243,7 +244,7 @@ def update_student_semester_entry(sender, instance, created, **kwargs):
         if not previous_semester or instance.school_year > previous_semester.school_year:
             email_data = []
             
-            # Get all active students
+           
             students = TblStudentBasicInfo.objects.filter(
                 campus=instance.campus_id,
                 is_active=True,
@@ -283,3 +284,36 @@ def update_student_semester_entry(sender, instance, created, **kwargs):
 
     except Exception as e:
         logger.error(f"Error in semester notification process: {str(e)}")
+
+
+# Define year level progression
+YEAR_LEVELS = ["First Year", "Second Year", "Third Year", "Fourth Year"]
+
+@receiver(post_save, sender=TblStudentAcademicBackground)
+def update_student_year_level(sender, instance, created, **kwargs):
+    """
+    Signal to update student's year level when semester entry is updated to first semester.
+    
+    Conditions:
+    1. Not a new record (created = False)
+    2. Updated semester_entry is first semester
+    3. Current year level is not the highest level
+    """
+    # Skip if this is a new record
+    if created:
+        return
+    
+    try:
+        # Check if the updated semester entry is the first semester
+        if instance.semester_entry.semester_name.lower().startswith("1st"):
+            # Find current index of year level
+            current_level_index = YEAR_LEVELS.index(instance.year_level)
+            
+            # Increment year level if not at the highest level
+            if current_level_index < len(YEAR_LEVELS) - 1:
+                instance.year_level = YEAR_LEVELS[current_level_index + 1]
+                instance.save()
+    
+    except Exception as e:
+        # Log the error or handle it appropriately
+        print(f"Error updating student year level: {str(e)}")

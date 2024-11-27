@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'DangoDBForWinforms.middleware.DatabaseConnectionMiddleware',
 ]
 
 ROOT_URLCONF = 'DangoDBForWinforms.urls'
@@ -131,7 +132,7 @@ DATABASES = {
         'CONN_MAX_AGE': 600,  # Increased from 0 to 600 seconds
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'; SET SESSION wait_timeout=28800;",
-            'connect_timeout': 20,  # Increased timeout
+            'connect_timeout': 30,  # Increased timeout
             'charset': 'utf8mb4',  # Recommended for full Unicode support
         }
     }
