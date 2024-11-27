@@ -144,7 +144,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=TblSemester)
 def send_new_semester_notifications(sender, instance, created, **kwargs):
     # Only proceed if a new semester is created and is active
-    if not (created and instance.is_active):
+    if not (instance.is_active):
         return
 
     try:
@@ -235,14 +235,17 @@ def update_student_year_level(sender, instance, created, **kwargs):
         return
     
     try:
+        
         # Check if the updated semester entry is the first semester
         if instance.semester_entry.semester_name.lower().startswith("1st"):
             # Find current index of year level
             current_level_index = YEAR_LEVELS.index(instance.year_level)
-            
+            print(f"current level index: {current_level_index}")
             # Increment year level if not at the highest level
             if current_level_index < len(YEAR_LEVELS) - 1:
                 instance.year_level = YEAR_LEVELS[current_level_index + 1]
+                print(f"instance year level: {instance.year_level}")
+
                 instance.save()
     
     except Exception as e:
