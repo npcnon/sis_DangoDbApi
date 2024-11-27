@@ -141,80 +141,80 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 
-@receiver(post_save, sender=TblSemester)
-def send_new_semester_notifications(sender, instance, created, **kwargs):
-    # Only proceed if a new semester is created and is active
-    if not (created and instance.is_active):
-        return
+# @receiver(post_save, sender=TblSemester)
+# def send_new_semester_notifications(sender, instance, created, **kwargs):
+#     # Only proceed if a new semester is created and is active
+#     if not (created and instance.is_active):
+#         return
 
-    try:
-        # Check if notifications were already sent recently
-        recent_notification = TblEmailNotificationLog.objects.filter(
-            semester_id=instance.id,
-            notification_type='new_semester',
-            created_at__gte=timezone.now() - timezone.timedelta(hours=24)
-        ).exists()
+#     try:
+#         # Check if notifications were already sent recently
+#         recent_notification = TblEmailNotificationLog.objects.filter(
+#             semester_id=instance.id,
+#             notification_type='new_semester',
+#             created_at__gte=timezone.now() - timezone.timedelta(hours=24)
+#         ).exists()
 
-        if recent_notification:
-            return
+#         if recent_notification:
+#             return
 
-        # Find students in the same campus
-        students = TblStudentBasicInfo.objects.filter(
-            campus=instance.campus_id,
-            is_active=True,
-            is_deleted=False
-        )
+#         # Find students in the same campus
+#         students = TblStudentBasicInfo.objects.filter(
+#             campus=instance.campus_id,
+#             is_active=True,
+#             is_deleted=False
+#         )
 
-        # Prepare email connection
-        connection = get_connection()
-        connection.open()
+#         # Prepare email connection
+#         connection = get_connection()
+#         connection.open()
 
-        # Track successful emails
-        successful_emails = 0
-        email_messages = []
+#         # Track successful emails
+#         successful_emails = 0
+#         email_messages = []
 
-        # Prepare and send emails
-        for student in students:
-            # Prepare email context
-            context = {
-                'student_name': f"{student.first_name} {student.last_name}",
-                'semester_name': f"{instance.semester_name} {instance.school_year}",
-                'registration_dates': f"Open now through {(timezone.now() + timezone.timedelta(weeks=4)).strftime('%B %d, %Y')}",
-                'enrollment_url': settings.STUDENT_PORTAL_URL
-            }
+#         # Prepare and send emails
+#         for student in students:
+#             # Prepare email context
+#             context = {
+#                 'student_name': f"{student.first_name} {student.last_name}",
+#                 'semester_name': f"{instance.semester_name} {instance.school_year}",
+#                 'registration_dates': f"Open now through {(timezone.now() + timezone.timedelta(weeks=4)).strftime('%B %d, %Y')}",
+#                 'enrollment_url': settings.STUDENT_PORTAL_URL
+#             }
 
-            # Render email template
-            html_message = render_to_string('DangoDBApp/new_semester_notification.html', context)
-            plain_message = strip_tags(html_message)
+#             # Render email template
+#             html_message = render_to_string('DangoDBApp/new_semester_notification.html', context)
+#             plain_message = strip_tags(html_message)
 
-            # Prepare email
-            email = send_mail(
-                subject="New Semester Registration Open",
-                message=plain_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[student.email],
-                html_message=html_message,
-                connection=connection,
-                fail_silently=False
-            )
+#             # Prepare email
+#             email = send_mail(
+#                 subject="New Semester Registration Open",
+#                 message=plain_message,
+#                 from_email=settings.DEFAULT_FROM_EMAIL,
+#                 recipient_list=[student.email],
+#                 html_message=html_message,
+#                 connection=connection,
+#                 fail_silently=False
+#             )
 
-            if email:
-                successful_emails += 1
+#             if email:
+#                 successful_emails += 1
 
-        # Close connection
-        connection.close()
+#         # Close connection
+#         connection.close()
 
-        # Log the notification
-        if successful_emails > 0:
-            TblEmailNotificationLog.objects.create(
-                semester_id=instance.id,
-                notification_type='new_semester',
-                recipients_count=successful_emails
-            )
+#         # Log the notification
+#         if successful_emails > 0:
+#             TblEmailNotificationLog.objects.create(
+#                 semester_id=instance.id,
+#                 notification_type='new_semester',
+#                 recipients_count=successful_emails
+#             )
 
-    except Exception as e:
-        # Log any errors
-        print(f"Error sending new semester notifications: {e}")
+#     except Exception as e:
+#         # Log any errors
+#         print(f"Error sending new semester notifications: {e}")
 
 
 # Define year level progression
