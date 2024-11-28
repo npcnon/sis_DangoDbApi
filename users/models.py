@@ -9,7 +9,8 @@ class User(AbstractUser):
     fulldata_applicant_id = models.CharField(max_length=50,null=True, blank=True)
     employee_id = models.ForeignKey(TblEmployee, on_delete=models.CASCADE, null=True, blank=True)
     username = None
-    
+    password_reset_token = models.CharField(max_length=32, null=True, blank=True)
+    password_reset_token_expires_at = models.DateTimeField(null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

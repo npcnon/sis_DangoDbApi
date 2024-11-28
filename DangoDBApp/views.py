@@ -637,8 +637,8 @@ class GetProgramSchedulesView(APIView):
                     'room': schedule['room'],
                     'day': schedule['day'],
                     'time': {
-                        'start': schedule['start'].split('T')[1][:5],
-                        'end': schedule['end'].split('T')[1][:5]
+                        'start': schedule['start'],
+                        'end': schedule['end']
                     }
                 }
                 schedule_data.append(schedule_info)

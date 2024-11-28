@@ -226,17 +226,20 @@ Content-Type: application/json
 }
 
 ### POST additional personal data student
-POST http://127.0.0.1:8000/api/add-personal-data/
+POST http://127.0.0.1:8000/api/stdntacademicbackground/
 Content-Type: application/json
 
 {
-    "fulldata_applicant_id": 2,
-    "city_address": "123 Main St",
-    "province_address": "Nz",
-    "contact_number": "qwe",
-    "city_contact_number": "0987654321",
-    "province_contact_number": "1122334455",
-    "citizenship": "American"
+    "fulldata_applicant_id":1,
+    "program":1,
+    "major_in":"",
+    "student_type":"Regular",
+    "semester_entry" : 4,
+    "year_entry" :2024,
+    "year_level" : "First Year",
+    "year_graduate" : 2028,
+    "application_type" : "New Student"
+
 }
 ### POST Official student
 POST https://node-mysql-signup-verification-api.onrender.com/students/external/add-enrollment
@@ -314,4 +317,77 @@ Content-Type: application/json
 {
     "fulldata_applicant_id":1,
     "message": "bubu ka"
+}
+
+
+
+### User Registration
+POST http://localhost:8000/api/users/register
+Content-Type: application/json
+
+{
+    "student_id": "12345678",
+    "email": "student@example.com",
+    "name": "John Doe",
+    "password": "StrongPassword123!",
+    "fulldata_applicant_id": "APP2024001"
+}
+
+### User Login
+POST http://localhost:8000/api/users/login
+Content-Type: application/json
+
+{
+    "identifier": "student@example.com",
+    "password": "StrongPassword123!"
+}
+
+### Get User Profile (Requires Access Token)
+GET http://localhost:8000/api/users/user
+Authorization: Bearer {{access_token}
+
+### Logout
+POST http://localhost:8000/api/users/logout
+Content-Type: application/json
+Authorization: Bearer {{access_token}
+
+{
+    "refresh_token": "{{refresh_token}"
+}
+
+### Refresh Token
+POST http://localhost:8000/api/users/refresh-token
+Content-Type: application/json
+
+{
+    "refresh": "{{refresh_token}"
+}
+
+### Change Password
+POST http://localhost:8000/api/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{access_token}
+
+{
+    "old_password": "OldPassword123!",
+    "new_password": "NewStrongPassword456!",
+    "confirm_password": "NewStrongPassword456!"
+}
+
+### Password Reset Request
+POST http://localhost:8000/api/users/password-reset-request
+Content-Type: application/json
+
+{
+    "email": "student@example.com"
+}
+
+### Password Reset Confirm
+POST http://localhost:8000/api/users/password-reset-confirm
+Content-Type: application/json
+
+{
+    "reset_token": "generated_reset_token_from_email",
+    "new_password": "NewSecurePassword789!",
+    "confirm_password": "NewSecurePassword789!"
 }

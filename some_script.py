@@ -9,7 +9,7 @@ from DangoDBApp.models import TblProspectus
 from DangoDBApp.models import TblStudentBasicInfo as t
 from DangoDBApp.models import TblStudentPersonalData as p
 from users.models import User as u
-email = "npcshengaoren"
+email = "shiny"
 all_tables = [t,u]
 for x in all_tables:
     x.objects.filter(email__icontains=email).delete()

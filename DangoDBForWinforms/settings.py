@@ -99,7 +99,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'DangoDBForWinforms.wsgi.application'
 
 
-
+FRONTEND_URL = 'https://benedicto-student-portal.vercel.app'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

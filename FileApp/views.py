@@ -12,8 +12,9 @@ from rest_framework.response import Response
 from django.db import transaction
 from typing import Dict, Any, Tuple
 
+from FileApp.serializers import AdminContactDocumentSerializer, AdminContactSerializer
 from users.models import User
-from .models import Document
+from .models import AdminContact, AdminContactDocument, Document
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 import logging
@@ -566,3 +567,105 @@ class AdminDocumentView(APIView):
 
 
 
+# class AdminContactView(APIView):
+#     """Handle creation of admin contact messages with file uploads"""
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     ALLOWED_MIME_TYPES = {
+#         'application/pdf': 'pdf',
+#         'image/jpeg': 'image',
+#         'image/png': 'image',
+#         'image/gif': 'image'
+#     }
+
+#     def validate_file_type(self, file):
+#         """Validate uploaded file type"""
+#         try:
+#             file_magic = magic.Magic(mime=True)
+#             file_type = file_magic.from_buffer(file.read(2048))
+#             file.seek(0)
+#             return file_type
+#         except Exception as e:
+#             logger.error(f"File type validation error: {str(e)}")
+#             raise
+
+#     def post(self, request):
+#         message = request.data.get('message', '')
+#         files = request.FILES.getlist('files')
+
+#         # Validate message
+#         if not message or len(message) < 10:
+#             return Response(
+#                 {"error": "Message must be at least 10 characters"}, 
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+
+#         try:
+#             with transaction.atomic():
+#                 # Create admin contact message first
+#                 admin_contact = AdminContact.objects.create(message=message)
+
+#                 # Process file uploads
+#                 uploaded_documents = []
+#                 for file in files:
+#                     try:
+#                         # File size and type validations remain the same
+
+#                         upload_result = cloudinary.uploader.upload(
+#                             file,
+#                             folder='admin_contact',
+#                             use_filename=True,
+#                             unique_filename=True,
+#                             access_mode='private'
+#                         )
+
+#                         # Create document record with admin_contact explicitly set
+#                         document = AdminContactDocument.objects.create(
+#                             admin_contact=admin_contact,
+#                             file_name=file.name,
+#                             document_type=self.ALLOWED_MIME_TYPES.get(file_type, 'other'),
+#                             cloudinary_public_id=upload_result['public_id'],
+#                             cloudinary_resource_type=upload_result['resource_type'],
+#                             file_size=file.size,
+#                             mime_type=file_type
+#                         )
+
+#                         uploaded_documents.append({
+#                             'id': str(document.id),
+#                             'filename': document.file_name
+#                         })
+
+#                     except Exception as e:
+#                         logger.error(f"Upload failed for {file.name}: {str(e)}")
+#                         # Optional: Delete the admin_contact if file upload fails
+#                         admin_contact.delete()
+#                         return Response(
+#                             {"error": f"Upload failed for {file.name}"}, 
+#                             status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#                         )
+
+#             return Response({
+#                 'message': 'Contact request submitted successfully',
+#                 'admin_contact_id': str(admin_contact.id),
+#                 'documents': uploaded_documents
+#             }, status=status.HTTP_201_CREATED)
+
+#         except Exception as e:
+#             logger.error(f"Unexpected error: {str(e)}")
+#             return Response(
+#                 {"error": "Failed to submit contact request"}, 
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#             )
+
+# class AdminContactRetrieveView(APIView):
+#     """Retrieve admin contact details"""
+#     def get(self, request, contact_id):
+#         try:
+#             admin_contact = AdminContact.objects.prefetch_related('documents').get(id=contact_id)
+#             serializer = AdminContactSerializer(admin_contact)
+#             return Response(serializer.data)
+#         except AdminContact.DoesNotExist:
+#             return Response(
+#                 {"error": "Contact request not found"}, 
+#                 status=status.HTTP_404_NOT_FOUND
+#             )
