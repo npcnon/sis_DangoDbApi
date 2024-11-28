@@ -114,7 +114,9 @@ TblStudentEnlistedOnSemestersSerializer = create_serializer(TblStudentEnlistedOn
 TblRegistrarMessageSerializer = create_serializer(TblRegistrarMessage)
 #basic student data
 TblStudentBasicInfoSerializer = create_serializer(TblStudentBasicInfo)
-
+TblStudentFamilyBackgroundSerializerdefault = create_serializer(TblStudentFamilyBackground)
+TblStudentAcademicBackgroundSerializerdefault = create_serializer(TblStudentAcademicBackground)
+TblStudentAcademicHistorySerializerdefault = create_serializer(TblStudentAcademicHistory)
 #full student base data
 TblStudentPersonalDataSerializer = create_serializer(TblStudentPersonalData)
 TblStudentAddPersonalDataFullSerializer = create_fullstudentdata_serializer(TblStudentAddPersonalData)
@@ -122,7 +124,6 @@ TblStudentAddPersonalDataSerializer = create_serializer(TblStudentAddPersonalDat
 TblStudentFamilyBackgroundSerializer = create_fullstudentdata_serializer(TblStudentFamilyBackground)
 TblStudentAcademicBackgroundSerializer = create_fullstudentdata_serializer(TblStudentAcademicBackground)
 TblStudentAcademicHistorySerializer = create_fullstudentdata_serializer(TblStudentAcademicHistory)
-
 TblBugReportSerializer = create_serializer(TblBugReport)
 
 

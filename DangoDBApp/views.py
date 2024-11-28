@@ -25,7 +25,7 @@ from .serializers import (
     TblStudentAddPersonalDataSerializer, TblStudentBasicInfoSerializer,
     TblBugReportSerializer, TblStudentOfficialInfoSerializer,
     TblScheduleSerializer,TblSemesterSerializer,TblEmployeeSerializer,TblProspectusSerializer,TblStudentEnlistedOnSemestersSerializer,
-    TblRegistrarMessageSerializer
+    TblRegistrarMessageSerializer,TblStudentAcademicHistorySerializerdefault, TblStudentFamilyBackgroundSerializerdefault, TblStudentAcademicBackgroundSerializerdefault
 )
 
 import logging
@@ -216,8 +216,8 @@ def create_api_view(model, serializer):
                 return Response(serializer_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         def put(self, request, id_or_offercode, deactivate):
-            logger.info(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
-            logger.info(f"Request Data: {request.data}")
+            print(f"Received PUT request with ID/Offercode: {id_or_offercode} and deactivate: {deactivate}")
+            print(f"Request Data: {request.data}")
 
             try:
                 # Determine primary key field
@@ -230,7 +230,7 @@ def create_api_view(model, serializer):
 
                 # Handle deactivation
                 if deactivate.lower() == "true":
-                    logger.info("Deactivation process activated")
+                    print("Deactivation process activated")
                     try:
                         instance = model.objects.get(**{pk_field: id_or_offercode})
                         if instance.is_active:
@@ -240,7 +240,7 @@ def create_api_view(model, serializer):
                             instance.is_active = True
                             status_message = "activated"
                         instance.save()
-                        logger.info(f"Instance {status_message} successfully")
+                        print(f"Instance {status_message} successfully")
                         return Response({
                             "status": "success",
                             "message": f"Object {status_message} successfully",
@@ -250,7 +250,7 @@ def create_api_view(model, serializer):
                             }
                         }, status=status.HTTP_200_OK)
                     except model.DoesNotExist:
-                        logger.error(f"Object with {pk_field}={id_or_offercode} not found")
+                        print(f"Object with {pk_field}={id_or_offercode} not found")
                         return Response({
                             "status": "error",
                             "message": "Object not found",
@@ -261,7 +261,7 @@ def create_api_view(model, serializer):
                 try:
                     instance = model.objects.get(**{pk_field: id_or_offercode})
                 except model.DoesNotExist:
-                    logger.error(f"Object with {pk_field}={id_or_offercode} not found")
+                    print(f"Object with {pk_field}={id_or_offercode} not found")
                     return Response({
                         "status": "error",
                         "message": "Object not found",
@@ -287,7 +287,7 @@ def create_api_view(model, serializer):
                         setattr(instance, pk_field, new_id)
 
                     updated_instance = serializer_data.save()
-                    logger.info(f"Instance updated successfully: {serializer_data.data}")
+                    print(f"Instance updated successfully: {serializer_data.data}")
                     return Response({
                         "status": "success",
                         "message": "Object updated successfully",
@@ -335,9 +335,9 @@ ProgramAPIView = create_api_view(TblProgram, TblProgramSerializer)
 DepartmentAPIView = create_api_view(TblDepartment, TblDepartmentSerializer)
 StdntInfoAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
 StudentPersonalDataAPIView = create_api_view(TblStudentPersonalData, TblStudentPersonalDataSerializer)
-StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializer)
-StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializer)
-StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializer)
+StudentFamilyAPIView = create_api_view(TblStudentFamilyBackground, TblStudentFamilyBackgroundSerializerdefault)
+StudentAcademicBackgroundAPIView = create_api_view(TblStudentAcademicBackground, TblStudentAcademicBackgroundSerializerdefault)
+StudentAcademicHistoryAPIView = create_api_view(TblStudentAcademicHistory, TblStudentAcademicHistorySerializerdefault)
 StudentAddPersonalDataAPIView = create_api_view(TblStudentAddPersonalData,TblStudentAddPersonalDataSerializer)
 TblScheduleAPIView = create_api_view(TblSchedule, TblScheduleSerializer)
 StudentOfficialInfoAPIView = create_api_view(TblStudentOfficialInfo, TblStudentOfficialInfoSerializer)

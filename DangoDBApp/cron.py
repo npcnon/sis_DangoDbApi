@@ -169,7 +169,7 @@ class FetchAPIDataCronJob(CronJobBase):
             'semester': (TblSemester, TblSemesterSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-all-semesters'),
             # 'course': (TblCourse, TblCourseSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-subjects-active'),
             # 'employee':(TblEmployee, TblEmployeeSerializer, 'https://node-mysql-signup-verification-api.onrender.com/external/get-employee-active'),
-            # 'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
+            # # 'schedule': (TblSchedule, TblScheduleSerializer, 'https://benedicto-scheduling-backend.onrender.com/teachers/all-subjects'),
             # 'prospectus': (TblProspectus, TblProspectusSerializer, 'https://node-mysql-signup-verification-api.onrender.com/prospectus/external/get-all-prospectus-subjects'),        
             }
         

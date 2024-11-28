@@ -77,8 +77,8 @@ urlpatterns = [
     path('deactivate_or_modify_addstdntinfo/<str:id_or_offercode>/<str:deactivate>', StdntInfoAPIView.as_view(), name='deactivate_modify_addstdntinfo'),    
     
     path('deactivate_or_modify_personal-student-data/<str:id_or_offercode>/<str:deactivate>',StudentPersonalDataAPIView.as_view(),name = 'deactivate_or_modify_personal-student-data'),
-    path('deactivate_or_modify_stdntfamily/<str:id_or_offercode>/str:deactivate',StudentFamilyAPIView.as_view(),name = 'dm-student-family'),
+    path('deactivate_or_modify_stdntfamily/<str:id_or_offercode>/<str:deactivate>',StudentFamilyAPIView.as_view(),name = 'dm-student-family'),
     path('deactivate_or_modify_stdntacademicbackground/<str:id_or_offercode>/<str:deactivate>',StudentAcademicBackgroundAPIView.as_view(),name = 'dm-student-academic-background'),
-    path('deactivate_or_modify_stdntacademichistory/<str:id_or_offercode>/str:deactivate',StudentAcademicHistoryAPIView.as_view(),name = 'dm-student-academic-history'),
+    path('deactivate_or_modify_stdntacademichistory/<str:id_or_offercode>/<str:deactivate>',StudentAcademicHistoryAPIView.as_view(),name = 'dm-student-academic-history'),
     
 ]   
