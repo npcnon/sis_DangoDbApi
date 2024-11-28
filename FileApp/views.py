@@ -567,105 +567,195 @@ class AdminDocumentView(APIView):
 
 
 
-# class AdminContactView(APIView):
-#     """Handle creation of admin contact messages with file uploads"""
-#     parser_classes = (MultiPartParser, FormParser)
+class AdminContactView(APIView):
+    """Handle creation of admin contact messages with file uploads"""
+    parser_classes = (MultiPartParser, FormParser)
 
-#     ALLOWED_MIME_TYPES = {
-#         'application/pdf': 'pdf',
-#         'image/jpeg': 'image',
-#         'image/png': 'image',
-#         'image/gif': 'image'
-#     }
+    ALLOWED_MIME_TYPES = {
+        'application/pdf': 'pdf',
+        'image/jpeg': 'image',
+        'image/png': 'image',
+        'image/gif': 'image'
+    }
 
-#     def validate_file_type(self, file):
-#         """Validate uploaded file type"""
-#         try:
-#             file_magic = magic.Magic(mime=True)
-#             file_type = file_magic.from_buffer(file.read(2048))
-#             file.seek(0)
-#             return file_type
-#         except Exception as e:
-#             logger.error(f"File type validation error: {str(e)}")
-#             raise
+    def validate_file_type(self, file):
+        """Validate uploaded file type"""
+        try:
+            file_magic = magic.Magic(mime=True)
+            file_type = file_magic.from_buffer(file.read(2048))
+            file.seek(0)
+            return file_type
+        except Exception as e:
+            logger.error(f"File type validation error: {str(e)}")
+            raise
 
-#     def post(self, request):
-#         message = request.data.get('message', '')
-#         files = request.FILES.getlist('files')
+    def post(self, request):
+        message = request.data.get('message', '')
+        files = request.FILES.getlist('files')
 
-#         # Validate message
-#         if not message or len(message) < 10:
-#             return Response(
-#                 {"error": "Message must be at least 10 characters"}, 
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
+        # Validate message
+        if not message or len(message) < 10:
+            return Response(
+                {"error": "Message must be at least 10 characters"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-#         try:
-#             with transaction.atomic():
-#                 # Create admin contact message first
-#                 admin_contact = AdminContact.objects.create(message=message)
+        try:
+            with transaction.atomic():
+                # Create admin contact message first
+                admin_contact = AdminContact.objects.create(message=message)
 
-#                 # Process file uploads
-#                 uploaded_documents = []
-#                 for file in files:
-#                     try:
-#                         # File size and type validations remain the same
+                # Process file uploads
+                uploaded_documents = []
+                for file in files:
+                    try:
+                        # Validate file type
+                        file_type = self.validate_file_type(file)
+                        
+                        # Check if file type is allowed
+                        if file_type not in self.ALLOWED_MIME_TYPES:
+                            admin_contact.delete()
+                            return Response(
+                                {"error": f"Unsupported file type: {file_type}"}, 
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
 
-#                         upload_result = cloudinary.uploader.upload(
-#                             file,
-#                             folder='admin_contact',
-#                             use_filename=True,
-#                             unique_filename=True,
-#                             access_mode='private'
-#                         )
+                        # Additional file size validation (if needed)
+                        if file.size > 10 * 1024 * 1024:  # 10MB max
+                            admin_contact.delete()
+                            return Response(
+                                {"error": f"File {file.name} exceeds maximum size of 10MB"}, 
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
 
-#                         # Create document record with admin_contact explicitly set
-#                         document = AdminContactDocument.objects.create(
-#                             admin_contact=admin_contact,
-#                             file_name=file.name,
-#                             document_type=self.ALLOWED_MIME_TYPES.get(file_type, 'other'),
-#                             cloudinary_public_id=upload_result['public_id'],
-#                             cloudinary_resource_type=upload_result['resource_type'],
-#                             file_size=file.size,
-#                             mime_type=file_type
-#                         )
+                        upload_result = cloudinary.uploader.upload(
+                            file,
+                            folder='admin_contact',
+                            use_filename=True,
+                            unique_filename=True,
+                            access_mode='private'
+                        )
 
-#                         uploaded_documents.append({
-#                             'id': str(document.id),
-#                             'filename': document.file_name
-#                         })
+                        # Create document record with admin_contact explicitly set
+                        document = AdminContactDocument.objects.create(
+                            admin_contact=admin_contact,
+                            file_name=file.name,
+                            document_type=self.ALLOWED_MIME_TYPES.get(file_type, 'other'),
+                            cloudinary_public_id=upload_result['public_id'],
+                            cloudinary_resource_type=upload_result['resource_type'],
+                            file_size=file.size,
+                            mime_type=file_type
+                        )
 
-#                     except Exception as e:
-#                         logger.error(f"Upload failed for {file.name}: {str(e)}")
-#                         # Optional: Delete the admin_contact if file upload fails
-#                         admin_contact.delete()
-#                         return Response(
-#                             {"error": f"Upload failed for {file.name}"}, 
-#                             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#                         )
+                        uploaded_documents.append({
+                            'id': str(document.id),
+                            'filename': document.file_name
+                        })
 
-#             return Response({
-#                 'message': 'Contact request submitted successfully',
-#                 'admin_contact_id': str(admin_contact.id),
-#                 'documents': uploaded_documents
-#             }, status=status.HTTP_201_CREATED)
+                    except Exception as e:
+                        logger.error(f"Upload failed for {file.name}: {str(e)}")
+                        # Optional: Delete the admin_contact if file upload fails
+                        admin_contact.delete()
+                        return Response(
+                            {"error": f"Upload failed for {file.name}"}, 
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                        )
 
-#         except Exception as e:
-#             logger.error(f"Unexpected error: {str(e)}")
-#             return Response(
-#                 {"error": "Failed to submit contact request"}, 
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#             )
+            return Response({
+                'message': 'Contact request submitted successfully',
+                'admin_contact_id': str(admin_contact.id),
+                'documents': uploaded_documents
+            }, status=status.HTTP_201_CREATED)
 
-# class AdminContactRetrieveView(APIView):
-#     """Retrieve admin contact details"""
-#     def get(self, request, contact_id):
-#         try:
-#             admin_contact = AdminContact.objects.prefetch_related('documents').get(id=contact_id)
-#             serializer = AdminContactSerializer(admin_contact)
-#             return Response(serializer.data)
-#         except AdminContact.DoesNotExist:
-#             return Response(
-#                 {"error": "Contact request not found"}, 
-#                 status=status.HTTP_404_NOT_FOUND
-#             )
+        except Exception as e:
+            logger.error(f"Unexpected error: {str(e)}")
+            return Response(
+                {"error": "Failed to submit contact request"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class AdminContactRetrieveView(APIView):
+    """Retrieve admin contact details"""
+    def get(self, request, contact_id):
+        try:
+            admin_contact = AdminContact.objects.prefetch_related('documents').get(id=contact_id)
+            serializer = AdminContactSerializer(admin_contact)
+            return Response(serializer.data)
+        except AdminContact.DoesNotExist:
+            return Response(
+                {"error": "Contact request not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+class AdminContactListView(APIView):
+    """Retrieve list of admin contact messages"""
+    def generate_signed_url(self, public_id, resource_type="raw"):
+        """Generate a signed URL for private Cloudinary resources."""
+        expiration = datetime.now() + timedelta(hours=1)
+        try:
+            signed_url = cloudinary.utils.cloudinary_url(
+                public_id,
+                type="private",
+                resource_type=resource_type,
+                secure=True,
+                sign_url=True,
+                expires_at=int(expiration.timestamp())
+            )[0]
+            return signed_url, expiration
+        except Exception as e:
+            logger.error(f"Error generating signed URL for {public_id}: {str(e)}")
+            return None, None
+
+    def get(self, request):
+        try:
+            # Fetch all admin contacts with their documents, ordered by most recent
+            admin_contacts = AdminContact.objects.prefetch_related('documents').order_by('-created_at')
+            
+            # Prepare a list of contact details
+            contact_list = []
+            for contact in admin_contacts:
+                contact_details = {
+                    'id': str(contact.id),
+                    'message': contact.message,
+                    'created_at': contact.created_at,
+                    'document_count': contact.documents.count(),
+                    'documents': []
+                }
+
+                # Generate signed URLs for each document
+                for doc in contact.documents.all():
+                    # Determine resource type based on mime type
+                    resource_type = 'image' if doc.mime_type.startswith('image/') else 'raw'
+                    
+                    # Generate signed URL
+                    signed_url, expiration = self.generate_signed_url(
+                        doc.cloudinary_public_id, 
+                        resource_type
+                    )
+
+                    document_details = {
+                        'id': str(doc.id),
+                        'file_name': doc.file_name,
+                        'document_type': doc.document_type,
+                        'file_size': doc.file_size,
+                        'mime_type': doc.mime_type
+                    }
+
+                    # Add temporary URL if generated successfully
+                    if signed_url:
+                        document_details.update({
+                            'temporary_url': signed_url,
+                            'expires_at': expiration.isoformat()
+                        })
+
+                    contact_details['documents'].append(document_details)
+
+                contact_list.append(contact_details)
+
+            return Response(contact_list)
+        except Exception as e:
+            logger.error(f"Failed to retrieve admin contacts: {str(e)}")
+            return Response(
+                {"error": "Failed to retrieve contact requests"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
